@@ -1,5 +1,5 @@
 {
-  "name": "life-diary-client",
+  "name": "vv-airline-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -11,8 +11,15 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.0.1",
+    "@types/node": "^20.10.4",
+    "@types/react-redux": "^7.1.33",
+    "axios": "^1.6.2",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-query": "^3.39.3",
+    "react-redux": "^9.0.4",
+    "react-router-dom": "^6.20.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",
@@ -20,9 +27,13 @@
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "@vitejs/plugin-react": "^4.2.0",
+    "classnames": "^2.3.2",
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
+    "postcss": "^8.4.32",
+    "prettier": "^3.1.1",
+    "prettier-plugin-tailwindcss": "^0.5.9",
     "sass": "^1.69.5",
     "typescript": "^5.2.2",
     "vite": "^5.0.0"
