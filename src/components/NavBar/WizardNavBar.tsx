@@ -18,15 +18,15 @@ const steps: Step[] = [
   },
   {
     index: 1,
-    title: 'Chọn ghế',
-    icon: 'fa-seat-airline',
-    path: '/wizard/seats-selection',
-  },
-  {
-    index: 2,
     title: 'Thông tin hành khách',
     icon: 'fa-user',
     path: '/wizard/passengers-information',
+  },
+  {
+    index: 2,
+    title: 'Chọn ghế',
+    icon: 'fa-seat-airline',
+    path: '/wizard/seats-selection',
   },
   {
     index: 3,

@@ -6,43 +6,62 @@ import { Elements, PaymentElement } from '@stripe/react-stripe-js'
 import Loading from '@/components/Loading/Loading'
 import axiosClient from '@/services/api/axios.service'
 import Button from '@/components/ui/Button'
-
-const stripePromise = loadStripe(config.stripe.publicKey)
+import StripePaymentForm from '@/components/Payment/StripePaymentForm'
+import { PaymentMethodEnums } from '@/enums/payment.enums'
+import PaypalPaymentForm from '@/components/Payment/PaypalPaymentForm'
+import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 
 interface PaymentProps {}
 
 const Payment: FunctionComponent<PaymentProps> = () => {
-  // console.log('pk', config.stripe.publicKey)
-
-  const [clientSecret, setClientSecret] = useState('')
   const [loading, setLoading] = useState(true)
+  const [paymentMethod, setPaymentMethod] = useState('')
 
   useEffect(() => {
-    axiosClient.get('/payment/intents').then((res) => {
-      console.log(res)
-      setClientSecret(res.data.data.paymentIntent.client_secret)
+    setTimeout(() => {
       setLoading(false)
-    })
+    }, 500)
   }, [])
-
-  const options = {
-    clientSecret,
-  }
 
   if (loading) {
     return <Loading />
   }
 
   return (
-    <div className='mx-36 my-16 flex flex-col gap-y-8'>
-      <div className='w-96 my-16 flex flex-col gap-y-8'>
-        <Elements stripe={stripePromise} options={options}>
-          <form className='flex flex-col gap-y-8'>
-            <PaymentElement />
-            <Button>Submit</Button>
-          </form>
-        </Elements>
+    <div className=' my-16 grid grid-cols-12 gap-16'>
+      <div className='col-span-8 flex flex-col gap-y-8'>
+        <div className='border-2 shadow-md rounded-md'>
+          <div className='border-b-2 p-4'>Phương thức thanh toán</div>
+          <div>
+            <label>
+              <div className='p-4 '>
+                <input
+                  type='radio'
+                  checked={paymentMethod === PaymentMethodEnums.CARD}
+                  onChange={() => setPaymentMethod(PaymentMethodEnums.CARD)}
+                />
+                <span className='pl-4'>Credit Card/ Debit Card</span>
+              </div>
+            </label>
+            <div className='mx-4 border-b'></div>
+            <label>
+              <div className='p-4 '>
+                <input
+                  type='radio'
+                  checked={paymentMethod === PaymentMethodEnums.PAYPAL}
+                  onChange={() => setPaymentMethod(PaymentMethodEnums.PAYPAL)}
+                />
+                <span className='pl-4'>Paypal</span>
+              </div>
+            </label>
+          </div>
+        </div>
+        <div className='my-8 flex flex-col gap-y-8'>
+          {paymentMethod === PaymentMethodEnums.CARD && <StripePaymentForm />}
+          {paymentMethod === PaymentMethodEnums.PAYPAL && <PaypalPaymentForm />}
+        </div>
       </div>
+      <PaymentSummaryCard className='col-span-4' />
     </div>
   )
 }

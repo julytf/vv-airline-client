@@ -9,7 +9,7 @@ interface ButtonProps extends PropsWithChildren {
 }
 
 const Button: FunctionComponent<ButtonProps> = ({ outline, text, className, disabled, children }) => {
-  console.log('disabled', disabled)
+  // console.log('disabled', disabled)
   return (
     <button
       className={classNames('text-bold rounded-md p-2 px-4 text-sm active:scale-95', className, {

@@ -1,13 +1,14 @@
 import { joiResolver } from '@hookform/resolvers/joi'
 import { format, subYears } from 'date-fns'
 import Joi, { ValidationErrorItem } from 'joi'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { Control, Controller, FieldErrors, FieldValues, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form'
 import Button from '../../components/ui/Button'
 import { PassengerTypes } from '../../enums/passenger.enums'
 import passengersInformationSchema from '../../utils/validations/searchWizard/passenger.schema'
 import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
+import Loading from '@/components/Loading/Loading'
 
 type FirstPassengerInformation = {
   lastName: string
@@ -32,6 +33,7 @@ type PassengersInformation = {
 interface PassengersInformationProps {}
 
 const PassengersInformation: FunctionComponent<PassengersInformationProps> = () => {
+  const [loading, setLoading] = useState(true)
   const {
     handleSubmit,
     reset,
@@ -48,8 +50,17 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
     // reset()
   }
 
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 500)
+  }, [])
+
+  if (loading) {
+    return <Loading />
+  }
   return (
-    <div className='mx-auto mb-24 mt-16 grid grid-cols-12 gap-x-16 gap-y-16 '>
+    <div className='mx-auto mb-24 mt-16 grid grid-cols-12 gap-16'>
       <div className='col-span-8'>
         <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex max-w-2xl flex-col gap-y-16'>
           {/* <button>test</button> */}

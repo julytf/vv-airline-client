@@ -3,6 +3,7 @@ import { OccupiedSeatIcon, OpenSeatIcon, PartitionIcon } from '../../components/
 import classNames from 'classnames'
 import Loading from '../../components/Loading/Loading'
 import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
+import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 
 interface SeatsSelectionProps {}
 
@@ -21,58 +22,62 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
   }
 
   return (
-    <div className='mx-36 my-16 flex flex-col gap-y-8'>
-      <div>
-        <div className='pb-8 text-xl font-semibold'>Chọn vị trí ngồi cho chuyến bay của bạn</div>
-        <div className=' flex gap-2'>
-          <div className='rounded-t border-2 border-b-0 border-dashed p-2 px-4 text-xl font-bold text-gray-400'>
-            HN - HCM
-          </div>
-          <div className='-mb-0.5 rounded-t border-2 border-b-0 border-primary bg-white p-2 px-4 text-xl font-bold text-primary'>
-            HCM - HN
-          </div>
-        </div>
-        <div className=' rounded border-2 p-8 shadow-md'>
-          <div className='pb-8 text-lg'>Hồ Chí Minh (HCM) - Hà Nội (HN)</div>
-          <div className='grid grid-cols-6 gap-16'>
-            <div className='col-span-3 flex flex-col gap-y-2'>
-              <div className='mb-2 text-xl'>Hành Khách</div>
-              <div className='flex justify-between rounded-md border-2 border-primary bg-sky-100 p-2 px-4'>
-                <span>Vu Lam</span>
-                <span className='text-primary'>(chưa chọn ghế)</span>
-              </div>
-              <div className='flex justify-between rounded-md border-2 p-2 px-4'>
-                <span>Vu Lam2</span>
-                <span className='text-primary'>(chưa chọn ghế)</span>
-              </div>
+    <div className=' my-16 grid grid-cols-12 gap-16'>
+      <div className='col-span-8 flex flex-col gap-y-8'>
+        <div>
+          <div className='pb-8 text-xl font-semibold'>Chọn vị trí ngồi cho chuyến bay của bạn</div>
+          <div className=' flex gap-2'>
+            <div className='rounded-t border-2 border-b-0 border-dashed p-2 px-4 text-xl font-bold text-gray-400'>
+              HN - HCM
             </div>
-            <div className='col-span-2 col-start-5 flex flex-col gap-y-2'>
-              <div className='mb-2 text-lg'>Chú Thích</div>
-              <div className='flex'>
-                <OpenSeatIcon />
-                <span className='ml-2'>Ghế không còn trống</span>
-              </div>
-              <div className='flex'>
-                <OccupiedSeatIcon />
-                <span className='ml-2'>Ghế trống</span>
-              </div>
-              <div className='flex'>
-                <div className=' text-red-600'>
-                  <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
-                </div>
-                <div className='-scale-x-100 text-red-600'>
-                  <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
-                </div>
-                <span className='ml-2'>Cửa</span>
-              </div>
+            <div className='-mb-0.5 rounded-t border-2 border-b-0 border-primary bg-white p-2 px-4 text-xl font-bold text-primary'>
+              HCM - HN
             </div>
           </div>
-          <div className='mt-16 flex justify-center'>
-            <SeatMap />
+          <div className=' rounded border-2 p-8 shadow-md'>
+            <div className='pb-8 text-lg'>Hồ Chí Minh (HCM) - Hà Nội (HN)</div>
+            <div className='grid grid-cols-6 gap-16'>
+              <div className='col-span-3 flex flex-col gap-y-2'>
+                <div className='mb-2 text-xl'>Hành Khách</div>
+                <div className='flex justify-between rounded-md border-2 border-primary bg-sky-100 p-2 px-4'>
+                  <span>Vu Lam</span>
+                  <span className='text-primary'>(chưa chọn ghế)</span>
+                </div>
+                <div className='flex justify-between rounded-md border-2 p-2 px-4'>
+                  <span>Vu Lam2</span>
+                  <span className='text-primary'>(chưa chọn ghế)</span>
+                </div>
+              </div>
+              <div className='col-span-2 col-start-5 flex flex-col gap-y-2'>
+                <div className='mb-2 text-lg'>Chú Thích</div>
+                <div className='flex'>
+                  <OpenSeatIcon />
+                  <span className='ml-2'>Ghế không còn trống</span>
+                </div>
+                <div className='flex'>
+                  <OccupiedSeatIcon />
+                  <span className='ml-2'>Ghế trống</span>
+                </div>
+                <div className='flex'>
+                  <div className=' text-red-600'>
+                    <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
+                  </div>
+                  <div className='-scale-x-100 text-red-600'>
+                    <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
+                  </div>
+                  <span className='ml-2'>Cửa</span>
+                </div>
+              </div>
+            </div>
+            <div className='mt-16 flex justify-center'>
+              <SeatMap />
+            </div>
           </div>
         </div>
+        <WizardBottomNavBar forwardURL='/wizard/payment' isForwardEnabled={isValid} />
       </div>
-      <WizardBottomNavBar forwardURL='/wizard/payment' isForwardEnabled={isValid} />
+
+      <PaymentSummaryCard className='col-span-4' />
     </div>
   )
 }

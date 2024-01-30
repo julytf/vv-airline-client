@@ -5,7 +5,7 @@ import { RouterProvider } from 'react-router-dom'
 import { Provider as ReduxProvider } from 'react-redux'
 import { store } from './services/state/store.ts'
 import Counter from './components/Counter.tsx'
-import router from './routes/index.tsx'
+import router from './routers/index.tsx'
 import { route } from './utils/helpers.ts'
 
 import './base.scss'

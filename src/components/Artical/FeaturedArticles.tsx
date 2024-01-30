@@ -1,5 +1,7 @@
+import { route } from '@/utils/helpers'
 import classNames from 'classnames'
 import { FunctionComponent } from 'react'
+import { NavLink } from 'react-router-dom'
 
 interface FeaturedArticlesProps {
   className?: string
@@ -16,76 +18,76 @@ const FeaturedArticles: FunctionComponent<FeaturedArticlesProps> = (props) => {
         </p>
       </div>
       <div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
-        <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
-          <div className='relative overflow-hidden rounded-xl'>
-            <img
-              src='https://www.gotokyo.org/en/plan/tokyo-outline/images/main.jpg'
-              alt='art cover'
-              loading='lazy'
-              width='1000'
-              height='667'
-              className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
-            />
+        <NavLink to={route('/blogs/:id', { params: { id: '1' } })}>
+          <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
+            <div className='relative overflow-hidden rounded-xl'>
+              <img
+                src='https://www.gotokyo.org/en/plan/tokyo-outline/images/main.jpg'
+                alt='art cover'
+                loading='lazy'
+                width='1000'
+                height='667'
+                className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
+              />
+            </div>
+            <div className='relative mt-6'>
+              <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>Tokyo</h3>
+              <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
+                Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
+              </p>
+              <span className='inline-block'>
+                <span className='text-info dark:text-blue-300'>Read more</span>
+              </span>
+            </div>
           </div>
-          <div className='relative mt-6'>
-            <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>
-              Tokyo
-            </h3>
-            <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
-              Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
-            </p>
-            <a className='inline-block' href='#'>
-              <span className='text-info dark:text-blue-300'>Read more</span>
-            </a>
+        </NavLink>
+        <NavLink to={route('/blogs/:id', { params: { id: '1' } })}>
+          <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
+            <div className='relative overflow-hidden rounded-xl'>
+              <img
+                src='https://media.techcity.cloud/vietnam.vn/2023/05/hinh-anh-da-lat-mo-suong-sang-som_085718200-9.jpg'
+                alt='art cover'
+                loading='lazy'
+                width='1000'
+                height='667'
+                className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
+              />
+            </div>
+            <div className='relative mt-6'>
+              <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>Đà Lạt</h3>
+              <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
+                Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
+              </p>
+              <span className='inline-block'>
+                <span className='text-info dark:text-blue-300'>Read more</span>
+              </span>
+            </div>
           </div>
-        </div>
-        <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
-          <div className='relative overflow-hidden rounded-xl'>
-            <img
-              src='https://media.techcity.cloud/vietnam.vn/2023/05/hinh-anh-da-lat-mo-suong-sang-som_085718200-9.jpg'
-              alt='art cover'
-              loading='lazy'
-              width='1000'
-              height='667'
-              className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
-            />
-          </div>
-          <div className='relative mt-6'>
-            <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>
-              Đà Lạt
-            </h3>
-            <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
-              Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
-            </p>
-            <a className='inline-block' href='#'>
-              <span className='text-info dark:text-blue-300'>Read more</span>
-            </a>
-          </div>
-        </div>
-        <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
-          <div className='relative overflow-hidden rounded-xl'>
-            <img
-              src='
+        </NavLink>
+        <NavLink to={route('/blogs/:id', { params: { id: '1' } })}>
+          <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
+            <div className='relative overflow-hidden rounded-xl'>
+              <img
+                src='
               https://statics.vntrip.vn/data-v2/data-guide/img_content/1470302452_anh-5.jpg'
-              alt='art cover'
-              loading='lazy'
-              width='1000'
-              height='667'
-              className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
-            />
+                alt='art cover'
+                loading='lazy'
+                width='1000'
+                height='667'
+                className='h-64 w-full object-cover object-top transition duration-500 group-hover:scale-105'
+              />
+            </div>
+            <div className='relative mt-6'>
+              <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>Phú Quốc</h3>
+              <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
+                Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
+              </p>
+              <span className='inline-block'>
+                <span className='text-info dark:text-blue-300'>Read more</span>
+              </span>
+            </div>
           </div>
-          <div className='relative mt-6'>
-            <h3 className='text-2xl font-semibold text-gray-800 dark:text-white'>
-              Phú Quốc
-            </h3>
-            <p className='mb-8 mt-6 text-gray-600 dark:text-gray-300'>
-              Voluptates harum aliquam totam, doloribus eum impedit atque! Temporibus...
-            </p>
-            <a className='inline-block' href='#'>
-              <span className='text-info dark:text-blue-300'>Read more</span>
-            </a>
-          </div>
-        </div>
+        </NavLink>
       </div>
     </div>
   )

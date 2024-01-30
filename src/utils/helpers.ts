@@ -1,3 +1,6 @@
+import { routes } from '@/routers'
+import { matchRoutes } from 'react-router-dom'
+
 type RouteOptions = {
   params?: {
     [key: string]: string
@@ -8,6 +11,12 @@ type RouteOptions = {
 }
 
 export const route = (path: string, { params, query }: RouteOptions = {}) => {
+  const matchedRoutes = matchRoutes(routes, path)
+
+  if (!matchedRoutes?.length) {
+    throw new Error(`Route ${path} not found`)
+  }
+
   Object.entries(params || {}).forEach(([key, value]) => {
     path = path.replace(`:${key}`, value.toString())
   })

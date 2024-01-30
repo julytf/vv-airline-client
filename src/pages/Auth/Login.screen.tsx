@@ -1,6 +1,6 @@
 import { EventHandler, FormEventHandler, FunctionComponent, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import routes from '../../routes'
+import routes from '../../routers'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
@@ -28,7 +28,7 @@ const Login: FunctionComponent<LoginProps> = () => {
   }
 
   return (
-    <div className='flex min-h-full flex-col justify-center px-6 py-12 lg:px-8'>
+    <div className='flex min-h-full flex-col justify-center px-6 py-24 lg:px-8'>
       <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
         <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>ĐĂNG NHẬP</h2>
       </div>

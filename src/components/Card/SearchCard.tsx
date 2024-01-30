@@ -3,8 +3,8 @@ import { FunctionComponent, ReactElement, forwardRef, useRef, useState } from 'r
 import Button from '../ui/Button'
 import Select from 'react-select'
 import { NavLink } from 'react-router-dom'
-import routes from '../../routes'
-import { useDetectOutsideClick } from '../../hooks/useDetectOutsideClick.hook'
+import routes from '../../routers'
+import DropDown from '../Dropdown/DropDown'
 
 interface SearchCardProps {
   className?: string
@@ -26,7 +26,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   ]
 
   return (
-    <div className={classNames('inline-block rounded-xl border-2 border-primary p-6 shadow-2xl ', props.className)}>
+    <div className={classNames('inline-block rounded-xl border-2 border-primary p-6', props.className)}>
       <div className='flex gap-4'>
         <SelectInput
           name='departureAirport'
@@ -47,7 +47,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
         <DateInput name='arrivalDate' placeholder='Thời gian về' icon={<i className='fa-light fa-calendar-days'></i>} />
         <PassengerQuantityInput />
         <NavLink to={'/wizard/flights-selection'}>
-          <Button>Tìm</Button>
+          <Button className='p-2.5 px-5'>Tìm</Button>
         </NavLink>
       </div>
     </div>
@@ -135,69 +135,104 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
   const [adultPassengerQuantity, setAdultPassengerQuantity] = useState(1)
   const [childPassengerQuantity, setChildPassengerQuantity] = useState(0)
 
-  const dropdownRef = useRef(null)
-  const [isActive, setIsActive] = useDetectOutsideClick(dropdownRef, false)
+  const buttonRef = useRef<HTMLDivElement>(null)
+
+  const [isShow, setIsShow] = useState(false)
   const onClick = () => {
-    setIsActive(!isActive)
+    setIsShow(!isShow)
   }
 
   return (
     <>
-      <input type='text' value={adultPassengerQuantity} onChange={(e) => setAdultPassengerQuantity(+e.target.value)} className='hidden'/>
-      <input type='text' value={childPassengerQuantity} onChange={(e) => setChildPassengerQuantity(+e.target.value)} className='hidden'/>
+      <input
+        type='text'
+        value={adultPassengerQuantity}
+        onChange={(e) => setAdultPassengerQuantity(+e.target.value)}
+        className='hidden'
+      />
+      <input
+        type='text'
+        value={childPassengerQuantity}
+        onChange={(e) => setChildPassengerQuantity(+e.target.value)}
+        className='hidden'
+      />
       <div className='relative'>
-        <label
+        <div
           onClick={onClick}
+          ref={buttonRef}
           className='flex h-10 w-36 items-center justify-center rounded-md border border-gray-200 pl-8 shadow-sm sm:text-sm'
         >
           <span className='pointer-events-none absolute  left-0 top-0 flex aspect-square w-10 items-center justify-center text-gray-500'>
             <i className='fa-light fa-user'></i>
           </span>
           {adultPassengerQuantity + childPassengerQuantity} Hành Khách
-        </label>
-
-        <div className={classNames('absolute w-64 rounded border bg-white', { hidden: !isActive })} ref={dropdownRef}>
-          <div className='flex items-center justify-between p-2'>
-            <div className='flex'>
-              <div className='flex aspect-square h-10 items-center justify-center text-xl'>
-                <i className='fa-solid fa-person'></i>
-              </div>
-              <div className='flex flex-col justify-center text-left'>
-                <span className='bold text-sm'>Người lớn</span>
-                <span className='text-xs text-gray-400'>12 tuổi trở lên</span>
-              </div>
-            </div>
-            <div className='flex gap-2'>
-              <button onClick={() => setAdultPassengerQuantity(prev => prev-1)} className='aspect-square w-6 rounded-full border'>
-                <i className='fa-solid fa-minus'></i>
-              </button>
-              <span>{adultPassengerQuantity}</span>
-              <button onClick={() => setAdultPassengerQuantity(prev => prev+1)} className='aspect-square w-6 rounded-full border'>
-                <i className='fa-solid fa-plus'></i>
-              </button>
-            </div>
-          </div>
-          <div className='flex items-center justify-between border-t p-2'>
-            <div className='flex'>
-              <div className='flex aspect-square h-10 items-center justify-center text-xl'>
-                <i className='fa-solid fa-child'></i>
-              </div>
-              <div className='flex flex-col justify-center text-left'>
-                <span className='bold text-sm'>Trẻ em</span>
-                <span className='text-xs text-gray-400'>2-12 tuổi</span>
-              </div>
-            </div>
-            <div className='flex gap-2'>
-              <button onClick={() => setChildPassengerQuantity(prev => prev-1)} className='aspect-square w-6 rounded-full border'>
-                <i className='fa-solid fa-minus'></i>
-              </button>
-              <span>{childPassengerQuantity}</span>
-              <button onClick={() => setChildPassengerQuantity(prev => prev+1)} className='aspect-square w-6 rounded-full border'>
-                <i className='fa-solid fa-plus'></i>
-              </button>
-            </div>
-          </div>
         </div>
+
+        <DropDown
+          parentRef={buttonRef}
+          isShow={isShow}
+          onChangeShow={(newState) => {
+            setIsShow(newState)
+            // console.log(newState)
+          }}
+        >
+          <DropDown.Row>
+            <div className='flex items-center justify-between'>
+              <div className='flex'>
+                <div className='flex aspect-square h-10 items-center justify-center text-xl'>
+                  <i className='fa-solid fa-person'></i>
+                </div>
+                <div className='flex flex-col justify-center text-left'>
+                  <span className='bold text-sm'>Người lớn</span>
+                  <span className='text-xs text-gray-400'>12 tuổi trở lên</span>
+                </div>
+              </div>
+              <div className='flex gap-2'>
+                <button
+                  onClick={() => setAdultPassengerQuantity((prev) => prev - 1)}
+                  className='aspect-square w-6 rounded-full border'
+                >
+                  <i className='fa-solid fa-minus'></i>
+                </button>
+                <span>{adultPassengerQuantity}</span>
+                <button
+                  onClick={() => setAdultPassengerQuantity((prev) => prev + 1)}
+                  className='aspect-square w-6 rounded-full border'
+                >
+                  <i className='fa-solid fa-plus'></i>
+                </button>
+              </div>
+            </div>
+          </DropDown.Row>
+          <DropDown.Row>
+            <div className='flex items-center justify-between'>
+              <div className='flex'>
+                <div className='flex aspect-square h-10 items-center justify-center text-xl'>
+                  <i className='fa-solid fa-child'></i>
+                </div>
+                <div className='flex flex-col justify-center text-left'>
+                  <span className='bold text-sm'>Trẻ em</span>
+                  <span className='text-xs text-gray-400'>2-12 tuổi</span>
+                </div>
+              </div>
+              <div className='flex gap-2'>
+                <button
+                  onClick={() => setChildPassengerQuantity((prev) => prev - 1)}
+                  className='aspect-square w-6 rounded-full border'
+                >
+                  <i className='fa-solid fa-minus'></i>
+                </button>
+                <span>{childPassengerQuantity}</span>
+                <button
+                  onClick={() => setChildPassengerQuantity((prev) => prev + 1)}
+                  className='aspect-square w-6 rounded-full border'
+                >
+                  <i className='fa-solid fa-plus'></i>
+                </button>
+              </div>
+            </div>
+          </DropDown.Row>
+        </DropDown>
       </div>
     </>
   )
