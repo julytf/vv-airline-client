@@ -4,7 +4,7 @@ import classNames from 'classnames'
 import Loading from '../../components/Loading/Loading'
 import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
 import SearchCard from '@/components/Card/SearchCard'
-import { SeatClasses } from '@/enums/seat.enums'
+import { SeatClass } from '@/enums/seat.enums'
 
 interface FlightsSelectionProps {}
 

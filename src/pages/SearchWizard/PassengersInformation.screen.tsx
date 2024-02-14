@@ -4,7 +4,7 @@ import Joi, { ValidationErrorItem } from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Control, Controller, FieldErrors, FieldValues, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form'
 import Button from '../../components/ui/Button'
-import { PassengerTypes } from '../../enums/passenger.enums'
+import { PassengerType } from '../../enums/passenger.enums'
 import passengersInformationSchema from '../../utils/validations/searchWizard/passenger.schema'
 import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
@@ -64,9 +64,9 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
       <div className='col-span-8'>
         <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex max-w-2xl flex-col gap-y-16'>
           {/* <button>test</button> */}
-          <PassengerInformationForm type={PassengerTypes.ADULT} index={0} control={control} />
+          <PassengerInformationForm type={PassengerType.ADULT} index={0} control={control} />
           {/* <PassengerInformationForm type={PassengerTypes.ADULT} index={1} control={control} /> */}
-          <PassengerInformationForm type={PassengerTypes.CHILD} index={0} control={control} />
+          <PassengerInformationForm type={PassengerType.CHILD} index={0} control={control} />
           <WizardBottomNavBar forwardURL='/wizard/payment' isForwardEnabled={isValid} />
         </form>
       </div>
@@ -76,17 +76,17 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
 }
 
 interface PassengerInformationFormProps {
-  type: PassengerTypes
+  type: PassengerType
   index: number
   control?: Control<PassengersInformation>
 }
 const PassengerInformationForm: FunctionComponent<PassengerInformationFormProps> = ({ type, index, control }) => {
-  const prefix = type === PassengerTypes.ADULT ? 'adultsInfo' : 'childrenInfo'
+  const prefix = type === PassengerType.ADULT ? 'adultsInfo' : 'childrenInfo'
   return (
     <div className='rounded-md border-2 border-solid pt-0 shadow-lg'>
       <div className='w-full  border-b p-6 py-3 sm:w-full'>
         <h2 className='text-lg font-bold tracking-tight text-gray-900'>
-          {type === PassengerTypes.ADULT ? 'Hành khách người lớn ' : 'Hành khách trẻ em '}
+          {type === PassengerType.ADULT ? 'Hành khách người lớn ' : 'Hành khách trẻ em '}
           {index + 1}
         </h2>
       </div>
@@ -217,7 +217,7 @@ const PassengerInformationForm: FunctionComponent<PassengerInformationFormProps>
                   )}
                 />
               </div>
-              {type === PassengerTypes.ADULT && index === 0 && (
+              {type === PassengerType.ADULT && index === 0 && (
                 <>
                   <div className='sm:col-span-6'>
                     <label htmlFor='phoneNumber' className='block text-sm font-medium leading-6 text-gray-900'>

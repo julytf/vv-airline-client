@@ -1,4 +1,4 @@
-export const PaymentMethodEnums = {
+export const PaymentMethod = {
   CARD: 'CARD',
 //   CASH: 'CASH',
   PAYPAL: 'PAYPAL',

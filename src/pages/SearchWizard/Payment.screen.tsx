@@ -7,7 +7,7 @@ import Loading from '@/components/Loading/Loading'
 import axiosClient from '@/services/api/axios.service'
 import Button from '@/components/ui/Button'
 import StripePaymentForm from '@/components/Payment/StripePaymentForm'
-import { PaymentMethodEnums } from '@/enums/payment.enums'
+import { PaymentMethod } from '@/enums/payment.enums'
 import PaypalPaymentForm from '@/components/Payment/PaypalPaymentForm'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 
@@ -37,8 +37,8 @@ const Payment: FunctionComponent<PaymentProps> = () => {
               <div className='p-4 '>
                 <input
                   type='radio'
-                  checked={paymentMethod === PaymentMethodEnums.CARD}
-                  onChange={() => setPaymentMethod(PaymentMethodEnums.CARD)}
+                  checked={paymentMethod === PaymentMethod.CARD}
+                  onChange={() => setPaymentMethod(PaymentMethod.CARD)}
                 />
                 <span className='pl-4'>Credit Card/ Debit Card</span>
               </div>
@@ -48,8 +48,8 @@ const Payment: FunctionComponent<PaymentProps> = () => {
               <div className='p-4 '>
                 <input
                   type='radio'
-                  checked={paymentMethod === PaymentMethodEnums.PAYPAL}
-                  onChange={() => setPaymentMethod(PaymentMethodEnums.PAYPAL)}
+                  checked={paymentMethod === PaymentMethod.PAYPAL}
+                  onChange={() => setPaymentMethod(PaymentMethod.PAYPAL)}
                 />
                 <span className='pl-4'>Paypal</span>
               </div>
@@ -57,8 +57,8 @@ const Payment: FunctionComponent<PaymentProps> = () => {
           </div>
         </div>
         <div className='my-8 flex flex-col gap-y-8'>
-          {paymentMethod === PaymentMethodEnums.CARD && <StripePaymentForm />}
-          {paymentMethod === PaymentMethodEnums.PAYPAL && <PaypalPaymentForm />}
+          {paymentMethod === PaymentMethod.CARD && <StripePaymentForm />}
+          {paymentMethod === PaymentMethod.PAYPAL && <PaypalPaymentForm />}
         </div>
       </div>
       <PaymentSummaryCard className='col-span-4' />
