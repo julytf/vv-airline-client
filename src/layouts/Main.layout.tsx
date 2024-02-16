@@ -22,7 +22,7 @@ const MainLayout: FunctionComponent<MainLayoutProps> = () => {
         </div>
       </div>
       <Footer />
-      <FacebookChatPlugin />
+      {/* <FacebookChatPlugin /> */}
     </div>
   )
 }

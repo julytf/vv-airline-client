@@ -1,20 +1,17 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
-
-import { RouterProvider } from 'react-router-dom'
-import { Provider as ReduxProvider } from 'react-redux'
+import App from './app.tsx'
 import { store } from './services/state/store.ts'
-import Counter from './components/Counter.tsx'
-import router from './routers/index.tsx'
-import { route } from './utils/helpers.ts'
+import { Provider as ReduxProvider, useDispatch } from 'react-redux'
+import { QueryClient, QueryClientProvider } from 'react-query'
 
-import './base.scss'
+const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  // <React.StrictMode>
-  <ReduxProvider store={store}>
-    <RouterProvider router={router} />
-    {/* <Counter></Counter> */}
-  </ReduxProvider>,
-  // </React.StrictMode>
+  <QueryClientProvider client={queryClient}>
+    {/* <React.StrictMode> */}
+    <ReduxProvider store={store}>
+      <App />
+    </ReduxProvider>
+    {/* </React.StrictMode> */}
+  </QueryClientProvider>,
 )

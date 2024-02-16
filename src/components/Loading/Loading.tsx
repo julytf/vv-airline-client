@@ -1,11 +1,19 @@
+import classNames from 'classnames'
 import { FC, useEffect } from 'react'
 
-interface LoadingProps {}
+interface LoadingProps {
+  small?: boolean
+}
 
-const Loading: FC<LoadingProps> = () => {
+const Loading: FC<LoadingProps> = ({ small }) => {
   return (
-    <div className='flex p-32 w-full items-center justify-center'>
-      <div className='border-16 h-32 w-32 animate-spin rounded-full border-2 border-solid border-gray-300 border-t-primary '></div>
+    <div className='flex h-full items-center justify-center'>
+      <div
+        className={classNames(
+          'border-16 animate-spin rounded-full border-2 border-solid border-gray-300 border-t-primary ',
+          { 'h-32 w-32': !small, 'h-16 w-16': small },
+        )}
+      ></div>
     </div>
   )
 }

@@ -3,13 +3,21 @@ import classnames from 'classnames'
 import classNames from 'classnames'
 import Button from '../ui/Button'
 import { NavLink } from 'react-router-dom'
-import routes from '../../routers'
+import routes from '../../routers/user.router'
 import DropDown from '../Dropdown/DropDown'
 import Logo from '@/assets/images/logos/logo.png'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '@/services/state/store'
+import Loading from '../Loading/Loading'
+import authService from '@/services/auth.service'
+import * as auth from '@/services/state/auth/authSlice'
 
 interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
+  // const isInitialized = false
+  const { isInitialized, isAuthenticated } = useSelector((state: RootState) => state.auth)
+
   return (
     <header className='sticky top-0 z-50 bg-white p-2 px-6 shadow-md shadow-white'>
       <div className='flex items-center justify-between'>
@@ -21,8 +29,8 @@ const Header: FunctionComponent<HeaderProps> = () => {
             <div className='text-xl font-bold'>VV Airline</div>
           </div>
         </NavLink>
-        <NotLoggedInNavBarButton />
-        <LoggedInNavBarButton />
+        {!isInitialized && <Loading small />}
+        {isInitialized && (isAuthenticated ? <LoggedInNavBarButton /> : <NotLoggedInNavBarButton />)}
       </div>
     </header>
   )
@@ -46,6 +54,8 @@ const NotLoggedInNavBarButton: FunctionComponent<NotLoggedInNavBarButtonProps> =
 interface LoggedInNavBarButtonProps {}
 
 const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
   const [isShow, setIsShow] = useState(false)
   const buttonRef = useRef<HTMLButtonElement>(null)
 
@@ -53,15 +63,21 @@ const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () =>
     setIsShow(!isShow)
   }
 
+  const logout = () => {
+    dispatch(auth.logout())
+  }
+
   return (
     <div className='flex items-center gap-x-4'>
       <NavLink to={'/flights'}>
         <Button text>Lịch Sử Đặt Vé</Button>
       </NavLink>
-      <button onClick={onClick} ref={buttonRef} className='relative'>
-        <div className=' flex aspect-square w-10 items-center justify-center rounded-full border border-gray-500 text-gray-500'>
-          <i className='fa-solid fa-user'></i>
-        </div>
+      <div className='relative'>
+        <button onClick={onClick} ref={buttonRef} className='relative'>
+          <div className=' flex aspect-square w-10 items-center justify-center rounded-full border border-gray-500 text-gray-500'>
+            <i className='fa-solid fa-user'></i>
+          </div>
+        </button>
         <DropDown
           parentRef={buttonRef}
           isShow={isShow}
@@ -78,13 +94,13 @@ const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () =>
             </NavLink>
           </DropDown.Row>
           <DropDown.Row>
-            <NavLink to={'/logout'}>
+            <button onClick={logout}>
               <i className='fa-light fa-arrow-right-from-bracket'></i>
               <span className='ml-2'>Đăng xuất</span>
-            </NavLink>
+            </button>
           </DropDown.Row>
         </DropDown>
-      </button>
+      </div>
     </div>
   )
 }

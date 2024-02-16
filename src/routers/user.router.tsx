@@ -49,8 +49,10 @@ import TestScreen from '@/pages/Test.screen'
 import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
 import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
 import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
+import RoleGuard from '@/middlewares/roleGuard.middleware'
+import { UserRole } from '@/enums/user.enums'
 
-export const routes = [
+export const userRoutes = [
   {
     path: '',
     breadcrumbName: 'Trang chủ',
@@ -74,12 +76,20 @@ export const routes = [
       {
         path: 'login',
         breadcrumbName: 'Đăng nhập',
-        element: <LoginScreen />,
+        element: (
+          <RoleGuard unrestrictedTo={[UserRole.GUEST]} redirect='/'>
+            <LoginScreen />
+          </RoleGuard>
+        ),
       },
       {
         path: 'register',
         breadcrumbName: 'Đăng ký',
-        element: <RegisterScreen />,
+        element: (
+          <RoleGuard unrestrictedTo={[UserRole.GUEST]} redirect='/'>
+            <RegisterScreen />
+          </RoleGuard>
+        ),
       },
       // { path: 'forgot-password', element: <ForgotPassword /> },
       // { path: 'reset-password', element: <ResetPassword /> },
@@ -134,6 +144,11 @@ export const routes = [
       {
         path: 'account',
         breadcrumbName: 'Tài Khoản',
+        element: (
+          <RoleGuard restrictedTo={[UserRole.GUEST]} redirect='/'>
+            <Outlet />
+          </RoleGuard>
+        ),
         children: [
           {
             path: '',
@@ -144,125 +159,14 @@ export const routes = [
       },
     ],
   },
-  {
-    path: '/admin',
-    redirect: '/admin/dashboard',
-    breadcrumbName: 'Admin',
-    element: (
-      <Suspense fallback={<Loading />}>
-        <AdminLayout />
-      </Suspense>
-    ),
-    children: [
-      {
-        index: true,
-        loader() {
-          return redirect('dashboard')
-        },
-      },
-      {
-        path: 'dashboard',
-        breadcrumbName: 'Trang chủ',
-        element: <AdminDashboardScreen />,
-      },
-      {
-        path: 'monthly-statistics',
-        breadcrumbName: 'Thống kê tháng',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'yearly-statistics',
-        breadcrumbName: 'Thống kê năm',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'blogs',
-        breadcrumbName: 'Blogs',
-        children: [
-          {
-            path: '',
-            breadcrumbName: 'Danh sách',
-            element: <NotImplemented />,
-          },
-          {
-            path: ':id',
-            breadcrumbName: 'Chi tiết',
-            element: <NotImplemented />,
-          },
-        ],
-      },
-      {
-        path: 'users',
-        breadcrumbName: 'Người dùng',
-        children: [
-          {
-            path: '',
-            breadcrumbName: 'Danh sách',
-            element: <AdminUsersIndexScreen />,
-          },
-          {
-            path: ':id',
-            breadcrumbName: 'Chi tiết',
-            element: <NotImplemented />,
-          },
-        ],
-      },
-      {
-        path: 'aircraft-models',
-        breadcrumbName: 'Mẫu máy bay',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'aircrafts',
-        breadcrumbName: 'Máy bay',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'airports',
-        breadcrumbName: 'Sân bay',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'flight-routes',
-        breadcrumbName: 'Tuyến bay',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'flight-legs',
-        breadcrumbName: 'Chặng bay',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'flights',
-        breadcrumbName: 'Chuyến bay',
-        element: <NotImplemented />,
-      },
-    ],
-  },
-  {
-    path: '/admin',
-    breadcrumbName: 'Admin',
-    element: (
-      <Suspense fallback={<Loading />}>
-        <Outlet />
-      </Suspense>
-    ),
-    children: [
-      {
-        path: 'login',
-        breadcrumbName: 'Đăng nhập',
-        element: <AdminLoginScreen />,
-      },
-    ],
-  },
 ]
 
-populatePath(routes)
-// console.log(routes)
+populatePath(userRoutes)
+// console.log(userRoutes)
 
-const router = createBrowserRouter(routes)
+const userRouter = createBrowserRouter(userRoutes)
 
-export default router
+export default userRouter
 
 function populatePath(routes: (RouteObject & { fullPath?: string })[], parentPath = '') {
   routes.forEach((route) => {

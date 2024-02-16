@@ -1,7 +1,7 @@
 import { FC, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../services/state/store'
-import { decrement, increment, incrementByAmount } from '../services/state/counter/counterSlice'
+import * as counter from '../services/state/counter/counterSlice'
 
 const Counter: FC = () => {
   const count = useSelector((state: RootState) => state.counter.value)
@@ -12,12 +12,12 @@ const Counter: FC = () => {
   return (
     <div>
       <p>Count: {count}</p>
-      <button onClick={() => dispatch(increment())}>Increment</button>
-      <button onClick={() => dispatch(decrement())}>Decrement</button>
+      <button onClick={() => dispatch(counter.increment())}>Increment</button>
+      <button onClick={() => dispatch(counter.decrement())}>Decrement</button>
       <input type='number' ref={inputRef} />
       <button
         onClick={() => {
-          return dispatch(incrementByAmount(parseInt(inputRef.current?.value ?? '0') || 0))
+          return dispatch(counter.incrementByAmount(parseInt(inputRef.current?.value ?? '0') || 0))
         }}
       >
         incrementByAmount

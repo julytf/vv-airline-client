@@ -1,4 +1,5 @@
-import { routes } from '@/routers'
+import { userRoutes } from '@/routers/user.router'
+import { adminRoutes } from '@/routers/admin.router'
 import { matchRoutes } from 'react-router-dom'
 
 type RouteOptions = {
@@ -11,6 +12,7 @@ type RouteOptions = {
 }
 
 export const route = (path: string, { params, query }: RouteOptions = {}) => {
+  const routes = [...userRoutes, ...adminRoutes]
   const matchedRoutes = matchRoutes(routes, path)
 
   if (!matchedRoutes?.length) {

@@ -3,7 +3,7 @@ import { FunctionComponent, ReactElement, forwardRef, useRef, useState } from 'r
 import Button from '../ui/Button'
 import Select from 'react-select'
 import { NavLink } from 'react-router-dom'
-import routes from '../../routers'
+import routes from '../../routers/user.router'
 import DropDown from '../Dropdown/DropDown'
 
 interface SearchCardProps {

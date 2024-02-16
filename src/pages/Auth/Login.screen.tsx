@@ -1,15 +1,21 @@
-import { EventHandler, FormEventHandler, FunctionComponent, useState } from 'react'
+import { EventHandler, FormEventHandler, FunctionComponent, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import routes from '../../routers'
+import routes from '../../routers/user.router'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Button from '../../components/ui/Button'
 import loginSchema from '../../utils/validations/login.schema'
+import authService from '@/services/auth.service'
+import { AppDispatch } from '@/services/state/store'
+import { useDispatch } from 'react-redux'
+import * as auth from '@/services/state/auth/authSlice'
 
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
   const {
     register,
     handleSubmit,
@@ -22,8 +28,10 @@ const Login: FunctionComponent<LoginProps> = () => {
   })
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log(data)
-
+    const { email, password } = data
+    const { accessToken, user } = await authService.login({ email, password })
+    // console.log({ user, accessToken })
+    dispatch(auth.login({ user, accessToken }))
     reset()
   }
 

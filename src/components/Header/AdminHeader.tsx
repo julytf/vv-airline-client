@@ -1,12 +1,14 @@
 import { FunctionComponent, useRef, useState } from 'react'
 import { Link, NavLink, matchRoutes, useLocation } from 'react-router-dom'
-import { routes } from '@/routers'
 import DropDown from '../Dropdown/DropDown'
+import { userRoutes } from '@/routers/user.router'
+import { adminRoutes } from '@/routers/admin.router'
 
 interface AdminHeaderProps {}
 
 const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
   const location = useLocation()
+  const routes = [...userRoutes, ...adminRoutes]
 
   const matchedRoutes = matchRoutes(routes, location.pathname) || []
   // console.log(matchedRoutes)

@@ -5,21 +5,57 @@ import Joi from 'joi'
 import { joiResolver } from '@hookform/resolvers/joi'
 import { format, subYears } from 'date-fns'
 import registerSchema from '../../utils/validations/register.schema'
+import { useQuery } from 'react-query'
+import authService from '@/services/auth.service'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/services/state/store'
+import { UserGender, UserRole } from '@/enums/user.enums'
+
+interface IFormData {
+  role: UserRole
+  firstName: string
+  lastName: string
+  password: string
+  passwordConfirm: string
+  email: string
+  phoneNumber?: string
+  dateOfBirth?: Date | string
+  gender?: UserGender
+  idNumber?: string
+  address?: {
+    address: string
+    address2?: string
+    province: string
+    district?: string
+    ward?: string
+  }
+  isDeleted: boolean
+  deletedAt?: Date
+}
 
 interface IndexProps {}
 
 const Index: FunctionComponent<IndexProps> = () => {
+  const { user } = useSelector((state: RootState) => state.auth)
+
   const {
     register,
     handleSubmit,
     reset,
     control,
     formState: { errors, isValid },
-  } = useForm({
+  } = useForm<IFormData>({
     mode: 'onChange',
     resolver: joiResolver(registerSchema),
+    defaultValues: user ?? {},
   })
-  console.log('errors', errors)
+  // console.log('errors', errors)
+
+  // const { data, isFetching, isLoading, error, isError } = useQuery({
+  //   queryKey: ['user.profile', accessToken],
+  //   queryFn: () => authService.getProfile(accessToken!),
+  // })
+  // console.log('data', data)
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
@@ -103,7 +139,7 @@ const Index: FunctionComponent<IndexProps> = () => {
                         <div className='mt-2'>
                           <input
                             id='dateOfBirth'
-                            value={field.value || ''}
+                            value={field.value?.toString() || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
@@ -132,7 +168,7 @@ const Index: FunctionComponent<IndexProps> = () => {
                               <input
                                 id='male'
                                 value='true'
-                                checked={field.value === true}
+                                checked={field.value === UserGender.MALE}
                                 onChange={(e) => {
                                   field.onChange(e.target.value === 'true')
                                 }}
@@ -147,7 +183,7 @@ const Index: FunctionComponent<IndexProps> = () => {
                               <input
                                 id='female'
                                 value='false'
-                                checked={field.value === false}
+                                checked={field.value === UserGender.FEMALE}
                                 onChange={(e) => {
                                   field.onChange(e.target.value === 'true')
                                 }}
@@ -192,17 +228,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                 </div>
 
                 <div className='sm:col-span-2'>
-                  <label htmlFor='provinceCode' className='block text-sm font-medium leading-6 text-gray-900'>
+                  <label htmlFor='address.province' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tỉnh/Thành phố
                   </label>
                   <Controller
-                    name={'provinceCode'}
+                    name={'address.province'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <select
-                            id='provinceCode'
+                            id='address.province'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -221,17 +257,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                 </div>
 
                 <div className='sm:col-span-2'>
-                  <label htmlFor='districtCode' className='block text-sm font-medium leading-6 text-gray-900'>
+                  <label htmlFor='address.district' className='block text-sm font-medium leading-6 text-gray-900'>
                     Quận/Huyện
                   </label>
                   <Controller
-                    name={'districtCode'}
+                    name={'address.district'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <select
-                            id='districtCode'
+                            id='address.district'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -250,17 +286,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                 </div>
 
                 <div className='sm:col-span-2'>
-                  <label htmlFor='wardCode' className='block text-sm font-medium leading-6 text-gray-900'>
+                  <label htmlFor='address.ward' className='block text-sm font-medium leading-6 text-gray-900'>
                     Xã/Phường
                   </label>
                   <Controller
-                    name={'wardCode'}
+                    name={'address.ward'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <select
-                            id='wardCode'
+                            id='address.ward'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -277,17 +313,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                   />
                 </div>
                 <div className='col-span-full'>
-                  <label htmlFor='address' className='block text-sm font-medium leading-6 text-gray-900'>
+                  <label htmlFor='address.address' className='block text-sm font-medium leading-6 text-gray-900'>
                     Địa chỉ
                   </label>
                   <Controller
-                    name={'address'}
+                    name={'address.address'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='address'
+                            id='address.address'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -303,17 +339,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                   />
                 </div>
                 <div className='col-span-full'>
-                  <label htmlFor='address2' className='block text-sm font-medium leading-6 text-gray-900'>
+                  <label htmlFor='address.address2' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tòa nhà, tầng, số phòng
                   </label>
                   <Controller
-                    name={'address2'}
+                    name={'address.address2'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='address2'
+                            id='address.address2'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
