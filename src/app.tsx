@@ -12,6 +12,7 @@ import './base.scss'
 import authService from './services/auth.service.ts'
 import userRouter from './routers/user.router.tsx'
 import adminRouter from './routers/admin.router.tsx'
+import usersService from './services/users.service.ts'
 
 interface AppProps {}
 
@@ -31,11 +32,13 @@ const UserApp: FunctionComponent<UserAppProps> = () => {
     ;(async () => {
       const tokenName = 'userAccessToken'
       const accessToken = localStorage.getItem(tokenName)
+      console.log(accessToken)
+
       if (!accessToken)
         return dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))
 
       try {
-        const user = await authService.getProfile(accessToken)
+        const user = await usersService.getProfile(accessToken)
         dispatch(auth.initialize({ isAuthenticated: true, user, accessToken: accessToken, tokenName }))
       } catch (error) {
         dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))
@@ -61,7 +64,7 @@ const AdminApp: FunctionComponent<AdminAppProps> = () => {
         return dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))
 
       try {
-        const user = await authService.getProfile(accessToken)
+        const user = await usersService.getProfile(accessToken)
         dispatch(auth.initialize({ isAuthenticated: true, user, accessToken: accessToken, tokenName }))
       } catch (error) {
         dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))

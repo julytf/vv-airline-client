@@ -1,6 +1,6 @@
 import Loading from '@/components/Loading/Loading'
 import { UserRole } from '@/enums/user.enums'
-import { RootState } from '@/services/state/store'
+import { AppState } from '@/services/state/store'
 import { FunctionComponent, PropsWithChildren } from 'react'
 import { useSelector } from 'react-redux'
 import { Navigate, useNavigate } from 'react-router-dom'
@@ -16,7 +16,7 @@ const RoleGuard: FunctionComponent<RoleGuardProps> = ({ unrestrictedTo, restrict
     throw new Error('You must provide either restrictedTo or unrestrictedTo')
   }
 
-  const { isInitialized, isAuthenticated, user } = useSelector((state: RootState) => state.auth)
+  const { isInitialized, isAuthenticated, user } = useSelector((state: AppState) => state.auth)
 
   if (!isInitialized) {
     return <Loading />

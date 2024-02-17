@@ -15,10 +15,10 @@ const WizardBottomNavBar: FunctionComponent<WizardBottomNavBarProps> = ({
   backwardURL = '',
   isBackwardEnabled = false,
 }) => {
-  console.log('forwardURL', forwardURL)
-  console.log('isForwardEnabled', isForwardEnabled)
-  console.log('backwardURL', backwardURL)
-  console.log('isBackwardEnabled', isBackwardEnabled)
+  // console.log('forwardURL', forwardURL)
+  // console.log('isForwardEnabled', isForwardEnabled)
+  // console.log('backwardURL', backwardURL)
+  // console.log('isBackwardEnabled', isBackwardEnabled)
 
   return (
     <div className='flex justify-end gap-x-8'>

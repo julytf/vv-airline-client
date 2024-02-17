@@ -1,9 +1,6 @@
-import NotImplemented from '@/components/Error/NotImplemented'
-import { lazy } from 'react'
 // import { AuthContextProvider } from 'utils/AuthContext'
 // import { GlobalContextProvider } from 'utils/GlobalContext'
 
-import { Suspense } from 'react'
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 
 // const Loading = lazy(() => import('@/components/Loading/Loading'))
@@ -24,10 +21,7 @@ import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 're
 // const AdminLayout = lazy(() => import('@/layouts/Admin.layout'))
 // const AdminUsersIndexScreen = lazy(() => import('@/pages/Admin/Users/Index.screen'))
 
-import Loading from '@/components/Loading/Loading'
-
 import MainLayout from '@/layouts/Main.layout'
-import AdminLayout from '@/layouts/Admin.layout'
 
 import HomeScreen from '@/pages/Home.screen'
 import LoginScreen from '@/pages/Auth/Login.screen'
@@ -46,11 +40,9 @@ import BlogDetailScreen from '@/pages/Blog/Detail.screen'
 
 import TestScreen from '@/pages/Test.screen'
 
-import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
-import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
-import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
 import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
+import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 
 export const userRoutes = [
   {
@@ -155,6 +147,11 @@ export const userRoutes = [
             breadcrumbName: 'Thông tin',
             element: <AccountIndexScreen />,
           },
+          {
+            path: 'change-password',
+            breadcrumbName: 'Đổi mật khẩu',
+            element: <ChangePasswordScreen />,
+          },
         ],
       },
     ],
@@ -173,6 +170,7 @@ function populatePath(routes: (RouteObject & { fullPath?: string })[], parentPat
     if (route.path?.startsWith('/')) {
       route.fullPath = route.path
     } else {
+      // TODO: fix this
       // route.fullPath = path.join(parentPath, route.path)
     }
     if (route.children) {

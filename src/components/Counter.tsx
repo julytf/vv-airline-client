@@ -1,10 +1,10 @@
 import { FC, useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../services/state/store'
+import { AppDispatch, AppState } from '../services/state/store'
 import * as counter from '../services/state/counter/counterSlice'
 
 const Counter: FC = () => {
-  const count = useSelector((state: RootState) => state.counter.value)
+  const count = useSelector((state: AppState) => state.counter.value)
   const dispatch = useDispatch<AppDispatch>()
 
   const inputRef = useRef<HTMLInputElement>(null)

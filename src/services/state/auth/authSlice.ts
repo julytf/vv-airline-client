@@ -48,6 +48,14 @@ export const authSlice = createSlice({
         accessToken,
       }
     },
+    setProfile: (state, action: PayloadAction<AuthState>) => {
+      const { user } = action.payload
+
+      return {
+        ...state,
+        user,
+      }
+    },
     logout: (state) => {
       localStorage.removeItem(state.tokenName!)
       return {
@@ -60,6 +68,6 @@ export const authSlice = createSlice({
   },
 })
 
-export const { initialize, login, logout } = authSlice.actions
+export const { initialize, login, setProfile, logout } = authSlice.actions
 
 export default authSlice.reducer

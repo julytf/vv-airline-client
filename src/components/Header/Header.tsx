@@ -7,7 +7,7 @@ import routes from '../../routers/user.router'
 import DropDown from '../Dropdown/DropDown'
 import Logo from '@/assets/images/logos/logo.png'
 import { useDispatch, useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '@/services/state/store'
+import { AppDispatch, AppState } from '@/services/state/store'
 import Loading from '../Loading/Loading'
 import authService from '@/services/auth.service'
 import * as auth from '@/services/state/auth/authSlice'
@@ -16,7 +16,7 @@ interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
   // const isInitialized = false
-  const { isInitialized, isAuthenticated } = useSelector((state: RootState) => state.auth)
+  const { isInitialized, isAuthenticated } = useSelector((state: AppState) => state.auth)
 
   return (
     <header className='sticky top-0 z-50 bg-white p-2 px-6 shadow-md shadow-white'>

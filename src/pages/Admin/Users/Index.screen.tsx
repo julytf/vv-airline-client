@@ -1,4 +1,6 @@
+import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
+import usersService from '@/services/users.service'
 import { route } from '@/utils/helpers'
 import { FunctionComponent } from 'react'
 import { NavLink } from 'react-router-dom'
@@ -6,22 +8,27 @@ import { NavLink } from 'react-router-dom'
 interface UsersIndexProps {}
 
 const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
-  const usersData = [
-    { id: 1, name: 'Nguyễn Văn A', email: 'nva', gender: true },
-    { id: 2, name: 'Nguyễn Thij B', email: 'ntb', gender: false },
-  ]
+  // const usersData = [
+  //   { id: 1, name: 'Nguyễn Văn A', email: 'nva', gender: true },
+  //   { id: 2, name: 'Nguyễn Thij B', email: 'ntb', gender: false },
+  // ]
   return (
     <div className='m-3 flex flex-wrap'>
       <div className='w-full max-w-full flex-none px-3'>
-        <Table
+        <SmartTable
           name='Danh Sách Người Dùng'
-          data={usersData}
+          // data={usersData}
+          FetchDataFnc={usersService.getUser}
           renderOptions={[
             {
               name: 'name',
               displayName: 'Tên',
-              renderFnc: (value: unknown) => {
-                return <>{value}</>
+              renderFnc: (value: unknown, data?: TableData) => {
+                return (
+                  <>
+                    {data?.lastName} {data?.firstName}
+                  </>
+                )
               },
             },
             {

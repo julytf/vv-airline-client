@@ -3,16 +3,47 @@ import { FunctionComponent } from 'react'
 import Logo from '@/assets/images/logos/logo.png'
 
 import AdminLoginBackground from '@/assets/images/backgrounds/cloud.avif'
+import { useDispatch } from 'react-redux'
+import { AppDispatch } from '@/services/state/store'
+import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { joiResolver } from '@hookform/resolvers/joi'
+import loginSchema from '@/utils/validations/login.schema'
+import authService from '@/services/auth.service'
+import * as auth from '@/services/state/auth/authSlice'
 
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
+  const dispatch = useDispatch<AppDispatch>()
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors, isValid },
+  } = useForm({
+    mode: 'onChange',
+    resolver: joiResolver(loginSchema),
+  })
+  console.log('[info]:errors ',errors);
+  
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log('here');
+    
+    const { email, password } = data
+    const { accessToken, user } = await authService.login({ email, password })
+    console.log({ user, accessToken })
+    dispatch(auth.login({ user, accessToken }))
+    reset()
+  }
   return (
     <div
       className='flex min-h-screen flex-col items-center justify-center bg-cover bg-bottom'
       style={{ backgroundImage: `url(${AdminLoginBackground})` }}
     >
-      <div className='w-32 mb-4'>
+      <div className='mb-4 w-32'>
         <img className='w-full' src={Logo} alt='' />
       </div>
       <div className='relative mb-6 flex w-96  min-w-0 flex-col break-words rounded-lg border-0 bg-gray-200 shadow-lg'>
@@ -42,25 +73,59 @@ const Login: FunctionComponent<LoginProps> = () => {
           {/* <div className='mb-3 text-center font-bold text-gray-400'>
             <small>Or sign in with credentials</small>
           </div> */}
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className='relative mb-3 w-full'>
               <label className='mb-2 block text-xs font-bold uppercase text-gray-600' htmlFor='grid-password'>
                 Email
               </label>
-              <input
-                type='email'
-                className='w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-600 placeholder-gray-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring'
-                placeholder='Email'
+
+              <Controller
+                name={`email`}
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <div className='mt-2'>
+                      <input
+                        id='email'
+                        type='text'
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          field.onChange(e.target.value)
+                        }}
+                        className='w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-600 placeholder-gray-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring'
+                        placeholder='Email'
+                      />
+                    </div>
+                    <small className='text-red-600'>{error?.message}</small>
+                  </>
+                )}
               />
             </div>
             <div className='relative mb-3 w-full'>
               <label className='mb-2 block text-xs font-bold uppercase text-gray-600' htmlFor='grid-password'>
                 Password
               </label>
-              <input
-                type='password'
-                className='w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-600 placeholder-gray-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring'
-                placeholder='Password'
+
+              <Controller
+                name={`password`}
+                control={control}
+                render={({ field, fieldState: { error } }) => (
+                  <>
+                    <div className='mt-2'>
+                      <input
+                        id='password'
+                        type='password'
+                        value={field.value || ''}
+                        onChange={(e) => {
+                          field.onChange(e.target.value)
+                        }}
+                        className='w-full rounded border-0 bg-white px-3 py-3 text-sm text-gray-600 placeholder-gray-300 shadow transition-all duration-150 ease-linear focus:outline-none focus:ring'
+                        placeholder='Password'
+                      />
+                    </div>
+                    <small className='text-red-600'>{error?.message}</small>
+                  </>
+                )}
               />
             </div>
             {/* <div>
@@ -76,7 +141,6 @@ const Login: FunctionComponent<LoginProps> = () => {
             <div className='mt-6 text-center'>
               <button
                 className='mb-1 mr-1 w-full rounded bg-gray-800 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-gray-600'
-                type='button'
               >
                 Đăng Nhập
               </button>

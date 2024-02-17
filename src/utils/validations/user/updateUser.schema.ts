@@ -8,14 +8,14 @@ import {
   firstNameSchema,
   genderSchema,
   lastNameSchema,
-  passwordConfirmSchema,
-  passwordSchema,
+  // passwordConfirmSchema,
+  // passwordSchema,
   phoneNumberSchema,
   provinceSchema,
   wardSchema,
-} from './common'
+} from '../common'
 
-const registerSchema = Joi.object({
+const updateUser = Joi.object({
   lastName: lastNameSchema,
   firstName: firstNameSchema,
   dateOfBirth: dateOfBirthSchema,
@@ -29,8 +29,8 @@ const registerSchema = Joi.object({
     address2: address2Schema,
   },
   email: emailSchema,
-  password: passwordSchema,
-  passwordConfirm: passwordConfirmSchema,
+  // password: passwordSchema,
+  // passwordConfirm: passwordConfirmSchema,
 })
 
-export default registerSchema
+export default updateUser

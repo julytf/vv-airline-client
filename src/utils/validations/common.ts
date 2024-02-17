@@ -1,3 +1,4 @@
+import { UserGender } from '@/enums/user.enums'
 import Joi from 'joi'
 
 export const lastNameSchema = Joi.string().required().min(2).max(50).messages({
@@ -17,9 +18,8 @@ export const dateOfBirthSchema = Joi.string().required().isoDate().messages({
   'string.empty': 'Ngày sinh không thể để trống',
   'string.isoDate': 'Ngày sinh không hợp lệ',
 })
-export const genderSchema = Joi.boolean().required().messages({
+export const genderSchema = Joi.string().valid(UserGender.MALE, UserGender.FEMALE).required().messages({
   'any.required': 'Giới tính không thể để trống',
-  'boolean.empty': 'Giới tính không thể để trống',
 })
 export const phoneNumberSchema = Joi.string()
   .required()
@@ -29,16 +29,16 @@ export const phoneNumberSchema = Joi.string()
     'string.empty': 'Số điện thoại không thể để trống',
     'string.pattern.base': 'Số điện thoại không hợp lệ',
   })
-export const provinceCodeSchema = Joi.string().messages({
+export const provinceSchema = Joi.string().optional().messages({
   'string.empty': 'Tỉnh/Thành phố không thể để trống',
 })
-export const districtCodeSchema = Joi.string().messages({
+export const districtSchema = Joi.string().optional().messages({
   'string.empty': 'Quận/Huyện không thể để trống',
 })
-export const wardCodeSchema = Joi.string().messages({
+export const wardSchema = Joi.string().optional().messages({
   'string.empty': 'Xã/Phường không thể để trống',
 })
-export const addressSchema = Joi.string().messages({
+export const addressSchema = Joi.string().optional().messages({
   'string.empty': 'Địa chỉ không thể để trống',
 })
 export const address2Schema = Joi.string().optional().messages({})

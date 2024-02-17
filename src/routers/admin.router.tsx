@@ -33,6 +33,7 @@ import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
 import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
 import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
+import { route } from '@/utils/helpers'
 
 export const adminRoutes = [
   {
@@ -41,7 +42,9 @@ export const adminRoutes = [
     breadcrumbName: 'Admin',
     element: (
       <Suspense fallback={<Loading />}>
-        <AdminLayout />
+        <RoleGuard unrestrictedTo={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF]} redirect='/admin/login'>
+          <AdminLayout />
+        </RoleGuard>
       </Suspense>
     ),
     children: [
@@ -135,7 +138,9 @@ export const adminRoutes = [
     breadcrumbName: 'Admin',
     element: (
       <Suspense fallback={<Loading />}>
-        <Outlet />
+        <RoleGuard unrestrictedTo={[UserRole.GUEST, UserRole.USER]} redirect='/admin'>
+          <Outlet />
+        </RoleGuard>
       </Suspense>
     ),
     children: [

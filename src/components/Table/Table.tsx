@@ -4,7 +4,7 @@ export type TableData = {
   [key: string]: unknown
 }
 
-interface tableProps {
+interface TableProps {
   name?: string
   data: TableData[]
   renderOptions: {
@@ -14,7 +14,9 @@ interface tableProps {
   }[]
 }
 
-const table: FunctionComponent<tableProps> = ({ name, data, renderOptions }) => {
+const Table: FunctionComponent<TableProps> = ({ name, data, renderOptions }) => {
+  console.log(data)
+
   return (
     <div className='relative z-10 mb-6 flex min-w-0 flex-col break-words rounded-2xl border border-solid  bg-white bg-clip-border shadow-xl'>
       <div className='bold mb-0 rounded-t-2xl bg-white p-6 pb-0'>
@@ -59,4 +61,4 @@ const table: FunctionComponent<tableProps> = ({ name, data, renderOptions }) => 
   )
 }
 
-export default table
+export default Table
