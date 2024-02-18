@@ -1,5 +1,6 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
+import { UserGender } from '@/enums/user.enums'
 import usersService from '@/services/users.service'
 import { route } from '@/utils/helpers'
 import { FunctionComponent } from 'react'
@@ -18,7 +19,7 @@ const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
         <SmartTable
           name='Danh Sách Người Dùng'
           // data={usersData}
-          FetchDataFnc={usersService.getUser}
+          FetchDataFnc={usersService.getUser.bind(usersService)}
           renderOptions={[
             {
               name: 'name',
@@ -41,8 +42,8 @@ const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
             {
               name: 'gender',
               displayName: 'Giới tính',
-              renderFnc: (value: unknown) => {
-                return <>{value ? 'Nam' : 'Nữ'}</>
+              renderFnc: (value) => {
+                return <>{!value ? '' : value === UserGender.MALE ? 'Nam' : 'Nữ'}</>
               },
             },
             {
@@ -51,7 +52,7 @@ const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
               renderFnc: (value: unknown, data?: TableData) => {
                 return (
                   <div className='flex gap-x-4'>
-                    <NavLink to={route('/admin/users/:id', { params: { id: String(data?.id) } })}>
+                    <NavLink to={route('/admin/users/:id', { params: { id: String(data?._id) } })}>
                       <i className='fa-regular fa-pen-to-square'></i>
                     </NavLink>
                   </div>

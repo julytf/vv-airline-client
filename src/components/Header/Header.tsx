@@ -54,6 +54,7 @@ const NotLoggedInNavBarButton: FunctionComponent<NotLoggedInNavBarButtonProps> =
 interface LoggedInNavBarButtonProps {}
 
 const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () => {
+  const { user } = useSelector((state: AppState) => state.auth)
   const dispatch = useDispatch<AppDispatch>()
 
   const [isShow, setIsShow] = useState(false)
@@ -88,8 +89,16 @@ const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () =>
           }}
         >
           <DropDown.Row>
+            <span className='bold'>
+              <i className='fa-regular fa-user'></i>
+              <span className='ml-2'>
+                {user?.lastName} {user?.firstName}
+              </span>
+            </span>
+          </DropDown.Row>
+          <DropDown.Row>
             <NavLink to={'/account'}>
-              <i className='fa-light fa-user'></i>
+              <i className='fa-light fa-file-user'></i>
               <span className='ml-2'>Tài khoản</span>
             </NavLink>
           </DropDown.Row>

@@ -3,6 +3,9 @@ import { Link, NavLink, matchRoutes, useLocation } from 'react-router-dom'
 import DropDown from '../Dropdown/DropDown'
 import { userRoutes } from '@/routers/user.router'
 import { adminRoutes } from '@/routers/admin.router'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppDispatch, AppState } from '@/services/state/store'
+import * as auth from '@/services/state/auth/authSlice'
 
 interface AdminHeaderProps {}
 
@@ -60,6 +63,8 @@ const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
 interface AccountButtonProps {}
 
 const AccountButton: FunctionComponent<AccountButtonProps> = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const { user } = useSelector((state: AppState) => state.auth)
   const [isShow, setIsShow] = useState(false)
 
   const buttonRef = useRef<HTMLButtonElement>(null)
@@ -68,13 +73,19 @@ const AccountButton: FunctionComponent<AccountButtonProps> = () => {
     setIsShow(!isShow)
   }
 
+  const handleLogout = () => {
+    dispatch(auth.logout())
+  }
+
   return (
-    <button ref={buttonRef} onClick={onClick} className='relative'>
-      <span className='inline-flex h-11 w-11 items-center justify-center rounded-full  text-sm text-white'>
-        <span className='flex aspect-square w-32 items-center justify-center rounded-full border-2 border-gray-500 text-xl text-gray-500'>
-          <i className='fa-solid fa-user-tie'></i>
+    <div className='relative'>
+      <button ref={buttonRef} onClick={onClick} className='relative'>
+        <span className='inline-flex h-11 w-11 items-center justify-center rounded-full  text-sm text-white'>
+          <span className='flex aspect-square w-32 items-center justify-center rounded-full border-2 border-gray-500 text-xl text-gray-500'>
+            <i className='fa-solid fa-user-tie'></i>
+          </span>
         </span>
-      </span>
+      </button>
       <DropDown
         parentRef={buttonRef}
         isShow={isShow}
@@ -85,19 +96,27 @@ const AccountButton: FunctionComponent<AccountButtonProps> = () => {
         }}
       >
         <DropDown.Row>
+          <span className='bold'>
+            <i className='fa-regular fa-user'></i>
+            <span className='ml-2'>
+              {user?.lastName} {user?.firstName}
+            </span>
+          </span>
+        </DropDown.Row>
+        <DropDown.Row>
           <NavLink to={'/account'}>
-            <i className='fa-light fa-user'></i>
+            <i className='fa-light fa-file-user'></i>
             <span className='ml-2'>Tài khoản</span>
           </NavLink>
         </DropDown.Row>
         <DropDown.Row>
-          <NavLink to={'/logout'}>
+          <button onClick={handleLogout}>
             <i className='fa-light fa-arrow-right-from-bracket'></i>
             <span className='ml-2'>Đăng xuất</span>
-          </NavLink>
+          </button>
         </DropDown.Row>
       </DropDown>
-    </button>
+    </div>
   )
 }
 

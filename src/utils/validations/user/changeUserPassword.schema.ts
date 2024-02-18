@@ -30,7 +30,7 @@ const changeUserPassword = Joi.object({
   // },
   // email: emailSchema,
   password: passwordSchema,
-  passwordConfirm: passwordConfirmSchema,
+  newPassword: passwordSchema,
 })
 
 export default changeUserPassword

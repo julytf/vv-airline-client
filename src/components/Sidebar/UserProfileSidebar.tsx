@@ -13,7 +13,7 @@ const UserProfileSidebar: FunctionComponent<UserProfileSidebarProps> = ({ classN
       <NavLink to={route('/account')} end>
         {({ isActive }) => (
           <div
-            className={classNames('border-l-4 p-2 px-4', {
+            className={classNames('border-l-4 p-2 px-4 rounded', {
               'border-primary bg-gray-100': isActive,
               'border-transparent': !isActive,
             })}
@@ -25,7 +25,7 @@ const UserProfileSidebar: FunctionComponent<UserProfileSidebarProps> = ({ classN
       <NavLink to={route('/account/change-password')} end>
         {({ isActive }) => (
           <div
-            className={classNames('border-l-4 p-2 px-4', {
+            className={classNames('border-l-4 p-2 px-4 rounded', {
               'border-primary bg-gray-100': isActive,
               'border-transparent': !isActive,
             })}

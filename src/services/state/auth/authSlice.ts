@@ -3,6 +3,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { useDispatch } from 'react-redux'
 import { AppDispatch } from '../store'
 import authService from '@/services/auth.service'
+import serviceManager from '@/services/serviceManager'
 
 interface AuthState {
   isInitialized?: boolean
@@ -25,7 +26,8 @@ export const authSlice = createSlice({
   reducers: {
     initialize: (state, action: PayloadAction<AuthState>) => {
       const { isAuthenticated, user, accessToken, tokenName } = action.payload
-      localStorage.setItem(tokenName!, accessToken || '')
+      // localStorage.setItem(tokenName!, accessToken || '')
+      serviceManager.setAccessToken(accessToken || '')
 
       return {
         ...state,
@@ -40,6 +42,7 @@ export const authSlice = createSlice({
       const { user, accessToken } = action.payload
       console.log(state.tokenName)
       localStorage.setItem(state.tokenName!, accessToken || '')
+      serviceManager.setAccessToken(accessToken || '')
 
       return {
         ...state,
@@ -58,6 +61,7 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       localStorage.removeItem(state.tokenName!)
+      serviceManager.setAccessToken('')
       return {
         ...state,
         isAuthenticated: false,

@@ -45,7 +45,7 @@ const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowP
 interface RowProps extends PropsWithChildren {}
 
 const Row: FunctionComponent<RowProps> = ({ children }) => {
-  return <div className='border-b p-2'>{children}</div>
+  return <div className='border-b p-2 px-4 flex items-start'>{children}</div>
 }
 
 DropDown.Row = Row

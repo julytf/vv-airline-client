@@ -19,7 +19,7 @@ interface IFormData {
   // firstName: string
   // lastName: string
   password: string
-  passwordConfirm: string
+  newPassword: string
   // email: string
   // phoneNumber?: string
   // dateOfBirth?: Date | string
@@ -39,7 +39,7 @@ interface IFormData {
 interface ChangePasswordProps {}
 
 const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
-  const { user } = useSelector((state: AppState) => state.auth)
+  const { user, accessToken } = useSelector((state: AppState) => state.auth)
 
   const {
     register,
@@ -61,6 +61,11 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
+
+    authService.changePassword(accessToken!, {
+      oldPassword: data.password,
+      newPassword: data.newPassword,
+    })
 
     reset()
   }
@@ -105,7 +110,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
                   </div> */}
                   <div className='sm:col-span-6'>
                     <label htmlFor='password' className='block text-sm font-medium leading-6 text-gray-900'>
-                      Mật khẩu
+                      Mật khẩu hiện tại
                     </label>
                     <Controller
                       name={'password'}
@@ -130,17 +135,17 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
                     />
                   </div>
                   <div className='sm:col-span-6'>
-                    <label htmlFor='passwordConfirm' className='block text-sm font-medium leading-6 text-gray-900'>
-                      Nhập lại mật khẩu
+                    <label htmlFor='newPassword' className='block text-sm font-medium leading-6 text-gray-900'>
+                      Mật khẩu mới
                     </label>
                     <Controller
-                      name={'passwordConfirm'}
+                      name={'newPassword'}
                       control={control}
                       render={({ field, fieldState: { error } }) => (
                         <>
                           <div className='mt-2'>
                             <input
-                              id='passwordConfirm'
+                              id='newPassword'
                               value={field.value || ''}
                               onChange={(e) => {
                                 field.onChange(e.target.value)
