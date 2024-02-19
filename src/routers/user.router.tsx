@@ -29,11 +29,11 @@ import RegisterScreen from '@/pages/Auth/Register.screen'
 
 import AccountIndexScreen from '@/pages/Account/Index.screen'
 
-import PaymentScreen from '@/pages/SearchWizard/Payment.screen'
-import SearchWizardLayout from '@/layouts/SearchWizard.layout'
-import FlightsSelectionScreen from '@/pages/SearchWizard/FlightsSelection.screen'
-import SeatsSelectionScreen from '@/pages/SearchWizard/SeatsSelection.screen'
-import PassengersInformationScreen from '@/pages/SearchWizard/PassengersInformation.screen'
+// import PaymentScreen from '@/pages/SearchWizard/Payment.screen'
+// import SearchWizardLayout from '@/layouts/SearchWizard.layout'
+// import FlightsSelectionScreen from '@/pages/SearchWizard/FlightsSelection.screen'
+// import SeatsSelectionScreen from '@/pages/SearchWizard/SeatsSelection.screen'
+// import PassengersInformationScreen from '@/pages/SearchWizard/PassengersInformation.screen'
 
 import BlogIndexScreen from '@/pages/Blog/Index.screen'
 import BlogDetailScreen from '@/pages/Blog/Detail.screen'
@@ -43,6 +43,11 @@ import TestScreen from '@/pages/Test.screen'
 import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
 import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
+import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
+import FlightsSelectionScreen from '@/pages/SearchWizard/steps/FlightsSelection.screen'
+import SeatsSelectionScreen from '@/pages/SearchWizard/steps/SeatsSelection.screen'
+import PassengersInformationScreen from '@/pages/SearchWizard/steps/PassengersInformation.screen'
+import PaymentScreen from '@/pages/SearchWizard/steps/Payment.screen'
 
 export const userRoutes = [
   {
@@ -93,7 +98,7 @@ export const userRoutes = [
       {
         path: 'wizard',
         breadcrumbName: 'Đặt vé',
-        element: <SearchWizardLayout />,
+        element: <SearchWizardScreen />,
         children: [
           {
             path: 'flights-selection',

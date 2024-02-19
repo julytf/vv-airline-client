@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import Button from '../ui/Button'
+import Button from '../../ui/Button'
 import { NavLink } from 'react-router-dom'
 
 interface WizardBottomNavBarProps {

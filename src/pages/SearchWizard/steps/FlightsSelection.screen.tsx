@@ -1,10 +1,9 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import WizardNavBar from '../../components/NavBar/WizardNavBar'
-import classNames from 'classnames'
-import Loading from '../../components/Loading/Loading'
-import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
-import SearchCard from '@/components/Card/SearchCard'
 import { SeatClass } from '@/enums/seat.enums'
+import Loading from '@/components/Loading/Loading'
+import SearchCard from '@/components/Card/SearchCard'
+import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
+import classNames from 'classnames'
 
 interface FlightsSelectionProps {}
 
@@ -248,7 +247,7 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = () => {
 
   return (
     <div className={classNames('w-full', {})}>
-      <div className='grid grid-cols-12 gap-6  p-4 relative'>
+      <div className='relative grid grid-cols-12  gap-6 p-4'>
         <div className='col-span-4'>
           <div className='flex justify-between'>
             <div className='flex flex-col items-center'>
@@ -286,7 +285,7 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = () => {
             </div>
           </div>
         </div>
-        <div className='col-span-8 flex justify-center gap-4 relative'>
+        <div className='relative col-span-8 flex justify-center gap-4'>
           <button
             className={classNames(
               'col-span-3 flex w-1/2 items-center justify-center rounded-md border border-blue-400 bg-blue-100 active:scale-95',
@@ -315,7 +314,7 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = () => {
               </div>
             </div>
           </button>
-          <button className='p-10 absolute right-0 text-gray-400 active:scale-95'>Hủy</button>
+          <button className='absolute right-0 p-10 text-gray-400 active:scale-95'>Hủy</button>
         </div>
       </div>
       <div

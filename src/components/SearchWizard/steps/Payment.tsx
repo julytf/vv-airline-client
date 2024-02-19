@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import WizardNavBar from '../../components/NavBar/WizardNavBar'
+import WizardNavBar from '../NavBar/WizardNavBar'
 import { loadStripe } from '@stripe/stripe-js'
 import config from '@/config'
 import { Elements, PaymentElement } from '@stripe/react-stripe-js'

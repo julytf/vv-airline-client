@@ -3,12 +3,11 @@ import { format, subYears } from 'date-fns'
 import Joi, { ValidationErrorItem } from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Control, Controller, FieldErrors, FieldValues, SubmitHandler, UseFormRegister, useForm } from 'react-hook-form'
-import Button from '../../components/ui/Button'
-import { PassengerType } from '../../enums/passenger.enums'
-import passengersInformationSchema from '../../utils/validations/searchWizard/passenger.schema'
-import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
+import { PassengerType } from '../../../enums/passenger.enums'
+import passengersInformationSchema from '../../../utils/validations/searchWizard/passenger.schema'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 import Loading from '@/components/Loading/Loading'
+import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
 
 type FirstPassengerInformation = {
   lastName: string

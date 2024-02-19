@@ -1,8 +1,8 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import { OccupiedSeatIcon, OpenSeatIcon, PartitionIcon } from '../../components/Icons'
+import { OccupiedSeatIcon, OpenSeatIcon, PartitionIcon } from '../../Icons'
 import classNames from 'classnames'
-import Loading from '../../components/Loading/Loading'
-import WizardBottomNavBar from '../../components/NavBar/WizardBottomNavBar'
+import Loading from '../../Loading/Loading'
+import WizardBottomNavBar from '../NavBar/WizardBottomNavBar'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 
 interface SeatsSelectionProps {}
