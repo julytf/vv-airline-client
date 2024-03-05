@@ -12,6 +12,7 @@ type RouteOptions = {
 }
 
 export const route = (path: string, { params, query }: RouteOptions = {}) => {
+  console.log('query', query)
   const routes = [...userRoutes, ...adminRoutes]
   const matchedRoutes = matchRoutes(routes, path)
 
@@ -27,7 +28,18 @@ export const route = (path: string, { params, query }: RouteOptions = {}) => {
     const params = new URLSearchParams(query)
 
     path = `${path}?${params.toString()}`
+    console.log('path', path)
   }
 
   return path
 }
+
+export const numberToAlphabet = (number: number) => {
+  // Assuming input is a number between 1 and 26
+  if (number < 1 || number > 26) {
+    console.error('Invalid input. Please enter a number between 1 and 26.')
+  }
+  return String.fromCharCode(64 + number) // 65 is the ASCII code for 'A'
+}
+
+export const countNonEmpty = (arr: unknown[]) => arr.filter((item) => item).length

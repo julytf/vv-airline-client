@@ -1,5 +1,4 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import WizardNavBar from '../NavBar/WizardNavBar'
 import { loadStripe } from '@stripe/stripe-js'
 import config from '@/config'
 import { Elements, PaymentElement } from '@stripe/react-stripe-js'
@@ -23,6 +22,14 @@ const Payment: FunctionComponent<PaymentProps> = () => {
     }, 500)
   }, [])
 
+  const testSuccessPayment = async () => {
+    // const response = await axiosClient.post('/payment/success', {
+    //   amount: 100000,
+    //   currency: 'usd',
+    // })
+    // console.log(response)
+  }
+
   if (loading) {
     return <Loading />
   }
@@ -30,7 +37,10 @@ const Payment: FunctionComponent<PaymentProps> = () => {
   return (
     <div className=' my-16 grid grid-cols-12 gap-16'>
       <div className='col-span-8 flex flex-col gap-y-8'>
-        <div className='border-2 shadow-md rounded-md'>
+        <button onClick={testSuccessPayment} className='text-2xl font-bold border-2 rounded-md p-8 py-4 active:scale-95'>
+          Test Success Payment
+        </button>
+        {/* <div className='rounded-md border-2 shadow-md'>
           <div className='border-b-2 p-4'>Phương thức thanh toán</div>
           <div>
             <label>
@@ -59,7 +69,8 @@ const Payment: FunctionComponent<PaymentProps> = () => {
         <div className='my-8 flex flex-col gap-y-8'>
           {paymentMethod === PaymentMethod.CARD && <StripePaymentForm />}
           {paymentMethod === PaymentMethod.PAYPAL && <PaypalPaymentForm />}
-        </div>
+        </div> */}
+        <PaypalPaymentForm />
       </div>
       <PaymentSummaryCard className='col-span-4' />
     </div>

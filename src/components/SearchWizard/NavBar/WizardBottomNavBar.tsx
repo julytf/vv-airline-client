@@ -3,17 +3,17 @@ import Button from '../../ui/Button'
 import { NavLink } from 'react-router-dom'
 
 interface WizardBottomNavBarProps {
-  forwardURL?: string
+  onClickForward?: () => void
   isForwardEnabled?: boolean
-  backwardURL?: string
+  onClickBackward?: () => void
   isBackwardEnabled?: boolean
 }
 
 const WizardBottomNavBar: FunctionComponent<WizardBottomNavBarProps> = ({
-  forwardURL = '',
   isForwardEnabled = false,
-  backwardURL = '',
+  onClickForward,
   isBackwardEnabled = false,
+  onClickBackward,
 }) => {
   // console.log('forwardURL', forwardURL)
   // console.log('isForwardEnabled', isForwardEnabled)
@@ -22,14 +22,12 @@ const WizardBottomNavBar: FunctionComponent<WizardBottomNavBarProps> = ({
 
   return (
     <div className='flex justify-end gap-x-8'>
-      <NavLink to={backwardURL}>
-        <Button text disabled={!backwardURL || !isBackwardEnabled}>
-          Back
-        </Button>
-      </NavLink>
-      <NavLink to={forwardURL}>
-        <Button disabled={!forwardURL || !isForwardEnabled}>Next</Button>
-      </NavLink>
+      <Button onClick={() => onClickBackward?.()} text disabled={!isBackwardEnabled}>
+        Back
+      </Button>
+      <Button onClick={() => onClickForward?.()} disabled={!isForwardEnabled}>
+        Next
+      </Button>
     </div>
   )
 }

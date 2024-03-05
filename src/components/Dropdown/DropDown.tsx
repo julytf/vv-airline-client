@@ -7,6 +7,7 @@ interface DropDownProps extends PropsWithChildren {
   position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'
   onChangeShow?: (newState: boolean) => void
   parentRef?: RefObject<HTMLElement>
+  className?: string
 }
 
 const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowProps> } = ({
@@ -15,6 +16,7 @@ const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowP
   onChangeShow,
   parentRef,
   children,
+  className,
 }) => {
   const ref = useRef<HTMLDivElement>(null)
 
@@ -28,7 +30,8 @@ const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowP
   return (
     <div
       className={classNames(
-        `z-30 absolute max-h-0 max-w-0 overflow-hidden text-nowrap rounded bg-white transition-all duration-500`,
+        className,
+        `absolute z-30 max-h-0 max-w-0 overflow-hidden text-nowrap rounded bg-white transition-all duration-500`,
         {
           'max-h-96 max-w-96': isShow,
           'left-0': position === 'top-right' || position === 'bottom-right',
@@ -45,7 +48,7 @@ const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowP
 interface RowProps extends PropsWithChildren {}
 
 const Row: FunctionComponent<RowProps> = ({ children }) => {
-  return <div className='border-b p-2 px-4 flex items-start'>{children}</div>
+  return <div className='flex items-start border-b p-2 px-4'>{children}</div>
 }
 
 DropDown.Row = Row

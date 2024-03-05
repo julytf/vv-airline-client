@@ -1,14 +1,15 @@
 import classNames from 'classnames'
-import { FunctionComponent, PropsWithChildren } from 'react'
+import { FunctionComponent, MouseEventHandler, PropsWithChildren } from 'react'
 
 interface ButtonProps extends PropsWithChildren {
   outline?: boolean
   text?: boolean
   className?: string
   disabled?: boolean
+  onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
-const Button: FunctionComponent<ButtonProps> = ({ outline, text, className, disabled, children }) => {
+const Button: FunctionComponent<ButtonProps> = ({ outline, text, className, disabled, children, onClick }) => {
   // console.log('disabled', disabled)
   return (
     <button
@@ -20,6 +21,7 @@ const Button: FunctionComponent<ButtonProps> = ({ outline, text, className, disa
         'cursor-not-allowed opacity-50': disabled,
       })}
       disabled={disabled}
+      onClick={onClick}
     >
       {children}
     </button>

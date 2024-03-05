@@ -76,7 +76,7 @@ const Checkout: FunctionComponent<CheckoutProps> = () => {
 
   return (
     <>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       <div
         className={classNames({
           // hidden: loading,
@@ -84,7 +84,7 @@ const Checkout: FunctionComponent<CheckoutProps> = () => {
       >
         <PayPalButtons
           style={{ layout: 'vertical' }}
-          fundingSource='paypal'
+          // fundingSource='card'
           onInit={() => setLoading(false)}
           createOrder={(data, actions) => onCreateOrder(data, actions)}
           onApprove={(data, actions) => onApproveOrder(data, actions)}

@@ -87,6 +87,7 @@ const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () =>
             setIsShow(newState)
             // console.log(newState)
           }}
+          className='mt-2'
         >
           <DropDown.Row>
             <span className='bold'>

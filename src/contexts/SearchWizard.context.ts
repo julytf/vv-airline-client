@@ -1,38 +1,53 @@
+import { FlightType } from './../enums/flight.enums'
+import IFlight from '@/interfaces/flight/flight.interface'
 import { SeatClass } from './../enums/seat.enums'
 import { FC, PropsWithChildren, createContext, useContext, useState } from 'react'
+import ISeat from '@/interfaces/aircraft/seat.interface'
+import IAirport from '@/interfaces/flight/airport.interface'
+import { UserGender } from '@/enums/user.enums'
+import { PassengerType } from '@/enums/passenger.enums'
+import { FlightLegType } from '@/enums/flightLeg.enums'
 
-interface WizardData {
-  currentStep: number
-  data?: {
-    searchData: {
-      departureAirport: string
-      destinationAirport: string
-      departureDate: Date
-      destinationDate: Date
-      isRoundTrip: boolean
-      passengers: {
-        adult: number
-        child: number
-        // infant: number
-      }
-    }
-    flightsData: {
-      departureFlight: {
-        id: string
-        seatClass: SeatClass
-      }
-      returnFlight: {
-        id: string
-        seatClass: SeatClass
-      }
-    }
-    passengersData: {
-      adultsInfo: [
+export interface SearchData {
+  departureAirportIATA: string
+  arrivalAirportIATA: string
+
+  departureAirport: IAirport | null
+  arrivalAirport: IAirport | null
+
+  departureDate: Date
+  returnDate: Date | null
+
+  isRoundTrip: boolean
+
+  passengers: {
+    [PassengerType.ADULT]: number
+    [PassengerType.CHILD]: number
+    // infant: number
+  }
+}
+
+export interface FlightsData {
+  // departureFlights: IFlight[] | null
+  // returnFlights: IFlight[] | null
+
+  [FlightType.OUTBOUND]: {
+    flight: IFlight
+    seatClass: SeatClass
+  } | null
+  [FlightType.INBOUND]: {
+    flight: IFlight
+    seatClass: SeatClass
+  } | null
+}
+export interface PassengersData {
+  [PassengerType.ADULT]:
+    | [
         {
           lastName: string
           firstName: string
           dateOfBirth: Date
-          gender: boolean
+          gender: UserGender
           phoneNumber: string
           email: string
         },
@@ -40,51 +55,68 @@ interface WizardData {
           lastName: string
           firstName: string
           dateOfBirth: Date
-          gender: boolean
+          gender: UserGender
         }[],
       ]
-      childrenInfo: {
+    | null
+  [PassengerType.CHILD]:
+    | {
         lastName: string
         firstName: string
         dateOfBirth: Date
-        gender: boolean
+        gender: UserGender
       }[]
+    | null
+}
+export interface SeatsData {
+  [FlightType.OUTBOUND]: {
+    [FlightLegType.DEPARTURE]: {
+      [PassengerType.ADULT]: ISeat[]
+      [PassengerType.CHILD]: ISeat[]
     }
-    seatsData: {
-      departureFlight: {
-        leg1: {
-          adultsSeats: string[]
-          childrenSeats: string[]
-        }
-        leg2: {
-          adultsSeats: string[]
-          childrenSeats: string[]
-        }
-      }
-      returnFlight: {
-        leg1: {
-          adultsSeats: string[]
-          childrenSeats: string[]
-        }
-        leg2: {
-          adultsSeats: string[]
-          childrenSeats: string[]
-        }
-      }
+    [FlightLegType.TRANSIT]: {
+      [PassengerType.ADULT]: ISeat[]
+      [PassengerType.CHILD]: ISeat[]
+    }
+  }
+  [FlightType.INBOUND]: {
+    [FlightLegType.DEPARTURE]: {
+      [PassengerType.ADULT]: ISeat[]
+      [PassengerType.CHILD]: ISeat[]
+    }
+    [FlightLegType.TRANSIT]: {
+      [PassengerType.ADULT]: ISeat[]
+      [PassengerType.CHILD]: ISeat[]
     }
   }
 }
+export interface WizardData {
+  currentStep: number
+  searchData: SearchData
+  flightsData: FlightsData
+  passengersData: PassengersData
+  seatsData: SeatsData
+}
+export interface ContextData {
+  data: WizardData
+  setData: React.Dispatch<React.SetStateAction<WizardData>>
+  actions: {
+    nextStep: () => void
+    prevStep: () => void
+    toStep: (step: number) => void
+  }
+}
 
-const SearchWizardContext = createContext<WizardData | undefined>(undefined)
+const SearchWizardContext = createContext<ContextData | undefined>(undefined)
 
-const useSearchWizard = (): WizardData => {
-  const wizardData = useContext(SearchWizardContext)
+const useSearchWizard = (): ContextData => {
+  const contextData = useContext(SearchWizardContext)
 
-  if (!wizardData) {
+  if (!contextData) {
     throw new Error('useSearchWizard must be used within a SearchWizardProvider')
   }
 
-  return wizardData
+  return contextData
 }
 
 export { useSearchWizard }

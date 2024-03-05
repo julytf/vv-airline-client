@@ -7,9 +7,10 @@ import {
   lastNameSchema,
   phoneNumberSchema,
 } from '../common'
+import { PassengerType } from '@/enums/passenger.enums'
 
 const passengersInformationSchema = Joi.object({
-  adultsInfo: Joi.array()
+  [PassengerType.ADULT]: Joi.array()
     .ordered(
       Joi.object({
         lastName: lastNameSchema,
@@ -28,7 +29,7 @@ const passengersInformationSchema = Joi.object({
         gender: genderSchema,
       }),
     ),
-  childrenInfo: Joi.array().items(
+  [PassengerType.CHILD]: Joi.array().items(
     Joi.object({
       lastName: lastNameSchema,
       firstName: firstNameSchema,

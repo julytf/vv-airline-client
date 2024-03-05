@@ -44,10 +44,10 @@ import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
 import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
-import FlightsSelectionScreen from '@/pages/SearchWizard/steps/FlightsSelection.screen'
-import SeatsSelectionScreen from '@/pages/SearchWizard/steps/SeatsSelection.screen'
-import PassengersInformationScreen from '@/pages/SearchWizard/steps/PassengersInformation.screen'
-import PaymentScreen from '@/pages/SearchWizard/steps/Payment.screen'
+// import FlightsSelectionScreen from '@/pages/SearchWizard/steps/FlightsSelection.screen'
+// import SeatsSelectionScreen from '@/pages/SearchWizard/steps/SeatsSelection.screen'
+// import PassengersInformationScreen from '@/pages/SearchWizard/steps/PassengersInformation.screen'
+// import PaymentScreen from '@/pages/SearchWizard/steps/Payment.screen'
 
 export const userRoutes = [
   {
@@ -99,28 +99,28 @@ export const userRoutes = [
         path: 'wizard',
         breadcrumbName: 'Đặt vé',
         element: <SearchWizardScreen />,
-        children: [
-          {
-            path: 'flights-selection',
-            breadcrumbName: 'Chọn chuyến bay',
-            element: <FlightsSelectionScreen />,
-          },
-          {
-            path: 'seats-selection',
-            breadcrumbName: 'Chọn ghế',
-            element: <SeatsSelectionScreen />,
-          },
-          {
-            path: 'passengers-information',
-            breadcrumbName: 'Thông tin hành khách',
-            element: <PassengersInformationScreen />,
-          },
-          {
-            path: 'payment',
-            breadcrumbName: 'Thanh toán',
-            element: <PaymentScreen />,
-          },
-        ],
+        // children: [
+        //   {
+        //     path: 'flights-selection',
+        //     breadcrumbName: 'Chọn chuyến bay',
+        //     element: <FlightsSelectionScreen />,
+        //   },
+        //   {
+        //     path: 'seats-selection',
+        //     breadcrumbName: 'Chọn ghế',
+        //     element: <SeatsSelectionScreen />,
+        //   },
+        //   {
+        //     path: 'passengers-information',
+        //     breadcrumbName: 'Thông tin hành khách',
+        //     element: <PassengersInformationScreen />,
+        //   },
+        //   {
+        //     path: 'payment',
+        //     breadcrumbName: 'Thanh toán',
+        //     element: <PaymentScreen />,
+        //   },
+        // ],
       },
       {
         path: 'blogs',

@@ -1,17 +1,21 @@
 import { SeatClass } from '@/enums/seat.enums'
+import ISeat from './seat.interface'
 
-interface IRowModel {
+export interface IRowModel {
+  index: number
   hasExit: boolean
-  seats: string[][]
+  seats: ISeat[]
 }
 
-interface ICabinModel {
+export interface ICabinModel {
   class: SeatClass
   noRow: number
   noCol: number
   aisleCol: number[]
   map: IRowModel[]
 }
+
+export type IAircraftSeatMap = ICabinModel[]
 
 export interface IAircraftModel {
   name?: string
