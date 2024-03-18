@@ -14,6 +14,7 @@ import vi from 'date-fns/locale/vi'
 import { useSearchWizard } from '@/contexts/SearchWizard.context'
 import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
+import { FlightLegType } from '@/enums/flightLeg.enums'
 
 interface FlightsSelectionProps {}
 
@@ -179,18 +180,24 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
   const hourDiff = differenceInHours(flight.arrivalTime, flight.departureTime)
 
   const transitMinuteDiff =
-    differenceInMinutes(flight?.flightLegs[1]?.departureTime, flight?.flightLegs[0]?.arrivalTime) % 60
-  const transitHourDiff = differenceInHours(flight?.flightLegs[1]?.departureTime, flight?.flightLegs[0]?.arrivalTime)
+    differenceInMinutes(
+      flight?.flightLegs[FlightLegType.TRANSIT]?.departureTime,
+      flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
+    ) % 60
+  const transitHourDiff = differenceInHours(
+    flight?.flightLegs[FlightLegType.TRANSIT]?.departureTime,
+    flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
+  )
 
   const economyPrice = !flight.hasTransit
     ? Number(flight.flightRoute.prices[SeatClass.ECONOMY])
-    : Number(flight?.flightLegs?.[0]?.flightRoute?.prices[SeatClass.ECONOMY]) +
-      Number(flight?.flightLegs?.[1]?.flightRoute?.prices[SeatClass.ECONOMY])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.ECONOMY]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.ECONOMY])
 
   const businessPrice = !flight.hasTransit
     ? Number(flight.flightRoute.prices[SeatClass.BUSINESS])
-    : Number(flight?.flightLegs?.[0]?.flightRoute?.prices[SeatClass.BUSINESS]) +
-      Number(flight?.flightLegs?.[1]?.flightRoute?.prices[SeatClass.BUSINESS])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.BUSINESS]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.BUSINESS])
 
   console.log('economyPrice', economyPrice)
   console.log('businessPrice', businessPrice)
@@ -221,7 +228,10 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
                   {Boolean(minuteDiff) && `${minuteDiff} phút`}
                 </span>
                 {flight.hasTransit && (
-                  <span className='bold'> - Quá Cảnh ({flight?.flightLegs[0]?.flightRoute?.arrivalAirport?.IATA})</span>
+                  <span className='bold'>
+                    {' '}
+                    - Quá Cảnh ({flight?.flightLegs[FlightLegType.DEPARTURE]?.flightRoute?.arrivalAirport?.IATA})
+                  </span>
                 )}
               </div>
               <button className='inline-block' onClick={() => setIsExpanded((prev) => !prev)}>
@@ -235,11 +245,13 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
             </div>
             <div className='flex flex-col items-end'>
               <span className='bold text-xs'>
-                {flight?.flightLegs[0]?.aircraft?.name} - {flight?.flightLegs[0]?.aircraft?.aircraftModel?.name}
+                {flight?.flightLegs[FlightLegType.DEPARTURE]?.aircraft?.name} -{' '}
+                {flight?.flightLegs[FlightLegType.DEPARTURE]?.aircraft?.aircraftModel?.name}
               </span>
               {flight.hasTransit && (
                 <span className='bold text-xs'>
-                  {flight?.flightLegs[1]?.aircraft?.name} - {flight?.flightLegs[1]?.aircraft?.aircraftModel?.name}
+                  {flight?.flightLegs[FlightLegType.TRANSIT]?.aircraft?.name} -{' '}
+                  {flight?.flightLegs[FlightLegType.TRANSIT]?.aircraft?.aircraftModel?.name}
                 </span>
               )}
             </div>
@@ -283,7 +295,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
           hidden: !isExpanded,
         })}
       >
-        <FlightLeg flightLeg={flight.flightLegs[0]} />
+        <FlightLeg flightLeg={flight.flightLegs[FlightLegType.DEPARTURE]} />
         {flight.hasTransit && (
           <>
             <div>
@@ -292,7 +304,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
                 {Boolean(transitMinuteDiff) && `${transitMinuteDiff} phút`}
               </span>
             </div>
-            <FlightLeg flightLeg={flight.flightLegs[1]} />
+            <FlightLeg flightLeg={flight.flightLegs[FlightLegType.TRANSIT]} />
           </>
         )}
       </div>
@@ -314,18 +326,24 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
   const hourDiff = differenceInHours(flight.arrivalTime, flight.departureTime)
 
   const transitMinuteDiff =
-    differenceInMinutes(flight?.flightLegs[1]?.departureTime, flight?.flightLegs[0]?.arrivalTime) % 60
-  const transitHourDiff = differenceInHours(flight?.flightLegs[1]?.departureTime, flight?.flightLegs[0]?.arrivalTime)
+    differenceInMinutes(
+      flight?.flightLegs[FlightLegType.TRANSIT]?.departureTime,
+      flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
+    ) % 60
+  const transitHourDiff = differenceInHours(
+    flight?.flightLegs[FlightLegType.TRANSIT]?.departureTime,
+    flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
+  )
 
   const economyPrice = !flight.hasTransit
     ? Number(flight.flightRoute.prices[SeatClass.ECONOMY])
-    : Number(flight?.flightLegs?.[0]?.flightRoute?.prices[SeatClass.ECONOMY]) +
-      Number(flight?.flightLegs?.[1]?.flightRoute?.prices[SeatClass.ECONOMY])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.ECONOMY]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.ECONOMY])
 
   const businessPrice = !flight.hasTransit
     ? Number(flight.flightRoute.prices[SeatClass.BUSINESS])
-    : Number(flight?.flightLegs?.[0]?.flightRoute?.prices[SeatClass.BUSINESS]) +
-      Number(flight?.flightLegs?.[1]?.flightRoute?.prices[SeatClass.BUSINESS])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.BUSINESS]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.BUSINESS])
 
   return (
     <div className={classNames('w-full', {})}>
@@ -353,7 +371,10 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
                   {Boolean(minuteDiff) && `${minuteDiff} phút`}
                 </span>
                 {flight.hasTransit && (
-                  <span className='bold'> - Quá Cảnh ({flight?.flightLegs[0]?.flightRoute?.arrivalAirport?.IATA})</span>
+                  <span className='bold'>
+                    {' '}
+                    - Quá Cảnh ({flight?.flightLegs[FlightLegType.DEPARTURE]?.flightRoute?.arrivalAirport?.IATA})
+                  </span>
                 )}
               </div>
               <button className='inline-block' onClick={() => setIsExpanded((prev) => !prev)}>
@@ -367,11 +388,13 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
             </div>
             <div className='flex flex-col items-end'>
               <span className='bold text-xs'>
-                {flight?.flightLegs[0]?.aircraft?.name} - {flight?.flightLegs[0]?.aircraft?.aircraftModel?.name}
+                {flight?.flightLegs[FlightLegType.DEPARTURE]?.aircraft?.name} -{' '}
+                {flight?.flightLegs[FlightLegType.DEPARTURE]?.aircraft?.aircraftModel?.name}
               </span>
               {flight.hasTransit && (
                 <span className='bold text-xs'>
-                  {flight?.flightLegs[1]?.aircraft?.name} - {flight?.flightLegs[1]?.aircraft?.aircraftModel?.name}
+                  {flight?.flightLegs[FlightLegType.TRANSIT]?.aircraft?.name} -{' '}
+                  {flight?.flightLegs[FlightLegType.TRANSIT]?.aircraft?.aircraftModel?.name}
                 </span>
               )}
             </div>
@@ -420,7 +443,7 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
           hidden: !isExpanded,
         })}
       >
-        <FlightLeg flightLeg={flight.flightLegs[0]} />
+        <FlightLeg flightLeg={flight.flightLegs[FlightLegType.DEPARTURE]} />
         {flight.hasTransit && (
           <>
             <div>
@@ -429,7 +452,7 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
                 {Boolean(transitMinuteDiff) && `${transitMinuteDiff} phút`}
               </span>
             </div>
-            <FlightLeg flightLeg={flight.flightLegs[1]} />
+            <FlightLeg flightLeg={flight.flightLegs[FlightLegType.TRANSIT]} />
           </>
         )}
       </div>

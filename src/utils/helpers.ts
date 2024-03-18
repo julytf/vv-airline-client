@@ -43,3 +43,7 @@ export const numberToAlphabet = (number: number) => {
 }
 
 export const countNonEmpty = (arr: unknown[]) => arr.filter((item) => item).length
+
+export function truncate(str: string, n: number) {
+  return str.length > n ? str.slice(0, n - 1) + '...' : str
+}

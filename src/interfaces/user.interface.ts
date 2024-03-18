@@ -3,9 +3,10 @@ import addressSchema, { IAddress } from './address/address.interface'
 import Joi, { ValidationResult } from 'joi'
 
 export interface IUser {
-  role: UserRole
+  _id: string
   firstName: string
   lastName: string
+  role: UserRole
   _hashedPassword: string
   email: string
   phoneNumber?: string

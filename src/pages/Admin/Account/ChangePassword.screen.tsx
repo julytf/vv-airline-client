@@ -1,0 +1,178 @@
+import { ChangeEventHandler, FunctionComponent, useState } from 'react'
+import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import Joi from 'joi'
+import { joiResolver } from '@hookform/resolvers/joi'
+import { format, subYears } from 'date-fns'
+import { useQuery } from 'react-query'
+import authService from '@/services/auth.service'
+import { useSelector } from 'react-redux'
+import { AppState } from '@/services/state/store'
+import { UserGender, UserRole } from '@/enums/user.enums'
+import updateUserSchema from '@/utils/validations/user/updateUser.schema'
+import UserProfileSidebar from '@/components/Sidebar/UserProfileSidebar'
+import changeUserPasswordSchema from '@/utils/validations/user/changeUserPassword.schema'
+import Button from '@/components/ui/Button'
+import AdminProfileSidebar from '@/components/Sidebar/AdminProfileSidebar'
+
+interface IFormData {
+  // role: UserRole
+  // firstName: string
+  // lastName: string
+  password: string
+  newPassword: string
+  // email: string
+  // phoneNumber?: string
+  // dateOfBirth?: Date | string
+  // gender?: UserGender
+  // idNumber?: string
+  // address?: {
+  //   address: string
+  //   address2?: string
+  //   province: string
+  //   district?: string
+  //   ward?: string
+  // }
+  // isDeleted: boolean
+  // deletedAt?: Date
+}
+
+interface ChangePasswordProps {}
+
+const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
+  const { user, accessToken } = useSelector((state: AppState) => state.auth)
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors, isValid },
+  } = useForm<IFormData>({
+    mode: 'onChange',
+    resolver: joiResolver(changeUserPasswordSchema),
+  })
+  // console.log('errors', errors)
+
+  // const { data, isFetching, isLoading, error, isError } = useQuery({
+  //   queryKey: ['user.profile', accessToken],
+  //   queryFn: () => authService.getProfile(accessToken!),
+  // })
+  // console.log('data', data)
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    console.log('data', data)
+
+    authService.changePassword(accessToken!, {
+      oldPassword: data.password,
+      newPassword: data.newPassword,
+    })
+
+    reset()
+  }
+  return (
+    <div className='p-8'>
+      <div className='mt-16 grid grid-cols-12 gap-6'>
+        <AdminProfileSidebar className='col-span-3' />
+        <div className='col-span-9 w-full'>
+          <div className='mx-auto mb-24 max-w-2xl'>
+            <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6 ' onSubmit={handleSubmit(onSubmit)}>
+              <div className='mx-auto w-full max-w-sm pt-8'>
+                <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Đổi mật khẩu</h2>
+              </div>
+              <div className='mx-auto max-w-2xl'>
+                <div className='border-b border-gray-900/10 pb-12'>
+                  {/* <h2 className='text-lg font-semibold leading-7 text-gray-900'>Thông tin tài khoản</h2> */}
+                  <div className='mt-10 grid gap-x-6 gap-y-8 grid-cols-6'>
+                    {/* <div className='col-span-6'>
+                    <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
+                      Email
+                    </label>
+                    <Controller
+                      name={'email'}
+                      control={control}
+                      render={({ field, fieldState: { error } }) => (
+                        <>
+                          <div className='mt-2'>
+                            <input
+                              id='email'
+                              value={field.value || ''}
+                              onChange={(e) => {
+                                field.onChange(e.target.value)
+                              }}
+                              type='text'
+                              className='block w-2/3 rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 text-sm leading-6'
+                            />
+                          </div>
+
+                          <small className='text-red-600'>{error?.message}</small>
+                        </>
+                      )}
+                    />
+                  </div> */}
+                    <div className='col-span-6'>
+                      <label htmlFor='password' className='block text-sm font-medium leading-6 text-gray-900'>
+                        Mật khẩu hiện tại
+                      </label>
+                      <Controller
+                        name={'password'}
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <>
+                            <div className='mt-2'>
+                              <input
+                                id='password'
+                                value={field.value || ''}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value)
+                                }}
+                                type='password'
+                                className='block w-2/3 rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 text-sm leading-6'
+                              />
+                            </div>
+
+                            <small className='text-red-600'>{error?.message}</small>
+                          </>
+                        )}
+                      />
+                    </div>
+                    <div className='col-span-6'>
+                      <label htmlFor='newPassword' className='block text-sm font-medium leading-6 text-gray-900'>
+                        Mật khẩu mới
+                      </label>
+                      <Controller
+                        name={'newPassword'}
+                        control={control}
+                        render={({ field, fieldState: { error } }) => (
+                          <>
+                            <div className='mt-2'>
+                              <input
+                                id='newPassword'
+                                value={field.value || ''}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value)
+                                }}
+                                type='password'
+                                className='block w-2/3 rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 text-sm leading-6'
+                              />
+                            </div>
+
+                            <small className='text-red-600'>{error?.message}</small>
+                          </>
+                        )}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className='mt-6 flex items-center justify-end gap-x-6'>
+                <Button disabled={!isValid}>Lưu</Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+export default ChangePassword

@@ -3,6 +3,8 @@
 import tailwindcssForm from '@tailwindcss/forms'
 import colors from 'tailwindcss/colors'
 
+import typography from '@tailwindcss/typography'
+
 export default {
   content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   theme: {
@@ -24,7 +26,8 @@ export default {
     },
   },
   plugins: [
-    // tailwindcssForm
+    // tailwindcssForm,
+    typography,
   ],
   darkMode: 'class',
   // important: true,

@@ -51,7 +51,10 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
 
   const flight = data.flightsData[flightType]?.flight
 
-  const flightLeg = flightLegType === FlightLegType.DEPARTURE ? flight?.flightLegs[0] : flight?.flightLegs[1]
+  const flightLeg =
+    flightLegType === FlightLegType.DEPARTURE
+      ? flight?.flightLegs[FlightLegType.DEPARTURE]
+      : flight?.flightLegs[FlightLegType.TRANSIT]
 
   const aircraftModel = flightLeg?.aircraft?.aircraftModel
 
@@ -153,9 +156,15 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                 'border-dashed': flightType !== FlightType.OUTBOUND || flightLegType !== FlightLegType.DEPARTURE,
               })}
             >
-              {data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[0].flightRoute.departureAirport.IATA}
+              {
+                data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE].flightRoute
+                  .departureAirport.IATA
+              }
               {' - '}
-              {data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[0].flightRoute.arrivalAirport.IATA}
+              {
+                data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE].flightRoute
+                  .arrivalAirport.IATA
+              }
             </button>
 
             {data.flightsData[FlightType.OUTBOUND]?.flight.hasTransit && (
@@ -171,9 +180,15 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                     'border-dashed': flightType !== FlightType.OUTBOUND || flightLegType !== FlightLegType.TRANSIT,
                   })}
                 >
-                  {data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[1].flightRoute.departureAirport.IATA}
+                  {
+                    data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[FlightLegType.TRANSIT].flightRoute
+                      .departureAirport.IATA
+                  }
                   {' - '}
-                  {data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[1].flightRoute.arrivalAirport.IATA}
+                  {
+                    data.flightsData[FlightType.OUTBOUND]?.flight.flightLegs[FlightLegType.TRANSIT].flightRoute
+                      .arrivalAirport.IATA
+                  }
                 </button>
               </>
             )}
@@ -191,9 +206,15 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                     'border-dashed': flightType !== FlightType.INBOUND || flightLegType !== FlightLegType.DEPARTURE,
                   })}
                 >
-                  {data.flightsData[FlightType.INBOUND]?.flight.flightLegs[0].flightRoute.departureAirport.IATA}
+                  {
+                    data.flightsData[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE].flightRoute
+                      .departureAirport.IATA
+                  }
                   {' - '}
-                  {data.flightsData[FlightType.INBOUND]?.flight.flightLegs[0].flightRoute.arrivalAirport.IATA}
+                  {
+                    data.flightsData[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE].flightRoute
+                      .arrivalAirport.IATA
+                  }
                 </button>
 
                 {data.flightsData[FlightType.INBOUND]?.flight.hasTransit && (
@@ -209,9 +230,15 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                         'border-dashed': flightType !== FlightType.INBOUND || flightLegType !== FlightLegType.TRANSIT,
                       })}
                     >
-                      {data.flightsData[FlightType.INBOUND]?.flight.flightLegs[1].flightRoute.departureAirport.IATA}
+                      {
+                        data.flightsData[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.TRANSIT].flightRoute
+                          .departureAirport.IATA
+                      }
                       {' - '}
-                      {data.flightsData[FlightType.INBOUND]?.flight.flightLegs[1].flightRoute.arrivalAirport.IATA}
+                      {
+                        data.flightsData[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.TRANSIT].flightRoute
+                          .arrivalAirport.IATA
+                      }
                     </button>
                   </>
                 )}

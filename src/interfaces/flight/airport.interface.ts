@@ -3,6 +3,7 @@ import addressSchema, { IAddress } from '../address/address.interface'
 import ICountry from '../address/country.interface'
 
 export interface IAirport {
+  _id?: string
   IATA: string
   cityCode: string
   countryCode: string

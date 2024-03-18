@@ -9,17 +9,95 @@ import StripePaymentForm from '@/components/Payment/StripePaymentForm'
 import { PaymentMethod } from '@/enums/payment.enums'
 import PaypalPaymentForm from '@/components/Payment/PaypalPaymentForm'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
+import { PassengerType } from '@/enums/passenger.enums'
+import { FlightType } from '@/enums/flight.enums'
+import { SeatClass } from '@/enums/seat.enums'
+import { UserGender } from '@/enums/user.enums'
+import { FlightLegType } from '@/enums/flightLeg.enums'
+import bookingService from '@/services/booking.service'
+import { useSearchWizard } from '@/contexts/SearchWizard.context'
 
 interface PaymentProps {}
 
 const Payment: FunctionComponent<PaymentProps> = () => {
+  const { data } = useSearchWizard()
+
   const [loading, setLoading] = useState(true)
   const [paymentMethod, setPaymentMethod] = useState('')
 
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     setLoading(false)
+  //   }, 500)
+  // }, [])
+
   useEffect(() => {
-    setTimeout(() => {
-      setLoading(false)
-    }, 500)
+    bookingService
+      .createTempBooking({
+        searchData: {
+          departureAirportIATA: data.searchData.departureAirportIATA,
+          arrivalAirportIATA: data.searchData.arrivalAirportIATA,
+
+          departureDate: data.searchData.departureDate,
+          returnDate: data.searchData.returnDate,
+
+          isRoundTrip: data.searchData.isRoundTrip,
+
+          passengers: data.searchData.passengers,
+        },
+        flightsData: {
+          [FlightType.OUTBOUND]: {
+            flight: data.flightsData[FlightType.OUTBOUND]!.flight._id,
+            seatClass: data.flightsData[FlightType.OUTBOUND]!.seatClass,
+          },
+          [FlightType.INBOUND]: !data.searchData.isRoundTrip
+            ? null
+            : {
+                flight: data.flightsData[FlightType.INBOUND]!.flight._id,
+                seatClass: data.flightsData[FlightType.OUTBOUND]!.seatClass,
+              },
+        },
+        passengersData: data.passengersData,
+        seatsData: {
+          [FlightType.OUTBOUND]: {
+            [FlightLegType.DEPARTURE]: {
+              [PassengerType.ADULT]: data.seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][
+                PassengerType.ADULT
+              ].map((seat) => seat._id),
+              [PassengerType.CHILD]: data.seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][
+                PassengerType.CHILD
+              ].map((seat) => seat._id),
+            },
+            [FlightLegType.TRANSIT]: {
+              [PassengerType.ADULT]: data.seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][
+                PassengerType.ADULT
+              ].map((seat) => seat._id),
+              [PassengerType.CHILD]: data.seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][
+                PassengerType.CHILD
+              ].map((seat) => seat._id),
+            },
+          },
+          [FlightType.INBOUND]: {
+            [FlightLegType.DEPARTURE]: {
+              [PassengerType.ADULT]: data.seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][
+                PassengerType.ADULT
+              ].map((seat) => seat._id),
+              [PassengerType.CHILD]: data.seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][
+                PassengerType.CHILD
+              ].map((seat) => seat._id),
+            },
+            [FlightLegType.TRANSIT]: {
+              [PassengerType.ADULT]: data.seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.ADULT].map(
+                (seat) => seat._id,
+              ),
+              [PassengerType.CHILD]: data.seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.CHILD].map(
+                (seat) => seat._id,
+              ),
+            },
+          },
+        },
+      })
+      .then(() => setLoading(false))
   }, [])
 
   const testSuccessPayment = async () => {
@@ -37,7 +115,10 @@ const Payment: FunctionComponent<PaymentProps> = () => {
   return (
     <div className=' my-16 grid grid-cols-12 gap-16'>
       <div className='col-span-8 flex flex-col gap-y-8'>
-        <button onClick={testSuccessPayment} className='text-2xl font-bold border-2 rounded-md p-8 py-4 active:scale-95'>
+        <button
+          onClick={testSuccessPayment}
+          className='rounded-md border-2 p-8 py-4 text-2xl font-bold active:scale-95'
+        >
           Test Success Payment
         </button>
         {/* <div className='rounded-md border-2 shadow-md'>

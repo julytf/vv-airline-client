@@ -26,12 +26,11 @@ const Login: FunctionComponent<LoginProps> = () => {
     mode: 'onChange',
     resolver: joiResolver(loginSchema),
   })
-  console.log('[info]:errors ',errors);
-  
+  console.log('[info]:errors ', errors)
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
-    console.log('here');
-    
+    console.log('here')
+
     const { email, password } = data
     const { accessToken, user } = await authService.login({ email, password })
     console.log({ user, accessToken })
@@ -139,9 +138,7 @@ const Login: FunctionComponent<LoginProps> = () => {
               </label>
             </div> */}
             <div className='mt-6 text-center'>
-              <button
-                className='mb-1 mr-1 w-full rounded bg-gray-800 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-gray-600'
-              >
+              <button type='submit' className='mb-1 mr-1 w-full rounded bg-gray-800 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-gray-600'>
                 Đăng Nhập
               </button>
             </div>

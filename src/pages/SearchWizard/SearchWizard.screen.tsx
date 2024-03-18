@@ -89,8 +89,8 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       [FlightType.INBOUND]: null,
     },
     passengersData: {
-      [PassengerType.ADULT]: null,
-      [PassengerType.CHILD]: null,
+      [PassengerType.ADULT]: [],
+      [PassengerType.CHILD]: [],
     },
     seatsData: {
       [FlightType.OUTBOUND]: {

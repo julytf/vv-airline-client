@@ -7,27 +7,24 @@ import { Suspense } from 'react'
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 
 import Loading from '@/components/Loading/Loading'
-
-import MainLayout from '@/layouts/Main.layout'
 import AdminLayout from '@/layouts/Admin.layout'
-
-import HomeScreen from '@/pages/Home.screen'
-import LoginScreen from '@/pages/Auth/Login.screen'
-import RegisterScreen from '@/pages/Auth/Register.screen'
-
-import AccountIndexScreen from '@/pages/Account/Index.screen'
-
-import BlogIndexScreen from '@/pages/Blog/Index.screen'
-import BlogDetailScreen from '@/pages/Blog/Detail.screen'
-
-import TestScreen from '@/pages/Test.screen'
-
 import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
 import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
 import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
+
+import AdminAirportsIndexScreen from '@/pages/Admin/Airports/Index.screen'
+import AdminCreateAirportScreen from '@/pages/Admin/Airports/Create.screen'
+import AdminUpdateAirportScreen from '@/pages/Admin/Airports/Update.screen'
+
+import AdminBlogsIndexScreen from '@/pages/Admin/Blogs/Index.screen'
+import AdminCreateBlogScreen from '@/pages/Admin/Blogs/Create.screen'
+import AdminUpdateBlogScreen from '@/pages/Admin/Blogs/Update.screen'
+
+import AdminAccountIndexScreen from '@/pages/Admin/Account/Index.screen'
+import AdminChangePasswordScreen from '@/pages/Admin/Account/ChangePassword.screen'
+
 import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
-import { route } from '@/utils/helpers'
 
 export const adminRoutes = [
   {
@@ -54,6 +51,27 @@ export const adminRoutes = [
         element: <AdminDashboardScreen />,
       },
       {
+        path: 'account',
+        breadcrumbName: 'Tài Khoản',
+        element: (
+          <RoleGuard restrictedTo={[UserRole.GUEST]} redirect='/'>
+            <Outlet />
+          </RoleGuard>
+        ),
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Thông tin',
+            element: <AdminAccountIndexScreen />,
+          },
+          {
+            path: 'change-password',
+            breadcrumbName: 'Đổi mật khẩu',
+            element: <AdminChangePasswordScreen />,
+          },
+        ],
+      },
+      {
         path: 'monthly-statistics',
         breadcrumbName: 'Thống kê tháng',
         element: <NotImplemented />,
@@ -65,17 +83,22 @@ export const adminRoutes = [
       },
       {
         path: 'blogs',
-        breadcrumbName: 'Blogs',
+        breadcrumbName: 'Sân bay',
         children: [
           {
             path: '',
             breadcrumbName: 'Danh sách',
-            element: <NotImplemented />,
+            element: <AdminBlogsIndexScreen />,
           },
           {
             path: ':id',
-            breadcrumbName: 'Chi tiết',
-            element: <NotImplemented />,
+            breadcrumbName: 'Cập nhật Sân Bay',
+            element: <AdminUpdateBlogScreen />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Sân Bay',
+            element: <AdminCreateBlogScreen />,
           },
         ],
       },
@@ -108,7 +131,23 @@ export const adminRoutes = [
       {
         path: 'airports',
         breadcrumbName: 'Sân bay',
-        element: <NotImplemented />,
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminAirportsIndexScreen />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Sân Bay',
+            element: <AdminUpdateAirportScreen />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Sân Bay',
+            element: <AdminCreateAirportScreen />,
+          },
+        ],
       },
       {
         path: 'flight-routes',

@@ -1,10 +1,10 @@
 import axiosClient from './api/axios.service'
 class AuthService {
-  accessToken: string = ''
+  // accessToken: string = ''
 
-  async setAccessToken(accessToken: string) {
-    this.accessToken = accessToken
-  }
+  // async setAccessToken(accessToken: string) {
+  //   this.accessToken = accessToken
+  // }
 
   async login(credentials: { email: string; password: string }) {
     const response = await axiosClient.post('/auth/login', credentials, {
@@ -12,9 +12,7 @@ class AuthService {
         // 'Content-Type': 'application/json',
       },
     })
-    // console.log(response)
 
-    // const user = response.data.data.user
     const data = response.data.data
 
     return data
@@ -24,13 +22,10 @@ class AuthService {
 
     const response = await axiosClient.patch('/auth/change-password', data, {
       headers: {
-        // 'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
       },
     })
     console.log(response.data.data.user)
-
-    // const user = response.data.data.user
   }
 }
 

@@ -50,23 +50,24 @@ export interface PassengersData {
           gender: UserGender
           phoneNumber: string
           email: string
+          // type: PassengerType
         },
         ...{
           lastName: string
           firstName: string
           dateOfBirth: Date
           gender: UserGender
+          // type: PassengerType
         }[],
       ]
-    | null
-  [PassengerType.CHILD]:
-    | {
-        lastName: string
-        firstName: string
-        dateOfBirth: Date
-        gender: UserGender
-      }[]
-    | null
+    | []
+  [PassengerType.CHILD]: {
+    lastName: string
+    firstName: string
+    dateOfBirth: Date
+    gender: UserGender
+    // type: PassengerType
+  }[]
 }
 export interface SeatsData {
   [FlightType.OUTBOUND]: {

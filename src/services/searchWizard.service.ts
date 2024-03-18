@@ -1,11 +1,11 @@
 import axiosClient from './api/axios.service'
 
 class searchWizardService {
-  accessToken: string = ''
+  // accessToken: string = ''
 
-  async setAccessToken(accessToken: string) {
-    this.accessToken = accessToken
-  }
+  // async setAccessToken(accessToken: string) {
+  //   this.accessToken = accessToken
+  // }
 
   // async getFlightRoutes() {
   //   const response = await axiosClient.get('/search-wizard/get-flight-routes', {

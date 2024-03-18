@@ -19,6 +19,7 @@ const passengersInformationSchema = Joi.object({
         gender: genderSchema,
         phoneNumber: phoneNumberSchema,
         email: emailSchema,
+        // type: Joi.string().valid(PassengerType.ADULT, PassengerType.CHILD).required(),
       }),
     )
     .items(
@@ -27,6 +28,7 @@ const passengersInformationSchema = Joi.object({
         firstName: firstNameSchema,
         dateOfBirth: dateOfBirthSchema,
         gender: genderSchema,
+        // type: Joi.string().valid(PassengerType.ADULT, PassengerType.CHILD).required(),
       }),
     ),
   [PassengerType.CHILD]: Joi.array().items(
@@ -35,6 +37,7 @@ const passengersInformationSchema = Joi.object({
       firstName: firstNameSchema,
       dateOfBirth: dateOfBirthSchema,
       gender: genderSchema,
+      // type: Joi.string().valid(PassengerType.ADULT, PassengerType.CHILD).required(),
     }),
   ),
 })

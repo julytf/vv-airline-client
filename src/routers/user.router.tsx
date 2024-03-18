@@ -3,24 +3,6 @@
 
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 
-// const Loading = lazy(() => import('@/components/Loading/Loading'))
-// const MainLayout = lazy(() => import('@/layouts/Main.layout'))
-// const HomeScreen = lazy(() => import('@/pages/Home.screen'))
-// const LoginScreen = lazy(() => import('@/pages/Auth/Login.screen'))
-// const RegisterScreen = lazy(() => import('@/pages/Auth/Register.screen'))
-// const PaymentScreen = lazy(() => import('@/pages/SearchWizard/Payment.screen'))
-// const SearchWizardLayout = lazy(() => import('@/layouts/SearchWizard.layout'))
-// const FlightsSelectionScreen = lazy(() => import('@/pages/SearchWizard/FlightsSelection.screen'))
-// const SeatsSelectionScreen = lazy(() => import('@/pages/SearchWizard/SeatsSelection.screen'))
-// const PassengersInformationScreen = lazy(() => import('@/pages/SearchWizard/PassengersInformation.screen'))
-// const BlogIndexScreen = lazy(() => import('@/pages/Blog/Index.screen'))
-// const BlogDetailScreen = lazy(() => import('@/pages/Blog/Detail.screen'))
-// const TestScreen = lazy(() => import('@/pages/Test.screen'))
-// const AdminDashboardScreen = lazy(() => import('@/pages/Admin/Dashboard.screen'))
-// const AdminLoginScreen = lazy(() => import('@/pages/Admin/Auth/Login.screen'))
-// const AdminLayout = lazy(() => import('@/layouts/Admin.layout'))
-// const AdminUsersIndexScreen = lazy(() => import('@/pages/Admin/Users/Index.screen'))
-
 import MainLayout from '@/layouts/Main.layout'
 
 import HomeScreen from '@/pages/Home.screen'
@@ -28,12 +10,7 @@ import LoginScreen from '@/pages/Auth/Login.screen'
 import RegisterScreen from '@/pages/Auth/Register.screen'
 
 import AccountIndexScreen from '@/pages/Account/Index.screen'
-
-// import PaymentScreen from '@/pages/SearchWizard/Payment.screen'
-// import SearchWizardLayout from '@/layouts/SearchWizard.layout'
-// import FlightsSelectionScreen from '@/pages/SearchWizard/FlightsSelection.screen'
-// import SeatsSelectionScreen from '@/pages/SearchWizard/SeatsSelection.screen'
-// import PassengersInformationScreen from '@/pages/SearchWizard/PassengersInformation.screen'
+import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 
 import BlogIndexScreen from '@/pages/Blog/Index.screen'
 import BlogDetailScreen from '@/pages/Blog/Detail.screen'
@@ -42,12 +19,7 @@ import TestScreen from '@/pages/Test.screen'
 
 import RoleGuard from '@/middlewares/roleGuard.middleware'
 import { UserRole } from '@/enums/user.enums'
-import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
-// import FlightsSelectionScreen from '@/pages/SearchWizard/steps/FlightsSelection.screen'
-// import SeatsSelectionScreen from '@/pages/SearchWizard/steps/SeatsSelection.screen'
-// import PassengersInformationScreen from '@/pages/SearchWizard/steps/PassengersInformation.screen'
-// import PaymentScreen from '@/pages/SearchWizard/steps/Payment.screen'
 
 export const userRoutes = [
   {

@@ -23,7 +23,8 @@ const RoleGuard: FunctionComponent<RoleGuardProps> = ({ unrestrictedTo, restrict
   }
 
   const userRole: UserRole = isAuthenticated ? user?.role || UserRole.USER : UserRole.GUEST
-  // console.log('userRole', userRole)
+  console.log('user', user)
+  console.log('userRole', userRole)
 
   if (restrictedTo && restrictedTo.includes(userRole)) {
     return <Navigate to={redirect} />

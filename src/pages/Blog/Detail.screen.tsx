@@ -1,36 +1,39 @@
-import { FunctionComponent } from 'react'
+import Loading from '@/components/Loading/Loading'
+import IBlog from '@/interfaces/blog/blog.interface'
+import blogsService from '@/services/blogs.service'
+import { FunctionComponent, useEffect, useState } from 'react'
+import { useParams } from 'react-router'
 
 interface DetailProps {}
 
 const Detail: FunctionComponent<DetailProps> = () => {
+  const { id } = useParams<{ id: string }>()
+
+  const [isLoading, setIsLoading] = useState<boolean>(true)
+
+  const [blog, setBlog] = useState<IBlog | null>(null)
+  console.log(blog)
+
+  useEffect(() => {
+    blogsService.getBlog(id!).then((data) => {
+      setBlog(data)
+      setIsLoading(false)
+    })
+  }, [])
+
+  if (isLoading) {
+    return <Loading />
+  }
+
   return (
-    <div className='mx-auto max-w-4xl pt-8 pb-16'>
-      <div className='overflow-hidden rounded-2xl'>
-        <img src='https://www.gotokyo.org/en/plan/tokyo-outline/images/main.jpg' alt='' />
+    <div className='mx-auto max-w-4xl pb-16 pt-8'>
+      <div className='overflow-hidden rounded-2xl max-h-96 flex justify-center items-center'>
+        <img src={blog?.coverImage} alt='' />
       </div>
-      <div className='bold pt-8 text-3xl'>Tokyo - Thủ đô của hiện đại và truyền thống</div>
+      <div className='bold pt-8 text-3xl'>{blog?.title}</div>
       <div className='pb-4 text-sm text-gray-500'>23 tháng 9, 2023</div>
-      <div className='pb-8 italic'>
-        Nếu bạn yêu thích nền văn hóa của xứ sở mặt trời mọc, thì Tokyo chính là điểm đến trong mơ dành cho bạn. Với một
-        Nhật Bản thu nhỏ được tái hiện trong một lần dừng chân, Tokyo khoác lên mình tấm áo hào nhoáng và lấp lánh của
-        một siêu đô thị không ngủ, nhưng len lỏi trong những góc phố ồn ào nhất là cả những khoảng bình lặng và cổ điển.
-        Hãy lập kế hoạch xách balo lên và đi thôi, vì từ tháng 9 đến tháng 11 sẽ là lúc thời tiết thuận lợi nhất cho một
-        chuyến du lịch Tokyo trọn vẹn.
-      </div>
-      <p className='pb-4'>
-        <div className='bold text-2xl'>1. Shibuya:</div>
-        Đừng bỏ lỡ cơ hội được “bước chậm lại giữa thế gian vội vã” tại giao lộ Shibuya – một trong những biểu tượng của
-        Tokyo sầm uất và năng động. Nhịp điệu nơi đây gắn liền với hoạt động của nhà ga Shibuya đưa đón hơn 3 triệu lượt
-        khách du lịch Tokyo mỗi ngày và đây cũng là trung tâm mua sắm thời trang - giải trí cho giới trẻ với hàng trăm
-        thương hiệu nổi tiếng.
-      </p>
-      <p>
-        <div className='bold text-2xl'>2. Asakusa:</div>
-        Rời xa bảng điện hào nhoáng và những tòa cao ốc của thế giới hiện đại khi du lịch quanh Tokyo, du khách có thể
-        ngược dòng thời gian trở về một Tokyo cổ kính của thời Edo tại Asakusa. Con đường khám phá Asakusa thường bắt
-        đầu từ bước chân qua Kaminarimon (Cổng sấm sét) – biểu tượng của thành phố, tản bộ qua khu phố Nakamise trong
-        làn khói hương và thành tâm công đức đồng 5 Yên tại ngôi chùa Sensoji linh thiêng.
-      </p>
+      <div className='pb-8 italic'>{blog?.summary}</div>
+      <div className='prose' dangerouslySetInnerHTML={{ __html: blog?.content || '' }}></div>
     </div>
   )
 }

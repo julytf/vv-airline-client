@@ -11,15 +11,15 @@ interface QueryOption {
   // searchFields?: string
 }
 
-class UserService {
-  accessToken: string = ''
+class UsersService {
+  // accessToken: string = ''
 
-  async setAccessToken(accessToken: string) {
-    this.accessToken = accessToken
-  }
+  // async setAccessToken(accessToken: string) {
+  //   this.accessToken = accessToken
+  // }
 
   async getProfile(accessToken: string = '') {
-    accessToken = accessToken || this.accessToken
+    // accessToken = accessToken || this.accessToken
     const response = await axiosClient.get('/users/get-profile', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
@@ -32,13 +32,13 @@ class UserService {
     return user
   }
   async updateProfile(data: IUser) {
-    const accessToken = this.accessToken
-    console.log(accessToken)
+    // const accessToken = this.accessToken
+    // console.log(accessToken)
 
     const response = await axiosClient.patch('/users/update-profile', data, {
       headers: {
         // 'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
       },
     })
     console.log(response.data.data.user)
@@ -47,8 +47,8 @@ class UserService {
 
     return user
   }
-  async getUser({ page = 1, perPage = 20, q = '' }: QueryOption) {
-    const accessToken = this.accessToken
+  async getUsersPaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
+    // const accessToken = this.accessToken
 
     const response = await axiosClient.get('/users', {
       params: {
@@ -58,7 +58,7 @@ class UserService {
       },
       headers: {
         // 'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
       },
     })
     const data = response.data.data
@@ -66,4 +66,4 @@ class UserService {
   }
 }
 
-export default new UserService()
+export default new UsersService()

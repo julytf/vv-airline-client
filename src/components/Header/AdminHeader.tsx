@@ -104,7 +104,7 @@ const AccountButton: FunctionComponent<AccountButtonProps> = () => {
           </span>
         </DropDown.Row>
         <DropDown.Row>
-          <NavLink to={'/account'}>
+          <NavLink to={'/admin/account'}>
             <i className='fa-light fa-file-user'></i>
             <span className='ml-2'>Tài khoản</span>
           </NavLink>

@@ -72,7 +72,7 @@ const Index: FunctionComponent<IndexProps> = () => {
     console.log('accessToken', accessToken)
     console.log('data', data)
 
-    const user = await usersService.updateProfile(accessToken!, data as IUser)
+    const user = await usersService.updateProfile(data as IUser)
     console.log('user', user)
 
     dispatch(auth.setProfile(user))

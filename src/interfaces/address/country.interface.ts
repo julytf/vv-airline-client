@@ -1,12 +1,13 @@
-import { ObjectId, Schema, model } from 'mongoose'
+import IProvince from './province.interface'
 
 export interface ICountry {
+  _id: string
   code: string
   name: string
   nameEn: string
   fullName: string
   fullNameEn: string
   codeName: string
-  provinces?: Schema.Types.ObjectId[]
+  provinces?: IProvince[]
 }
 export default ICountry

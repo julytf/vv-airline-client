@@ -10,12 +10,14 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = () => {
   useScrollToTopOnNavigate()
 
   return (
-    <div className=' font-nuni flex'>
-        <AdminSidebar />
-      <div className='flex-1 ml-56'>
+    <div className=' flex font-nuni'>
+      <AdminSidebar />
+      <div className='ml-56 flex-1'>
         <div className='mx-auto min-h-screen w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'>
           <AdminHeader />
-          <Outlet></Outlet>
+          <div className=' bg-slate-100'>
+            <Outlet></Outlet>
+          </div>
         </div>
       </div>
     </div>

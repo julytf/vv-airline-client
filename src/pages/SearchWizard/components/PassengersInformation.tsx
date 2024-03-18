@@ -11,26 +11,6 @@ import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNav
 import { PassengersData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { UserGender } from '@/enums/user.enums'
 
-// type FirstPassengerInformation = {
-//   lastName: string
-//   firstName: string
-//   dateOfBirth: Date
-//   gender: UserGender
-//   phoneNumber: string
-//   email: string
-// }
-// type PassengerInformation = {
-//   lastName: string
-//   firstName: string
-//   dateOfBirth: Date
-//   gender: UserGender
-// }
-
-// type PassengersInformation = {
-//   adultsInfo: [FirstPassengerInformation, ...PassengerInformation[]]
-//   childrenInfo: PassengerInformation[]
-// }
-
 interface PassengersInformationProps {}
 
 const PassengersInformation: FunctionComponent<PassengersInformationProps> = () => {
@@ -118,6 +98,7 @@ interface PassengerInformationFormProps {
 const PassengerInformationForm: FunctionComponent<PassengerInformationFormProps> = ({ type, index, control }) => {
   return (
     <div className='rounded-md border-2 border-solid pt-0 shadow-lg'>
+      {/* <Controller name={`${type}.${index}.type`} control={control} render={() => <input />} defaultValue={'type'} /> */}
       <div className='w-full  border-b p-6 py-3 sm:w-full'>
         <h2 className='text-lg font-bold tracking-tight text-gray-900'>
           {type === PassengerType.ADULT ? 'Hành khách người lớn ' : 'Hành khách trẻ em '}
