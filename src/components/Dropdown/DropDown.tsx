@@ -31,7 +31,7 @@ const DropDown: FunctionComponent<DropDownProps> & { Row: FunctionComponent<RowP
     <div
       className={classNames(
         className,
-        `absolute z-30 max-h-0 max-w-0 overflow-hidden text-nowrap rounded bg-white transition-all duration-500`,
+        `absolute z-30 max-h-0 max-w-0 overflow-y-scroll no-scrollbar text-nowrap rounded bg-white transition-all duration-500`,
         {
           'max-h-96 max-w-96': isShow,
           'left-0': position === 'top-right' || position === 'bottom-right',

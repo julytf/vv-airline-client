@@ -19,6 +19,10 @@ export type IAircraftSeatMap = ICabinModel[]
 
 export interface IAircraftModel {
   name?: string
+  seatQuantity: {
+    [SeatClass.ECONOMY]: number
+    [SeatClass.BUSINESS]: number
+  }
   seatMap: ICabinModel[]
 }
 

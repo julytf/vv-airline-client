@@ -5,7 +5,8 @@ export interface IFlightRoute {
   _id?: string
   distance?: number
   prices: {
-    [key: string]: number
+    [SeatClass.ECONOMY]: number
+    [SeatClass.BUSINESS]: number
   }
   departureAirport: IAirport
   arrivalAirport: IAirport

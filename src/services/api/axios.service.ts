@@ -10,7 +10,7 @@ const axiosClient = axios.create({
 })
 
 axiosClient.interceptors.request.use(async (value: InternalAxiosRequestConfig) => {
-  value.headers['Content-Type'] = 'application/json'
+  // value.headers['Content-Type'] = 'application/json'
   value.headers['authorization'] = `Bearer ${getToken()}`
   // value.headers['authentizationAdmin'] = `Bearer ${getTokenAdmin()}`
 

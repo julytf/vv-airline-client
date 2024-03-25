@@ -5,6 +5,7 @@ import TablePagination from '../Pagination/TablePagination'
 import classNames from 'classnames'
 import { useNavigate } from 'react-router'
 import Button from '../ui/Button'
+import Loading from '../Loading/Loading'
 
 export type TableData = {
   [key: string]: unknown
@@ -14,14 +15,15 @@ interface SmartTableProps {
   title?: string
   subTitle?: string
   FetchDataFnc: (option: { page: number; perPage: number; q: string }) => Promise<unknown>
+  queryKey: string
   renderOptions: {
     field: string
     displayName: string
-    renderFnc: (value: unknown, data?: TableData) => JSX.Element
+    renderFnc: (value: unknown, data: TableData) => JSX.Element
   }[]
 }
 
-const SmartTable: FunctionComponent<SmartTableProps> = ({ title, subTitle, FetchDataFnc, renderOptions }) => {
+const SmartTable: FunctionComponent<SmartTableProps> = ({ title, subTitle, FetchDataFnc, queryKey, renderOptions }) => {
   const navigate = useNavigate()
 
   const [isFirstRender, setIsFirstRender] = useState(true)
@@ -29,19 +31,22 @@ const SmartTable: FunctionComponent<SmartTableProps> = ({ title, subTitle, Fetch
     setIsFirstRender(false)
   }, [])
 
-  const [page, setPage] = useState(() => Number(new URLSearchParams(location.search).get('page')) || 1)
-  const [perPage, setPerPage] = useState(() => Number(new URLSearchParams(location.search).get('perPage')) || 20)
-  const [q, setQ] = useState(() => new URLSearchParams(location.search).get('q') || '')
+  const searchParams = new URLSearchParams(location.search)
+
+  const [page, setPage] = useState(() => Number(searchParams.get('page')) || 1)
+  const [perPage, setPerPage] = useState(() => Number(searchParams.get('perPage')) || 20)
+  const [q, setQ] = useState(() => searchParams.get('q') || '')
 
   const [perPageInput, setPerPageInput] = useState(perPage)
   const [qInput, setQInput] = useState(q)
 
   const { data, isFetching, isLoading, error, isError } = useQuery({
-    queryKey: ['users', { page, perPage, q }],
+    queryKey: [queryKey, { page, perPage, q }],
     queryFn: () => FetchDataFnc({ page, perPage, q }),
   })
 
   const { docs: tableData = [], lastPage } = (data as { docs: TableData[]; lastPage: number }) || {}
+  console.log(tableData)
 
   useEffect(() => {
     if (isFirstRender) return
@@ -58,6 +63,8 @@ const SmartTable: FunctionComponent<SmartTableProps> = ({ title, subTitle, Fetch
     searchParams.set('q', q)
     navigate({ search: searchParams.toString() })
   }, [perPage, q])
+
+  if (isLoading) return <Loading />
 
   return (
     <div className='relative z-10 mb-6 flex min-w-0 flex-col break-words rounded-2xl border border-solid  bg-white bg-clip-border shadow-xl'>

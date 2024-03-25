@@ -16,9 +16,29 @@ import AdminAirportsIndexScreen from '@/pages/Admin/Airports/Index.screen'
 import AdminCreateAirportScreen from '@/pages/Admin/Airports/Create.screen'
 import AdminUpdateAirportScreen from '@/pages/Admin/Airports/Update.screen'
 
-import AdminBlogsIndexScreen from '@/pages/Admin/Blogs/Index.screen'
-import AdminCreateBlogScreen from '@/pages/Admin/Blogs/Create.screen'
-import AdminUpdateBlogScreen from '@/pages/Admin/Blogs/Update.screen'
+import AdminFlightRoutesIndexScreen from '@/pages/Admin/FlightRoutes/Index.screen'
+// import AdminCreateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Create.screen'
+// import AdminUpdateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Update.screen'
+
+import AdminFlightLegsIndexScreen from '@/pages/Admin/FlightLegs/Index.screen'
+// import AdminCreateFlightLegScreen from '@/pages/Admin/FlightLegs/Create.screen'
+// import AdminUpdateFlightLegScreen from '@/pages/Admin/FlightLegs/Update.screen'
+
+import AdminFlightsIndexScreen from '@/pages/Admin/Flights/Index.screen'
+// import AdminCreateFlightScreen from '@/pages/Admin/Flights/Create.screen'
+// import AdminUpdateFlightScreen from '@/pages/Admin/Flights/Update.screen'
+
+import AdminAircraftsIndexScreen from '@/pages/Admin/Aircrafts/Index.screen'
+// import AdminCreateAircraftscreen from '@/pages/Admin/Aircrafts/Create.screen'
+// import AdminUpdateAircraftscreen from '@/pages/Admin/Aircrafts/Update.screen'
+
+import AdminAircraftModelsIndexScreen from '@/pages/Admin/AircraftModels/Index.screen'
+// import AdminCreateAircraftModelscreen from '@/pages/Admin/AircraftModels/Create.screen'
+// import AdminUpdateAircraftModelscreen from '@/pages/Admin/AircraftModels/Update.screen'
+
+import AdminArticlesIndexScreen from '@/pages/Admin/Articles/Index.screen'
+import AdminCreateArticleScreen from '@/pages/Admin/Articles/Create.screen'
+import AdminUpdateArticleScreen from '@/pages/Admin/Articles/Update.screen'
 
 import AdminAccountIndexScreen from '@/pages/Admin/Account/Index.screen'
 import AdminChangePasswordScreen from '@/pages/Admin/Account/ChangePassword.screen'
@@ -82,23 +102,23 @@ export const adminRoutes = [
         element: <NotImplemented />,
       },
       {
-        path: 'blogs',
-        breadcrumbName: 'Sân bay',
+        path: 'articles',
+        breadcrumbName: 'Article',
         children: [
           {
             path: '',
             breadcrumbName: 'Danh sách',
-            element: <AdminBlogsIndexScreen />,
+            element: <AdminArticlesIndexScreen />,
           },
           {
             path: ':id',
-            breadcrumbName: 'Cập nhật Sân Bay',
-            element: <AdminUpdateBlogScreen />,
+            breadcrumbName: 'Cập nhật Article',
+            element: <AdminUpdateArticleScreen />,
           },
           {
             path: 'create',
-            breadcrumbName: 'Thêm Sân Bay',
-            element: <AdminCreateBlogScreen />,
+            breadcrumbName: 'Thêm Article',
+            element: <AdminCreateArticleScreen />,
           },
         ],
       },
@@ -120,13 +140,51 @@ export const adminRoutes = [
       },
       {
         path: 'aircraft-models',
-        breadcrumbName: 'Mẫu máy bay',
-        element: <NotImplemented />,
+        breadcrumbName: 'Mẫu Máy bay',
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminAircraftModelsIndexScreen />,
+            // element: <NotImplemented />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Mẫu Máy bay',
+            // element: <AdminUpdateAirportScreen />,
+            element: <NotImplemented />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Mẫu Máy bay',
+            // element: <AdminCreateAirportScreen />,
+            element: <NotImplemented />,
+          },
+        ],
       },
       {
         path: 'aircrafts',
         breadcrumbName: 'Máy bay',
-        element: <NotImplemented />,
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminAircraftsIndexScreen />,
+            // element: <NotImplemented />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Máy bay',
+            // element: <AdminUpdateAirportScreen />,
+            element: <NotImplemented />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Máy bay',
+            // element: <AdminCreateAirportScreen />,
+            element: <NotImplemented />,
+          },
+        ],
       },
       {
         path: 'airports',
@@ -152,17 +210,72 @@ export const adminRoutes = [
       {
         path: 'flight-routes',
         breadcrumbName: 'Tuyến bay',
-        element: <NotImplemented />,
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminFlightRoutesIndexScreen />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Tuyến bay',
+            // element: <AdminUpdateAirportScreen />,
+            element: <NotImplemented />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Tuyến bay',
+            // element: <AdminCreateAirportScreen />,
+            element: <NotImplemented />,
+          },
+        ],
       },
       {
         path: 'flight-legs',
         breadcrumbName: 'Chặng bay',
-        element: <NotImplemented />,
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminFlightLegsIndexScreen />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Chặng bay',
+            // element: <AdminUpdateAirportScreen />,
+            element: <NotImplemented />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Chặng bay',
+            // element: <AdminCreateAirportScreen />,
+            element: <NotImplemented />,
+          },
+        ],
       },
       {
         path: 'flights',
         breadcrumbName: 'Chuyến bay',
-        element: <NotImplemented />,
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminFlightsIndexScreen />,
+            // element: <NotImplemented />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Cập nhật Chuyến bay',
+            // element: <AdminUpdateAirportScreen />,
+            element: <NotImplemented />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Chuyến bay',
+            // element: <AdminCreateAirportScreen />,
+            element: <NotImplemented />,
+          },
+        ],
       },
     ],
   },

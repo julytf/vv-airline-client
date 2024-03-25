@@ -19,7 +19,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
   const { isInitialized, isAuthenticated } = useSelector((state: AppState) => state.auth)
 
   return (
-    <header className='sticky top-0 z-50 bg-white p-2 px-6 shadow-md shadow-white'>
+    <header className='sticky top-0 z-50 bg-white/90 p-2 px-6 '>
       <div className='flex items-center justify-between'>
         <NavLink to={'/'}>
           <div className='flex items-center'>
@@ -29,8 +29,13 @@ const Header: FunctionComponent<HeaderProps> = () => {
             <div className='text-xl font-bold'>VV Airline</div>
           </div>
         </NavLink>
-        {!isInitialized && <Loading small />}
-        {isInitialized && (isAuthenticated ? <LoggedInNavBarButton /> : <NotLoggedInNavBarButton />)}
+        <div className=' flex'>
+          <NavLink className='pr-4' to={'/articles'}>
+            <Button text>Bài Viết</Button>
+          </NavLink>
+          {!isInitialized && <Loading small />}
+          {isInitialized && (isAuthenticated ? <LoggedInNavBarButton /> : <NotLoggedInNavBarButton />)}
+        </div>
       </div>
     </header>
   )

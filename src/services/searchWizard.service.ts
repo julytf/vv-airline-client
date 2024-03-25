@@ -43,22 +43,19 @@ class searchWizardService {
     departureAirportIATA,
     arrivalAirportIATA,
     departureDate,
-    passengersAdults,
-    passengersChildren,
+    totalPassengers,
   }: {
     departureAirportIATA: string
     arrivalAirportIATA: string
     departureDate: Date
-    passengersAdults: number
-    passengersChildren: number
+    totalPassengers: number
   }) {
     const response = await axiosClient.get('/search-wizard/get-flights', {
       params: {
         departureAirportIATA,
         arrivalAirportIATA,
         departureDate,
-        passengersAdults,
-        passengersChildren,
+        totalPassengers,
       },
       headers: {},
     })

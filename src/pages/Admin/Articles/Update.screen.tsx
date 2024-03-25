@@ -1,10 +1,11 @@
+import Loading from '@/components/Loading/Loading'
 import Button from '@/components/ui/Button'
 import { UserGender, UserRole } from '@/enums/user.enums'
 import IAddress from '@/interfaces/address/address.interface'
 import ICountry from '@/interfaces/address/country.interface'
-import IBlog from '@/interfaces/blog/blog.interface'
+import IArticle from '@/interfaces/article/article.interface'
 import addressService from '@/services/address.service'
-import blogsService from '@/services/blogs.service'
+import articlesService from '@/services/articles.service'
 import filesService from '@/services/files.service'
 import updateUserSchema from '@/utils/validations/user/updateUser.schema'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
@@ -15,24 +16,31 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import { useParams } from 'react-router'
 
 interface IFormData {
   title: string
   summary?: string
-  coverImage?: string
+  coverImage?: File
   content: string
 }
 
 const formSchema = Joi.object({
   title: Joi.string(),
   summary: Joi.string(),
-  coverImage: Joi.string(),
+  coverImage: Joi.any(),
   content: Joi.string(),
 })
 
-interface CreateBlogProps {}
+interface CreateArticleProps {}
 
-const CreateBlog: FunctionComponent<CreateBlogProps> = () => {
+const CreateArticle: FunctionComponent<CreateArticleProps> = () => {
+  const { id } = useParams()
+
+  const [isLoading, setIsLoading] = useState(true)
+
+  const [article, setArticle] = useState<IArticle>()
+
   const {
     register,
     handleSubmit,
@@ -47,22 +55,38 @@ const CreateBlog: FunctionComponent<CreateBlogProps> = () => {
 
   const watchAllFields = watch()
 
-  console.log(isValid)
-  console.log(errors)
-  console.log(formSchema.validate(watchAllFields))
+  // console.log(isValid)
+  // console.log(errors)
+  // console.log(formSchema.validate(watchAllFields))
 
+  useEffect(() => {
+    articlesService.getArticle(id!).then((data) => {
+      setArticle(data)
+      reset({
+        title: data.title,
+        summary: data.summary,
+        coverImage: data.coverImage,
+        content: data.content,
+      })
+      setIsLoading(false)
+    })
+  }, [])
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await blogsService.createBlog(data as IBlog)
+    await articlesService.createArticle(data as IArticle)
     // reset()
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
     <div className='flex justify-center p-8'>
-      <form method='post' className='max-w-3xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
+      <form method='post' className='max-w-4xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
         <div className='mx-auto w-full max-w-sm pt-6'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Blog</h2>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Bài Viết</h2>
         </div>
         <div className='mx-auto'>
           <div className='space-y-12'>
@@ -132,12 +156,11 @@ const CreateBlog: FunctionComponent<CreateBlogProps> = () => {
                         <div className='mt-2'>
                           <input
                             id='coverImage'
-                            value={field.value || ''}
+                            type='file'
                             onChange={(e) => {
-                              field.onChange(e.target.value)
+                              field.onChange(e?.target?.files?.[0])
                             }}
-                            type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                            className=' text-surface  file:text-surface   relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded bg-transparent bg-clip-padding px-3 py-[0.32rem] text-base font-normal outline-primary ring-1 ring-inset ring-gray-300 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:me-3 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-e file:border-solid file:border-inherit  file:bg-transparent file:px-3 file:py-[0.32rem]  focus:text-gray-700 focus:outline-none dark:border-white/70 dark:text-white  file:dark:text-white'
                           />
                         </div>
 
@@ -156,7 +179,7 @@ const CreateBlog: FunctionComponent<CreateBlogProps> = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
-                        <div className='prose'>
+                        <div className='prose max-w-full'>
                           <CKEditor
                             config={{
                               extraPlugins: [uploadPlugin],
@@ -168,7 +191,7 @@ const CreateBlog: FunctionComponent<CreateBlogProps> = () => {
                             data={field.value || ''}
                             onChange={(event, editor) => {
                               const data = editor.getData()
-                              console.log({ event, editor, data })
+                              // console.log({ event, editor, data })
                               field.onChange(data)
                             }}
                           />
@@ -196,9 +219,11 @@ function uploadAdapter(loader: FileLoader): UploadAdapter {
     upload: async () => {
       try {
         const file = await loader.file
-        const filename = filesService.uploadImage(file!)
+        console.log('file', file)
+
+        const filePath = await filesService.uploadImage(file!)
         return {
-          default: `local.test:3000/${filename}`,
+          default: `http://local.test:3000/${filePath}`,
         }
       } catch (error) {
         throw new Error('Error uploading file')
@@ -215,4 +240,4 @@ function uploadPlugin(editor: Editor) {
   }
 }
 
-export default CreateBlog
+export default CreateArticle

@@ -23,6 +23,9 @@ export default {
       },
       fontSize: {},
       width: {},
+      maxHeight: {
+        1000: '250rem ',
+      },
     },
   },
   plugins: [

@@ -12,8 +12,8 @@ import RegisterScreen from '@/pages/Auth/Register.screen'
 import AccountIndexScreen from '@/pages/Account/Index.screen'
 import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 
-import BlogIndexScreen from '@/pages/Blog/Index.screen'
-import BlogDetailScreen from '@/pages/Blog/Detail.screen'
+import ArticleIndexScreen from '@/pages/Articles/Index.screen'
+import ArticleDetailScreen from '@/pages/Articles/Detail.screen'
 
 import TestScreen from '@/pages/Test.screen'
 
@@ -95,18 +95,18 @@ export const userRoutes = [
         // ],
       },
       {
-        path: 'blogs',
-        breadcrumbName: 'Blogs',
+        path: 'articles',
+        breadcrumbName: 'Bài Viết',
         children: [
           {
             path: '',
             breadcrumbName: 'Danh sách',
-            element: <BlogIndexScreen />,
+            element: <ArticleIndexScreen />,
           },
           {
             path: ':id',
             breadcrumbName: 'Chi tiết',
-            element: <BlogDetailScreen />,
+            element: <ArticleDetailScreen />,
           },
         ],
       },

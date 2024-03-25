@@ -1,55 +1,48 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import airportsService from '@/services/airports.service'
+import aircraftsService from '@/services/aircrafts.service'
 import { route } from '@/utils/helpers'
 import { FunctionComponent } from 'react'
 import { NavLink } from 'react-router-dom'
 
-interface AirportsIndexProps {}
+interface AircraftsIndexProps {}
 
-const AirportsIndex: FunctionComponent<AirportsIndexProps> = () => {
+const AircraftsIndex: FunctionComponent<AircraftsIndexProps> = () => {
   return (
-    <div className='p-3 px-6 flex flex-wrap'>
+    <div className='flex flex-wrap p-3 px-6'>
       <div className='w-full max-w-full flex-none'>
         <div className='flex justify-end py-3'>
-          <NavLink to={route('/admin/airports/create')}>
-            <Button>Thêm Sân Bay</Button>
+          <NavLink to={route('/admin/aircrafts/create')}>
+            <Button>Thêm Mẫu Máy Bay</Button>
           </NavLink>
         </div>
         <SmartTable
-          title='Sân Bay'
-          subTitle='Danh Sách Sân Bay'
-          // data={airportsData}
-          FetchDataFnc={airportsService.getAirportsPaginate.bind(airportsService)}
-          queryKey='airports'
+          title='Mẫu Máy Bay'
+          subTitle='Danh Sách Mẫu Máy Bay'
+          // data={aircraftsData}
+          FetchDataFnc={aircraftsService.getAircraftsPaginate.bind(aircraftsService)}
+          queryKey='aircraftModels'
           renderOptions={[
             {
-              field: 'IATA',
-              displayName: 'IATA',
+              field: 'registrationNumber',
+              displayName: 'Số Đăng Ký',
               renderFnc: (value: unknown) => {
                 return <>{value}</>
               },
             },
             {
               field: 'name',
-              displayName: 'Tên sân bay',
+              displayName: 'Tên',
               renderFnc: (value: unknown) => {
                 return <>{value}</>
               },
             },
             {
-              field: 'type',
-              displayName: 'Loại sân bay',
+              field: 'status',
+              displayName: 'Trạng Thái',
               renderFnc: (value: unknown) => {
                 return <>{value}</>
-              },
-            },
-            {
-              field: 'country',
-              displayName: 'Quốc gia',
-              renderFnc: (value: unknown) => {
-                return <>{(value as { fullName: string })?.fullName}</>
               },
             },
             {
@@ -58,7 +51,7 @@ const AirportsIndex: FunctionComponent<AirportsIndexProps> = () => {
               renderFnc: (value: unknown, data?: TableData) => {
                 return (
                   <div className='flex gap-x-4'>
-                    <NavLink to={route('/admin/airports/:id', { params: { id: String(data?._id) } })}>
+                    <NavLink to={route('/admin/aircrafts/:id', { params: { id: String(data?._id) } })}>
                       <i className='fa-regular fa-pen-to-square'></i>
                     </NavLink>
                   </div>
@@ -72,4 +65,4 @@ const AirportsIndex: FunctionComponent<AirportsIndexProps> = () => {
   )
 }
 
-export default AirportsIndex
+export default AircraftsIndex

@@ -1,10 +1,9 @@
 import { PassengerType } from '@/enums/passenger.enums'
 import axiosClient from './api/axios.service'
-import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
 import { SeatClass } from '@/enums/seat.enums'
-import IBlog from '@/interfaces/blog/blog.interface'
+import IFlight from '@/interfaces/flight/flight.interface'
 
 interface QueryOption {
   page?: number
@@ -16,11 +15,11 @@ interface QueryOption {
   // searchFields?: string
 }
 
-class BlogsService {
-  async getBlogsPaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
+class FlightsService {
+  async getFlightsPaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
     // const accessToken = this.accessToken
 
-    const response = await axiosClient.get('/blogs', {
+    const response = await axiosClient.get('/flights', {
       params: {
         page,
         perPage,
@@ -31,19 +30,19 @@ class BlogsService {
     const data = response.data.data
     return data
   }
-  async getBlog(id: string) {
-    const response = await axiosClient.get(`/blogs/${id}`)
+  async getFlight(id: string) {
+    const response = await axiosClient.get(`/flights/${id}`)
     return response.data.data.doc
   }
 
-  async createBlog(data: IBlog) {
-    const response = await axiosClient.post('/blogs', data)
+  async createFlight(data: IFlight) {
+    const response = await axiosClient.post('/flights', data)
     return response.data
   }
-  async updateBlog(data: IBlog) {
-    const response = await axiosClient.patch(`/blogs/${data._id}`, data)
+  async updateFlight(data: IFlight) {
+    const response = await axiosClient.patch(`/flights/${data._id}`, data)
     return response.data
   }
 }
 
-export default new BlogsService()
+export default new FlightsService()

@@ -14,7 +14,7 @@ const Footer: FunctionComponent<FooterProps> = () => {
       <div className='col-span-4'>
         <div className='pb-4 text-gray-400'>Điểm đến nổi bật</div>
         <Link
-          to={route('/blogs/:id', {
+          to={route('/articles/:id', {
             params: {
               id: 'Tokyo',
             },
@@ -23,7 +23,7 @@ const Footer: FunctionComponent<FooterProps> = () => {
           <div>Tokyo</div>
         </Link>
         <Link
-          to={route('/blogs/:id', {
+          to={route('/articles/:id', {
             params: {
               id: 'Đà Lạt',
             },
@@ -32,7 +32,7 @@ const Footer: FunctionComponent<FooterProps> = () => {
           <div>Đà Lạt</div>
         </Link>
         <Link
-          to={route('/blogs/:id', {
+          to={route('/articles/:id', {
             params: {
               id: 'Phú Quốc',
             },

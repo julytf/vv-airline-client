@@ -7,12 +7,17 @@ import { SeatClass } from '@/enums/seat.enums'
 
 class FilesService {
   async uploadImage(file: File) {
-    const response = await axiosClient.post('/files/upload-image', file, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
+    const response = await axiosClient.post(
+      '/files/upload-image',
+      { image: file },
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
       },
-    })
-    return response.data.data.filename
+    )
+    console.log('response', response)
+    return response.data.data.filePath
   }
 }
 

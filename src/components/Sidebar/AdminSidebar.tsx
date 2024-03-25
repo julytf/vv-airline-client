@@ -41,14 +41,14 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
           </Group>
           <Group name='Quản Lý Máy Bay'>
             <Button
-              icon={<i className='fa-solid fa-house'></i>}
-              title='Mẫu Máy Bay'
-              path={route('/admin/aircraft-models')}
-            />
-            <Button
               icon={<i className='fa-solid fa-chart-simple'></i>}
               title='Máy Bay'
               path={route('/admin/aircrafts')}
+            />
+            <Button
+              icon={<i className='fa-solid fa-house'></i>}
+              title='Mẫu Máy Bay'
+              path={route('/admin/aircraft-models')}
             />
           </Group>
           <Group name='Quản Lý Chuyến Bay'>
@@ -81,11 +81,11 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/flight-routes')}
             />
           </Group>
-          <Group name='Quản Lý Blogs'>
+          <Group name='Quản Lý Articles'>
             <Button
               icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Blogs'
-              path={route('/admin/blogs')}
+              title='Bài Viết'
+              path={route('/admin/articles')}
             />
           </Group>
         </div>

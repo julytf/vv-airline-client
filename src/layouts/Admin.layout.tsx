@@ -13,9 +13,9 @@ const AdminLayout: FunctionComponent<AdminLayoutProps> = () => {
     <div className=' flex font-nuni'>
       <AdminSidebar />
       <div className='ml-56 flex-1'>
-        <div className='mx-auto min-h-screen w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'>
+        <div className=' bg-slate-100 mx-auto min-h-screen w-full sm:max-w-screen-sm md:max-w-screen-md lg:max-w-screen-lg xl:max-w-screen-xl'>
           <AdminHeader />
-          <div className=' bg-slate-100'>
+          <div className=' min-h-full'>
             <Outlet></Outlet>
           </div>
         </div>

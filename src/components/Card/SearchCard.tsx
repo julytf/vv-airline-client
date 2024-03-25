@@ -1,8 +1,8 @@
 import classNames from 'classnames'
 import { FunctionComponent, ReactElement, forwardRef, useEffect, useRef, useState } from 'react'
 import Button from '../ui/Button'
-import Select from 'react-select'
-import { NavLink, useNavigate } from 'react-router-dom'
+import Select, { GroupBase } from 'react-select'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import routes from '../../routers/user.router'
 import DropDown from '../Dropdown/DropDown'
 import searchWizardService from '@/services/searchWizard.service'
@@ -10,6 +10,9 @@ import IFlightRoute from '@/interfaces/flight/flightRoute.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
 import { SearchData } from '@/contexts/SearchWizard.context'
 import { route } from '@/utils/helpers'
+import _ from 'lodash'
+import { PassengerType } from '@/enums/passenger.enums'
+import Loading from '../Loading/Loading'
 
 interface SearchCardProps {
   className?: string
@@ -18,25 +21,55 @@ interface SearchCardProps {
 const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   const navigate = useNavigate()
 
+  const [isLoading, setIsLoading] = useState(true)
+
   const [airports, setAirports] = useState([])
 
+  const searchParams = new URLSearchParams(location.search)
+
   const [formData, setFormData] = useState<Partial<SearchData>>({
-    passengers: { adults: 1, children: 0 },
+    departureAirportIATA: searchParams.get('departureAirportIATA') || undefined,
+    arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || undefined,
+    departureDate: searchParams.get('departureDate') || undefined,
+    returnDate: searchParams.get('returnDate') || undefined,
+    passengers: { [PassengerType.ADULT]: 1, [PassengerType.CHILD]: 0 },
   })
-  console.log(formData)
+  console.log('formData', formData)
+  console.log('formData', formData.departureDate)
 
   useEffect(() => {
     searchWizardService.getAirports().then((airports) => {
       setAirports(airports)
+      setIsLoading(false)
     })
   }, [])
 
-  const options = airports.map((airport: IAirport) => {
+  const airportsGroupedByCountry = _.groupBy(airports, 'country.name')
+  console.log('airportsGroupedByCountry', airportsGroupedByCountry)
+
+  const options = Object.keys(airportsGroupedByCountry).map((country) => {
     return {
-      value: airport.IATA,
-      label: `${airport.city} (${airport.IATA}) - ${airport.country?.name}`,
+      label: country,
+      options: airportsGroupedByCountry[country].map((airport: IAirport) => {
+        return {
+          value: airport.IATA,
+          label: `${airport.city} (${airport.IATA}) - ${airport.country?.name}`,
+        }
+      }),
     }
   })
+  options.reverse()
+  console.log('options', options)
+
+  const flattenedOptions = options?.flatMap((group) => group.options) || []
+
+  const defaultValues = {
+    departureAirport: flattenedOptions.find((option) => option.value === formData.departureAirportIATA),
+    arrivalAirport: flattenedOptions.find((option) => option.value === formData.arrivalAirportIATA),
+    departureDate: formData.departureDate,
+    returnDate: formData.returnDate,
+    passengers: formData.passengers,
+  }
 
   const onSearch = () => {
     if (
@@ -55,8 +88,8 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       arrivalAirportIATA: formData.arrivalAirportIATA,
       departureDate: formData.departureDate.toString(),
       returnDate: formData?.returnDate?.toString() || '',
-      'passengers[adult]': formData.passengers.adults.toString(),
-      'passengers[child]': formData.passengers.children.toString(),
+      'passengers[adult]': formData.passengers[PassengerType.ADULT].toString(),
+      'passengers[child]': formData.passengers[PassengerType.CHILD].toString(),
     }
     console.log(query)
 
@@ -66,6 +99,9 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       }),
     )
   }
+
+  if (isLoading) return <Loading />
+
   return (
     <div className={classNames('inline-block rounded-xl border-2 border-primary p-6', props.className)}>
       <div className='flex gap-4'>
@@ -74,6 +110,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           placeholder='Điểm đi'
           icon={<i className='fa-regular fa-plane-departure'></i>}
           options={options}
+          defaultValue={defaultValues.departureAirport}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, departureAirportIATA: v }) as Partial<SearchData>)
           }}
@@ -83,6 +120,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           placeholder='Điểm đến'
           icon={<i className='fa-regular fa-plane-arrival'></i>}
           options={options}
+          defaultValue={defaultValues.arrivalAirport}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, arrivalAirportIATA: v }) as Partial<SearchData>)
           }}
@@ -91,6 +129,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           name='departureDate'
           placeholder='Ngày đi'
           icon={<i className='fa-light fa-calendar-days'></i>}
+          defaultValue={defaultValues.departureDate}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, departureDate: v }) as Partial<SearchData>)
           }}
@@ -99,11 +138,13 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           name='returnDate'
           placeholder='Ngày về'
           icon={<i className='fa-light fa-calendar-days'></i>}
+          defaultValue={defaultValues.returnDate}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, returnDate: v }) as Partial<SearchData>)
           }}
         />
         <PassengerQuantityInput
+          defaultValue={defaultValues.passengers}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, passengers: v }) as Partial<SearchData>)
           }}
@@ -122,16 +163,43 @@ interface SelectInputProps {
   name?: string
   placeholder?: string
   icon?: ReactElement
-  options?: unknown[]
+  options?: {
+    label: string
+    options: {
+      label: string
+      value: string
+    }[]
+  }[]
+  defaultValue?: {
+    label: string
+    value: string
+  }
   onChange?: (e: unknown) => void
 }
 
 const SelectInput: FunctionComponent<SelectInputProps> = forwardRef(
-  ({ name, placeholder, icon, options, onChange }, ref) => {
+  ({ name, placeholder, icon, options, onChange, defaultValue }, ref) => {
+    const [selectOptions, setSelectOptions] = useState<
+      { label: string; value: string }[] | GroupBase<{ label: string; value: string }>[]
+    >(options || [])
+
+    const flattenedOptionsRef = useRef(options?.flatMap((group) => group.options) || [])
+    console.log(flattenedOptionsRef.current)
+
+    const onInputChange = (v: string) => {
+      console.log(v)
+      if (v) {
+        setSelectOptions(flattenedOptionsRef.current)
+      } else {
+        setSelectOptions(options || [])
+      }
+    }
+
     return (
       <div className='relative'>
         <Select
-          options={options}
+          options={selectOptions}
+          defaultValue={defaultValue}
           styles={{
             control: (baseStyles, state) => ({
               ...baseStyles,
@@ -144,7 +212,38 @@ const SelectInput: FunctionComponent<SelectInputProps> = forwardRef(
           }}
           className='absolute w-64 rounded-lg border text-left'
           placeholder={placeholder}
-          onChange={(v) => onChange?.((v as { value: string }).value)}
+          onChange={(v) => onChange?.((v as unknown as { value: string }).value)}
+          onInputChange={onInputChange}
+          components={{
+            Group: ({ children, label, ...props }) => {
+              const [isShow, setIsShow] = useState(false)
+
+              const hasValue = false
+
+              return (
+                <div className='flex flex-col'>
+                  <button onClick={() => setIsShow((prev) => !prev)} className='flex justify-between bg-slate-200 p-3 '>
+                    {label}
+                    <div className=''>
+                      {isShow ? (
+                        <i className='fa-regular fa-angle-up'></i>
+                      ) : (
+                        <i className='fa-regular fa-angle-down'></i>
+                      )}
+                    </div>
+                  </button>
+                  <div
+                    className={classNames('overflow-hidden transition-all duration-1000', {
+                      'max-h-0': !isShow,
+                      'max-h-1000': isShow,
+                    })}
+                  >
+                    {children}
+                  </div>
+                </div>
+              )
+            },
+          }}
         />
         <span className='pointer-events-none absolute  left-0 top-0 flex aspect-square w-10 items-center justify-center text-gray-500'>
           {icon}
@@ -158,11 +257,14 @@ interface DateInputProps {
   name?: string
   placeholder?: string
   icon?: ReactElement
+  defaultValue?: string
   onChange?: (e: unknown) => void
 }
 
-const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon, onChange }) => {
-  const [dateString, setDateString] = useState('')
+const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon, defaultValue, onChange }) => {
+  console.log(defaultValue)
+
+  const [dateString, setDateString] = useState(defaultValue || '')
   const selectedDate = new Date(dateString)
   //   console.log(date)
 
@@ -205,12 +307,13 @@ const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon,
 }
 
 interface PassengerQuantityInputProps {
+  defaultValue?: { [PassengerType.ADULT]: number; [PassengerType.CHILD]: number }
   onChange?: (v: unknown) => void
 }
 
-const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = ({ onChange }) => {
-  const [adultPassengerQuantity, setAdultPassengerQuantity] = useState(1)
-  const [childPassengerQuantity, setChildPassengerQuantity] = useState(0)
+const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = ({ defaultValue, onChange }) => {
+  const [adultPassengerQuantity, setAdultPassengerQuantity] = useState(defaultValue?.[PassengerType.ADULT] || 1)
+  const [childPassengerQuantity, setChildPassengerQuantity] = useState(defaultValue?.[PassengerType.CHILD] || 0)
 
   const buttonRef = useRef<HTMLDivElement>(null)
 
@@ -220,7 +323,7 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
   }
 
   useEffect(() => {
-    onChange?.({ adults: adultPassengerQuantity, children: childPassengerQuantity })
+    onChange?.({ [PassengerType.ADULT]: adultPassengerQuantity, [PassengerType.CHILD]: childPassengerQuantity })
   }, [adultPassengerQuantity, childPassengerQuantity])
 
   return (

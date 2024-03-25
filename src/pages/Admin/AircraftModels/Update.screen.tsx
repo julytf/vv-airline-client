@@ -61,17 +61,6 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   } = useForm<IFormData>({
     mode: 'onChange',
     resolver: joiResolver(formSchema),
-    // defaultValues: {
-    //   IATA: airport?.IATA,
-    //   city: airport?.city,
-    //   country: airport?.country?._id,
-    //   type: airport?.type,
-    //   name: airport?.name,
-    //   description: airport?.description,
-    //   longitude: airport?.longitude,
-    //   latitude: airport?.latitude,
-    //   address: airport?.address,
-    // },
   })
 
   // const watchAllFields = watch()

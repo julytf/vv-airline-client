@@ -37,9 +37,9 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
       .getFlights({
         departureAirportIATA: data.searchData.departureAirportIATA,
         arrivalAirportIATA: data.searchData.arrivalAirportIATA,
-        departureDate: data.searchData.departureDate,
-        passengersAdults: data.searchData.passengers[PassengerType.ADULT],
-        passengersChildren: data.searchData.passengers[PassengerType.CHILD],
+        departureDate: new Date(data.searchData.departureDate),
+        totalPassengers:
+          data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD],
       })
       .then((flights) => {
         flights.forEach((flight: IFlight) => {
@@ -54,9 +54,9 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
         .getFlights({
           departureAirportIATA: data.searchData.arrivalAirportIATA,
           arrivalAirportIATA: data.searchData.departureAirportIATA,
-          departureDate: data.searchData.returnDate!,
-          passengersAdults: data.searchData.passengers[PassengerType.ADULT],
-          passengersChildren: data.searchData.passengers[PassengerType.CHILD],
+          departureDate: new Date(data.searchData.returnDate!),
+          totalPassengers:
+            data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD],
         })
         .then((flights) => {
           flights.forEach((flight: IFlight) => {
@@ -83,7 +83,7 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
         <FlightSelect
           departureAirport={data.searchData.departureAirport!}
           arrivalAirport={data.searchData.arrivalAirport!}
-          date={data?.searchData?.departureDate || new Date()}
+          date={new Date(data?.searchData?.departureDate)}
           flights={departureFlights || []}
           selectedFlightInfo={data.flightsData![FlightType.OUTBOUND]}
           onChange={(info) => {
@@ -97,7 +97,7 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
           <FlightSelect
             departureAirport={data.searchData.arrivalAirport!}
             arrivalAirport={data.searchData.departureAirport!}
-            date={data?.searchData?.returnDate || new Date()}
+            date={new Date(data?.searchData?.returnDate || '')}
             flights={returnFlights || []}
             selectedFlightInfo={data.flightsData![FlightType.INBOUND]}
             onChange={(info) => {
@@ -271,6 +271,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
                 <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span>
                 <span>VNĐ</span>
               </div>
+              <span>Còn {flight.remainingSeats[SeatClass.ECONOMY]} ghế</span>
             </div>
           </button>
           <button
@@ -286,6 +287,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
                 <span className='bold text-3xl'>{businessPrice.toLocaleString()}</span>
                 <span>VNĐ</span>
               </div>
+              <span>Còn {flight.remainingSeats[SeatClass.BUSINESS]} ghế</span>
             </div>
           </button>
         </div>
@@ -408,12 +410,13 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
                 {},
               )}
             >
-              <div className='flex flex-col justify-center'>
+              <div className='flex flex-col items-center justify-center'>
                 <span>PHỔ THÔNG</span>
-                <div className='flex justify-start'>
+                <div className='flex justify-center'>
                   <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span>
                   <span>VNĐ</span>
                 </div>
+                <span>Còn {flight.remainingSeats[SeatClass.ECONOMY]} ghế</span>
               </div>
             </div>
           )}
@@ -424,12 +427,13 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
                 {},
               )}
             >
-              <div className='flex flex-col justify-center'>
+              <div className='flex flex-col items-center justify-center'>
                 <span>THƯƠNG GIA</span>
-                <div className='flex justify-start'>
+                <div className='flex justify-center'>
                   <span className='bold text-3xl'>{businessPrice.toLocaleString()}</span>
                   <span>VNĐ</span>
                 </div>
+                <span>Còn {flight.remainingSeats[SeatClass.BUSINESS]} ghế</span>
               </div>
             </div>
           )}

@@ -1,13 +1,13 @@
 import classNames from 'classnames'
 import { FunctionComponent, PropsWithChildren } from 'react'
 
-interface TablePaginationProps {
+interface PaginationProps {
   page?: number
   lastPage?: number
   onPageChange?: (page: number) => void
 }
 
-const TablePagination: FunctionComponent<TablePaginationProps> = ({ page = 1, lastPage = 1, onPageChange }) => {
+const Pagination: FunctionComponent<PaginationProps> = ({ page = 1, lastPage = 1, onPageChange }) => {
   const sizePadding = 3
 
   console.log(page, lastPage)
@@ -55,11 +55,11 @@ const PaginationButton: FunctionComponent<PaginationButtonProps> = ({ children, 
   return (
     <button
       onClick={onClick}
-      className={classNames('flex aspect-square w-6 items-center justify-center rounded-md border', className)}
+      className={classNames('flex aspect-square w-6 items-center justify-center rounded-md ', className)}
     >
       {children}
     </button>
   )
 }
 
-export default TablePagination
+export default Pagination

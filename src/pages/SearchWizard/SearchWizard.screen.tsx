@@ -71,8 +71,8 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       departureAirportIATA: searchParams.get('departureAirportIATA') || '',
       arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || '',
 
-      departureDate: new Date(searchParams.get('departureDate') || ''),
-      returnDate: new Date(searchParams.get('returnDate') || ''),
+      departureDate: searchParams.get('departureDate') || '',
+      returnDate: searchParams.get('returnDate') || '',
 
       isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
 

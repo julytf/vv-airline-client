@@ -1,4 +1,3 @@
-import Loading from '@/components/Loading/Loading'
 import Button from '@/components/ui/Button'
 import { AirportType } from '@/enums/airport.enums'
 import { UserGender, UserRole } from '@/enums/user.enums'
@@ -12,7 +11,6 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
-import { useParams } from 'react-router'
 
 interface IFormData {
   IATA: string
@@ -40,15 +38,9 @@ const formSchema = Joi.object({
   //   address: Joi.object(),
 })
 
-interface UpdateAirportProps {}
+interface CreateAirportProps {}
 
-const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
-  const { id } = useParams()
-
-  const [isLoading, setIsLoading] = useState(true)
-
-  const [airport, setAirport] = useState<IAirport | null>(null)
-
+const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
   const [countries, setCountries] = useState<ICountry[]>([])
 
   const {
@@ -63,62 +55,36 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
     resolver: joiResolver(formSchema),
   })
 
-  // const watchAllFields = watch()
+  const watchAllFields = watch()
 
-  // console.log(isValid)
-  // console.log(errors)
-  // console.log(formSchema.validate(watchAllFields))
+  console.log(isValid)
+  console.log(errors)
+  console.log(formSchema.validate(watchAllFields))
 
   useEffect(() => {
-    addressService
-      .getCountries()
-      .then((data) => {
-        setCountries(data)
-      })
-      .then(() => {
-        airportsService.getAirport(id!).then((data) => {
-          setAirport(data)
-          reset({
-            IATA: data.IATA,
-            city: data.city,
-            country: data.country?._id || data.country,
-            type: data.type,
-            name: data.name,
-            description: data.description,
-            // longitude: data.longitude,
-            // latitude: data.latitude,
-            // address: data.address,
-          })
-          setIsLoading(false)
-        })
-      })
+    addressService.getCountries().then((data) => {
+      setCountries(data)
+    })
   }, [])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await airportsService.updateAirport({
-      _id: id!,
-      ...data,
-    } as IAirport)
+    await airportsService.createAirport(data as IAirport)
     // reset()
-  }
-
-  if (isLoading) {
-    return <Loading />
   }
 
   return (
     <div className='flex justify-center p-8'>
       <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
-        <div className='pt-8 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Sân Bay</h2>
+        <div className='mx-auto w-full max-w-sm pt-6'>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Sân Bay</h2>
         </div>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto'>
           <div className='space-y-12'>
             <div className='border-b border-gray-900/10 pb-12'>
-              <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
-                <div className='sm:col-span-3'>
+              <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
+                <div className='col-span-3'>
                   <label htmlFor='IATA' className='block text-sm font-medium leading-6 text-gray-900'>
                     IATA
                   </label>
@@ -135,7 +101,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -144,7 +110,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
+                <div className='col-span-3'>
                   <label htmlFor='city' className='block text-sm font-medium leading-6 text-gray-900'>
                     Thành phố
                   </label>
@@ -161,7 +127,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -170,7 +136,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-6'>
+                <div className='col-span-6'>
                   <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tên
                   </label>
@@ -187,7 +153,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -197,7 +163,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                   />
                 </div>
 
-                <div className='sm:col-span-3'>
+                <div className='col-span-3'>
                   <label htmlFor='country' className='block text-sm font-medium leading-6 text-gray-900'>
                     Quốc gia
                   </label>
@@ -213,7 +179,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
@@ -231,7 +197,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
+                <div className='col-span-3'>
                   <label htmlFor='type' className='block text-sm font-medium leading-6 text-gray-900'>
                     Loại Sân bay
                   </label>
@@ -247,7 +213,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
@@ -264,7 +230,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-6'>
+                <div className='col-span-6'>
                   <label htmlFor='description' className='block text-sm font-medium leading-6 text-gray-900'>
                     Thông tin
                   </label>
@@ -281,7 +247,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             //   type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -302,4 +268,4 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   )
 }
 
-export default UpdateAirport
+export default CreateAirport
