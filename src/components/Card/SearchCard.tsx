@@ -34,8 +34,8 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     returnDate: searchParams.get('returnDate') || undefined,
     passengers: { [PassengerType.ADULT]: 1, [PassengerType.CHILD]: 0 },
   })
-  console.log('formData', formData)
-  console.log('formData', formData.departureDate)
+  // console.log('formData', formData)
+  // console.log('formData', formData.departureDate)
 
   useEffect(() => {
     searchWizardService.getAirports().then((airports) => {
@@ -45,7 +45,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   }, [])
 
   const airportsGroupedByCountry = _.groupBy(airports, 'country.name')
-  console.log('airportsGroupedByCountry', airportsGroupedByCountry)
+  // console.log('airportsGroupedByCountry', airportsGroupedByCountry)
 
   const options = Object.keys(airportsGroupedByCountry).map((country) => {
     return {
@@ -59,7 +59,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     }
   })
   options.reverse()
-  console.log('options', options)
+  // console.log('options', options)
 
   const flattenedOptions = options?.flatMap((group) => group.options) || []
 
@@ -81,7 +81,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     ) {
       throw new Error('Invalid form data')
     }
-    console.log('here')
+    // console.log('here')
 
     const query = {
       departureAirportIATA: formData.departureAirportIATA,
@@ -91,7 +91,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       'passengers[adult]': formData.passengers[PassengerType.ADULT].toString(),
       'passengers[child]': formData.passengers[PassengerType.CHILD].toString(),
     }
-    console.log(query)
+    // console.log(query)
 
     navigate(
       route('/wizard', {
@@ -184,10 +184,10 @@ const SelectInput: FunctionComponent<SelectInputProps> = forwardRef(
     >(options || [])
 
     const flattenedOptionsRef = useRef(options?.flatMap((group) => group.options) || [])
-    console.log(flattenedOptionsRef.current)
+    // console.log(flattenedOptionsRef.current)
 
     const onInputChange = (v: string) => {
-      console.log(v)
+      // console.log(v)
       if (v) {
         setSelectOptions(flattenedOptionsRef.current)
       } else {
@@ -262,7 +262,7 @@ interface DateInputProps {
 }
 
 const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon, defaultValue, onChange }) => {
-  console.log(defaultValue)
+  // console.log(defaultValue)
 
   const [dateString, setDateString] = useState(defaultValue || '')
   const selectedDate = new Date(dateString)

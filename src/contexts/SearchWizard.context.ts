@@ -16,7 +16,7 @@ export interface SearchData {
   arrivalAirport: IAirport | null
 
   departureDate: string
-  returnDate?: string
+  returnDate: string | null
 
   isRoundTrip: boolean
 

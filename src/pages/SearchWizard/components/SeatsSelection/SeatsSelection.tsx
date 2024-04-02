@@ -2,7 +2,6 @@ import { FunctionComponent, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 import Loading from '@/components/Loading/Loading'
-import { OccupiedSeatIcon, OpenSeatIcon } from '@/components/Icons'
 import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
 import IAircraftModel, { IAircraftSeatMap, ICabinModel } from '@/interfaces/aircraft/aircraftModel.interface'
 import { SeatsData, useSearchWizard } from '@/contexts/SearchWizard.context'
@@ -11,10 +10,18 @@ import { FlightType } from '@/enums/flight.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import ISeat from '@/interfaces/aircraft/seat.interface'
+import searchWizardService from '@/services/searchWizard.service'
+import IReservation from '@/interfaces/booking/reservation.interface'
+import { SeatType } from '@/enums/seat.enums'
+import { SeatIcon } from '@/components/Icons'
+import Note from './Note'
+import SeatMap from './SeatMap'
 
 interface SeatsSelectionProps {}
 
 const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
+  const [isLoading, setIsLoading] = useState(true)
+
   const { data, setData, actions } = useSearchWizard()
 
   const [flightType, setFlightType] = useState<FlightType>(FlightType.OUTBOUND)
@@ -46,6 +53,11 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
     },
   })
 
+  const selectingSeats = [
+    ...seatsData[flightType][flightLegType][PassengerType.ADULT],
+    ...seatsData[flightType][flightLegType][PassengerType.CHILD],
+  ]
+
   // const [isValid, setIsValid] = useState(true)
   // const [loading, setLoading] = useState(true)
 
@@ -67,6 +79,16 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
   // if (loading) {
   //   return <Loading />
   // }
+
+  const [occupiedSeats, setOccupiedSeats] = useState<ISeat[]>([])
+
+  useEffect(() => {
+    setIsLoading(true)
+    searchWizardService.getFlightLegReservations(flightLeg!._id!).then((reservations: IReservation[]) => {
+      setOccupiedSeats(reservations.map((reservation) => reservation.seat))
+      setIsLoading(false)
+    })
+  }, [flightLeg])
 
   const selectSeat = (seat: ISeat) => {
     console.log('seat', seat)
@@ -131,6 +153,10 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
       return { ...prev }
     })
     actions.nextStep()
+  }
+
+  if (isLoading) {
+    return <Loading />
   }
 
   return (
@@ -250,8 +276,8 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
               {flightLeg?.flightRoute.departureAirport.name} ({flightLeg?.flightRoute.departureAirport.IATA}){' - '}
               {flightLeg?.flightRoute.arrivalAirport.name} ({flightLeg?.flightRoute.arrivalAirport.IATA})
             </div>
-            <div className='grid grid-cols-6 gap-16'>
-              <div className='col-span-3 flex flex-col gap-y-2'>
+            <div className='grid grid-cols-12 gap-8'>
+              <div className='col-span-6 flex flex-col gap-y-2'>
                 <div className='mb-2 text-xl'>Hành Khách</div>
                 {data.passengersData[PassengerType.ADULT]?.map((passenger, index) => (
                   <button
@@ -302,7 +328,12 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
               <Note />
             </div>
             <div className='mt-16 flex justify-center'>
-              <SeatMap aircraftModel={aircraftModel!} onSelectSeat={selectSeat} />
+              <SeatMap
+                aircraftModel={aircraftModel!}
+                selectingSeats={selectingSeats}
+                occupiedSeats={occupiedSeats}
+                onSelectSeat={selectSeat}
+              />
             </div>
           </div>
         </div>
@@ -316,170 +347,6 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
 
       <PaymentSummaryCard className='col-span-4' />
     </div>
-  )
-}
-
-interface NoteProps {}
-
-const Note: FunctionComponent<NoteProps> = () => {
-  return (
-    <div className='col-span-2 col-start-5 flex flex-col gap-y-2'>
-      <div className='mb-2 text-lg'>Chú Thích</div>
-      <div className='flex'>
-        <OpenSeatIcon />
-        <span className='ml-2'>Ghế không còn trống</span>
-      </div>
-      <div className='flex'>
-        <OccupiedSeatIcon />
-        <span className='ml-2'>Ghế trống</span>
-      </div>
-      <div className='flex'>
-        <div className=' text-red-600'>
-          <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
-        </div>
-        <div className='-scale-x-100 text-red-600'>
-          <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
-        </div>
-        <span className='ml-2'>Cửa</span>
-      </div>
-    </div>
-  )
-}
-
-interface SeatMapProps {
-  aircraftModel: IAircraftModel
-  onSelectSeat: (seat: ISeat) => void
-}
-
-const SeatMap: FunctionComponent<SeatMapProps> = ({ aircraftModel, onSelectSeat }) => {
-  const seatMap = aircraftModel.seatMap as IAircraftSeatMap
-  return (
-    <div className='flex'>
-      <div>
-        <Shell side='left' />
-        <Shell side='left' />
-        {seatMap.map((cabin, index) => (
-          <>
-            <Shell side='left' />
-            {cabin.map.map((row, rowIndex) => (
-              <Shell key={rowIndex} side='left' exit={row.hasExit} />
-            ))}
-          </>
-        ))}
-        {/* {new Array(5).fill(0).map((_, index) => (
-          <Shell key={index} side='left' />
-        ))}
-        <Shell side='left' exit />
-        {new Array(5).fill(0).map((_, index) => (
-          <Shell key={index} side='left' />
-        ))}
-        <Shell side='left' wing='top' />
-        {new Array(6).fill(0).map((_, index) => (
-          <Shell key={index} side='left' wing='middle' />
-        ))}
-        <Shell side='left' wing='bottom' />
-        {new Array(14).fill(0).map((_, index) => (
-          <Shell key={index} side='left' />
-        ))} */}
-      </div>
-      <div>
-        <div className='inline-block  px-2  text-center '>
-          <div className='my-4 h-8 text-center text-lg'>{aircraftModel.name}</div>
-          {seatMap.map((cabin, index) => (
-            <Cabin key={index} cabin={cabin} onSelectSeat={onSelectSeat} />
-          ))}
-        </div>
-        <div className='z-50 h-8 -translate-y-2 bg-white'></div>
-      </div>
-      <div>
-        <Shell side='right' />
-        <Shell side='right' />
-        {seatMap.map((cabin, index) => (
-          <>
-            <Shell side='right' />
-            {cabin.map.map((row, rowIndex) => (
-              <Shell key={rowIndex} side='right' exit={row.hasExit} />
-            ))}
-          </>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-interface CabinProps {
-  cabin: ICabinModel
-  onSelectSeat: (seat: ISeat) => void
-}
-
-const Cabin: FunctionComponent<CabinProps> = ({ cabin, onSelectSeat }) => {
-  return (
-    <>
-      <div className='flex justify-between'>
-        {new Array(cabin.noCol).fill(0).map((_, index) => (
-          <>
-            <div className='bold aspect-square w-8'>{numberToAlphabet(index + 1)}</div>
-            {cabin.aisleCol.includes(index + 1) && <div className='bold aspect-square w-8'></div>}
-          </>
-        ))}
-      </div>
-      {cabin.map.map((row, rowIndex) => (
-        <div key={rowIndex} className='flex justify-between'>
-          {row.seats.map((seat, seatIndex) => {
-            return (
-              <>
-                <Seat seat={seat} onClick={onSelectSeat} />
-                {cabin.aisleCol.includes(seatIndex + 1) && <div className='aspect-square w-8 p-1'>{row.index + 1}</div>}
-              </>
-            )
-          })}
-        </div>
-      ))}
-    </>
-  )
-}
-
-interface ShellProps {
-  side?: 'left' | 'right'
-  wing?: 'top' | 'middle' | 'bottom'
-  exit?: boolean
-}
-
-const Shell: FunctionComponent<ShellProps> = (props) => {
-  return (
-    <div
-      className={classNames('flex', {
-        '-scale-x-100': props.side === 'left',
-      })}
-    >
-      <div
-        className={classNames('h-8 border-2', {
-          'border-gray-500': !props.exit,
-          'border-red-600': props.exit,
-        })}
-      ></div>
-      <div className='aspect-square w-8'>
-        {props.wing ? <img src={`/src/assets/images/aircraft/wing-${props.wing}.png`} /> : null}
-        {props.exit ? (
-          <span className=' text-red-600'>
-            <i className='fa-sharp fa-solid fa-caret-left m-2'></i>
-          </span>
-        ) : null}
-      </div>
-    </div>
-  )
-}
-
-interface SeatProps {
-  seat: ISeat
-  onClick: (seat: ISeat) => void
-}
-
-const Seat: FunctionComponent<SeatProps> = ({ seat, onClick }) => {
-  return (
-    <button onClick={() => onClick(seat)} className='aspect-square w-8 p-1 hover:bg-sky-100 hover:ring'>
-      <OpenSeatIcon />
-    </button>
   )
 }
 

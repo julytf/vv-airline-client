@@ -2,10 +2,10 @@ import WizardNavBar from '@/components/SearchWizard/NavBar/WizardNavBar'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 
-import FlightsSelection from '@/pages/SearchWizard/components/FlightsSelection'
-import PassengersInformation from '@/pages/SearchWizard/components/PassengersInformation'
-import SeatsSelection from '@/pages/SearchWizard/components/SeatsSelection'
-import Payment from '@/pages/SearchWizard/components/Payment'
+import FlightsSelection from '@/pages/SearchWizard/components/FlightsSelection/FlightsSelection'
+import PassengersInformation from '@/pages/SearchWizard/components/PassengersInformation/PassengersInformation'
+import SeatsSelection from '@/pages/SearchWizard/components/SeatsSelection/SeatsSelection'
+import Payment from '@/pages/SearchWizard/components/Payment/Payment'
 import SearchWizardContext, { WizardData } from '@/contexts/SearchWizard.context'
 import searchWizardService from '@/services/searchWizard.service'
 import IFlight from '@/interfaces/flight/flight.interface'
@@ -60,7 +60,7 @@ interface SearchWizardProps {}
 const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [loading, setLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   const [data, setData] = useState<WizardData>({
     currentStep: 0,
@@ -115,7 +115,7 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       },
     },
   })
-  console.log('data', data)
+  // console.log('data', data)
 
   const CurrentForm = searchWizardSteps[data.currentStep].element
 
@@ -156,14 +156,51 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
         },
       }))
     })
-  }, [data?.searchData?.departureAirportIATA, data?.searchData?.arrivalAirportIATA])
+  }, [
+    data?.searchData?.departureAirportIATA,
+    data?.searchData?.arrivalAirportIATA,
+    // data?.searchData?.departureDate,
+    // data?.searchData?.returnDate,
+    // data?.searchData?.isRoundTrip,
+    // data?.searchData?.passengers,
+  ])
 
   // update Loading
   useEffect(() => {
-    setLoading(!(Boolean(data.searchData.arrivalAirport) && Boolean(data.searchData.departureAirport)))
+    setIsLoading(!(Boolean(data.searchData.arrivalAirport) && Boolean(data.searchData.departureAirport)))
   }, [data.searchData.arrivalAirport, data.searchData.departureAirport])
 
-  if (loading) {
+  useEffect(() => {
+    setData((prev) => {
+      prev.searchData = {
+        ...prev.searchData,
+
+        departureAirportIATA: searchParams.get('departureAirportIATA') || '',
+        arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || '',
+
+        departureDate: searchParams.get('departureDate') || '',
+        returnDate: searchParams.get('returnDate') || '',
+
+        isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
+
+        passengers: {
+          [PassengerType.ADULT]: Number(searchParams.get('passengers[adult]')) || 0,
+          [PassengerType.CHILD]: Number(searchParams.get('passengers[child]')) || 0,
+        },
+      }
+      return { ...prev }
+    })
+  }, [
+    searchParams.get('departureAirportIATA'),
+    searchParams.get('arrivalAirportIATA'),
+    searchParams.get('departureDate'),
+    searchParams.get('returnDate'),
+    searchParams.get('returnDate'),
+    searchParams.get('passengers[adult]'),
+    searchParams.get('passengers[child]'),
+  ])
+
+  if (isLoading) {
     return <Loading />
   }
   return (

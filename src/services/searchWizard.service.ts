@@ -75,6 +75,18 @@ class searchWizardService {
 
   //   return seatMap
   // }
+  async getFlightLegReservations(flightLegId: string) {
+    const response = await axiosClient.get('/search-wizard/get-flightLeg-reservations', {
+      params: {
+        flightLegId,
+      },
+      headers: {},
+    })
+
+    const reservations = response.data.data
+
+    return reservations
+  }
 }
 
 export default new searchWizardService()

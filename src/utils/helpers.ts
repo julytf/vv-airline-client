@@ -12,7 +12,7 @@ type RouteOptions = {
 }
 
 export const route = (path: string, { params, query }: RouteOptions = {}) => {
-  console.log('query', query)
+  // console.log('query', query)
   const routes = [...userRoutes, ...adminRoutes]
   const matchedRoutes = matchRoutes(routes, path)
 
@@ -28,7 +28,7 @@ export const route = (path: string, { params, query }: RouteOptions = {}) => {
     const params = new URLSearchParams(query)
 
     path = `${path}?${params.toString()}`
-    console.log('path', path)
+    // console.log('path', path)
   }
 
   return path

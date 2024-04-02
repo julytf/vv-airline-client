@@ -33,7 +33,7 @@ const UserApp: FunctionComponent<UserAppProps> = () => {
     ;(async () => {
       const tokenName = 'userAccessToken'
       const accessToken = localStorage.getItem(tokenName)
-      console.log(accessToken)
+      // console.log(accessToken)
 
       if (!accessToken)
         return dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))
