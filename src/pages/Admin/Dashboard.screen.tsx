@@ -1,10 +1,10 @@
-import { useToastNotify } from '@/contexts/ToastNotify.context'
+import { useToast } from '@/contexts/ToastNotify.context'
 import { FunctionComponent } from 'react'
 
 interface DashboardProps {}
 
 const Dashboard: FunctionComponent<DashboardProps> = () => {
-  const toast = useToastNotify()
+  const toast = useToast()
 
   return (
     <>

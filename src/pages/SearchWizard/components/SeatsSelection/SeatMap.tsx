@@ -1,6 +1,6 @@
 import IAircraftModel, { IAircraftSeatMap } from '@/interfaces/aircraft/aircraftModel.interface'
 import ISeat from '@/interfaces/aircraft/seat.interface'
-import { FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import Shell from './Shell'
 import Cabin from './Cabin'
 
@@ -19,12 +19,12 @@ const SeatMap: FunctionComponent<SeatMapProps> = ({ aircraftModel, onSelectSeat,
         <Shell side='left' />
         <Shell side='left' />
         {seatMap.map((cabin, index) => (
-          <>
+          <Fragment key={index}>
             <Shell side='left' />
             {cabin.map.map((row, rowIndex) => (
               <Shell key={rowIndex} side='left' exit={row.hasExit} />
             ))}
-          </>
+          </Fragment>
         ))}
         {/* {new Array(5).fill(0).map((_, index) => (
             <Shell key={index} side='left' />
@@ -61,12 +61,12 @@ const SeatMap: FunctionComponent<SeatMapProps> = ({ aircraftModel, onSelectSeat,
         <Shell side='right' />
         <Shell side='right' />
         {seatMap.map((cabin, index) => (
-          <>
+          <Fragment key={index}>
             <Shell side='right' />
             {cabin.map.map((row, rowIndex) => (
               <Shell key={rowIndex} side='right' exit={row.hasExit} />
             ))}
-          </>
+          </Fragment>
         ))}
       </div>
     </div>

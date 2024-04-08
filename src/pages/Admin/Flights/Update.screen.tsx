@@ -1,4 +1,4 @@
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import Button from '@/components/ui/Button'
 import { AirportType } from '@/enums/airport.enums'
 import { UserGender, UserRole } from '@/enums/user.enums'

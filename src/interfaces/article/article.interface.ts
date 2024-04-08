@@ -5,6 +5,7 @@ export interface IArticle {
   coverImage?: string
   content: string
   isFeatured?: boolean
+  createdAt?: Date
 }
 
 export default IArticle

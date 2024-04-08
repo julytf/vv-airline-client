@@ -6,7 +6,7 @@ import { Control, Controller, FieldErrors, FieldValues, SubmitHandler, UseFormRe
 import { PassengerType } from '../../../../enums/passenger.enums'
 import passengersInformationSchema from '../../../../utils/validations/searchWizard/passenger.schema'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
 import { PassengersData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { UserGender } from '@/enums/user.enums'

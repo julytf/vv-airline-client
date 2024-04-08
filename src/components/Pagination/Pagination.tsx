@@ -10,7 +10,7 @@ interface PaginationProps {
 const Pagination: FunctionComponent<PaginationProps> = ({ page = 1, lastPage = 1, onPageChange }) => {
   const sizePadding = 3
 
-  console.log(page, lastPage)
+  // console.log(page, lastPage)
   return (
     <div className='flex gap-1 text-xs'>
       <PaginationButton onClick={() => onPageChange?.(1)}>
@@ -21,7 +21,7 @@ const Pagination: FunctionComponent<PaginationProps> = ({ page = 1, lastPage = 1
       </PaginationButton>
       {new Array(sizePadding * 2 + 1).fill(null).map((_, index) => {
         const pageIndex = page - sizePadding + index
-        console.log(pageIndex)
+        // console.log(pageIndex)
 
         if (pageIndex < 1 || pageIndex > lastPage) {
           return null

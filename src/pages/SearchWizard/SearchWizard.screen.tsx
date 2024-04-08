@@ -11,10 +11,11 @@ import searchWizardService from '@/services/searchWizard.service'
 import IFlight from '@/interfaces/flight/flight.interface'
 import ISeat from '@/interfaces/aircraft/seat.interface'
 import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
+import surchargesService from '@/services/surcharges.service'
 
 export type SearchWizardStep = {
   index: number
@@ -114,6 +115,9 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
         },
       },
     },
+    additionalData: {
+      surcharges: null,
+    },
   })
   // console.log('data', data)
 
@@ -136,6 +140,17 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
     prevStep,
     toStep,
   }
+
+  // Load Surcharges
+  useEffect(() => {
+    surchargesService.getSurcharges().then((surcharges) => {
+      setData((prev) => {
+        prev.additionalData.surcharges = surcharges
+        return { ...prev }
+      })
+    })
+  }, [])
+
   // Load Airports
   useEffect(() => {
     searchWizardService.getAirport(data?.searchData?.departureAirportIATA || '').then((airport) => {
@@ -156,19 +171,14 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
         },
       }))
     })
-  }, [
-    data?.searchData?.departureAirportIATA,
-    data?.searchData?.arrivalAirportIATA,
-    // data?.searchData?.departureDate,
-    // data?.searchData?.returnDate,
-    // data?.searchData?.isRoundTrip,
-    // data?.searchData?.passengers,
-  ])
+  }, [data?.searchData?.departureAirportIATA, data?.searchData?.arrivalAirportIATA])
 
   // update Loading
   useEffect(() => {
-    setIsLoading(!(Boolean(data.searchData.arrivalAirport) && Boolean(data.searchData.departureAirport)))
-  }, [data.searchData.arrivalAirport, data.searchData.departureAirport])
+    setIsLoading(
+      !data.searchData.arrivalAirport || !data.searchData.departureAirport || data.additionalData.surcharges === null,
+    )
+  }, [data.searchData.arrivalAirport, data.searchData.departureAirport, data.additionalData.surcharges])
 
   useEffect(() => {
     setData((prev) => {

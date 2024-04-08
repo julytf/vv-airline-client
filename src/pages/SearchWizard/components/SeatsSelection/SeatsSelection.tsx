@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useState } from 'react'
 import classNames from 'classnames'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
 import IAircraftModel, { IAircraftSeatMap, ICabinModel } from '@/interfaces/aircraft/aircraftModel.interface'
 import { SeatsData, useSearchWizard } from '@/contexts/SearchWizard.context'
@@ -281,6 +281,7 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                 <div className='mb-2 text-xl'>Hành Khách</div>
                 {data.passengersData[PassengerType.ADULT]?.map((passenger, index) => (
                   <button
+                    key={index}
                     onClick={() => {
                       setPassengerType(PassengerType.ADULT)
                       setPassengerIndex(index)
@@ -289,8 +290,11 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                       'border-primary': passengerIndex === index && passengerType === PassengerType.ADULT,
                     })}
                   >
-                    <span>
-                      {passenger.lastName} {passenger.firstName}
+                    <span className='flex'>
+                      <span className='bold mr-4'>A{index + 1}</span>
+                      <span>
+                        {passenger.lastName} {passenger.firstName}
+                      </span>
                     </span>
                     <span className='text-primary'>
                       ({seatsData[flightType][flightLegType][PassengerType.ADULT][index]?.code || 'chưa chọn ghế'})
@@ -299,6 +303,7 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                 ))}
                 {data.passengersData[PassengerType.CHILD]?.map((passenger, index) => (
                   <button
+                    key={index}
                     onClick={() => {
                       setPassengerType(PassengerType.CHILD)
                       setPassengerIndex(index)
@@ -307,8 +312,11 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                       'border-primary': passengerIndex === index && passengerType === PassengerType.CHILD,
                     })}
                   >
-                    <span>
-                      {passenger.lastName} {passenger.firstName}
+                    <span className='flex'>
+                      <span className='bold mr-4'>C{index + 1}</span>
+                      <span>
+                        {passenger.lastName} {passenger.firstName}
+                      </span>
                     </span>
                     <span className='text-primary'>
                       ({seatsData[flightType][flightLegType][PassengerType.CHILD][index]?.code || 'chưa chọn ghế'})
@@ -345,7 +353,7 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
         />
       </div>
 
-      <PaymentSummaryCard className='col-span-4' />
+      <PaymentSummaryCard className='col-span-4' seatsData={seatsData} />
     </div>
   )
 }

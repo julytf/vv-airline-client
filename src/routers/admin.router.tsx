@@ -6,7 +6,7 @@ import { lazy } from 'react'
 import { Suspense } from 'react'
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import AdminLayout from '@/layouts/Admin.layout'
 import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
 import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'

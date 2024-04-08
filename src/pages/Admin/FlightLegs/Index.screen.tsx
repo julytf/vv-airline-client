@@ -60,10 +60,15 @@ const FlightLegsIndex: FunctionComponent<FlightLegsIndexProps> = () => {
             {
               field: 'remainingSeats',
               displayName: 'Số ghế',
-              renderFnc: (value, data) => {
+              renderFnc: (value: unknown) => {
+                const remainingSeats = value as {
+                  [SeatClass.BUSINESS]: number
+                  [SeatClass.ECONOMY]: number
+                }
                 return (
                   <>
-                    {value}/{(data.aircraft as IAircraft).aircraftModel?.seatQuantity}
+                    <div>BUSINESS: {remainingSeats[SeatClass.BUSINESS]}</div>
+                    <div>ECONOMY: {remainingSeats[SeatClass.ECONOMY]}</div>
                   </>
                 )
               },

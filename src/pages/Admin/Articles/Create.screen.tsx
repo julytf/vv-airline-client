@@ -19,7 +19,7 @@ import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form
 interface IFormData {
   title: string
   summary?: string
-  coverImage?: File 
+  coverImage?: File
   content: string
 }
 
@@ -133,7 +133,7 @@ const CreateArticle: FunctionComponent<CreateArticleProps> = () => {
                             id='coverImage'
                             type='file'
                             onChange={(e) => {
-                              field.onChange(e?.target?.files?.[0]) 
+                              field.onChange(e?.target?.files?.[0])
                             }}
                             className=' text-surface  file:text-surface   relative m-0 block w-full min-w-0 flex-auto cursor-pointer rounded bg-transparent bg-clip-padding px-3 py-[0.32rem] text-base font-normal outline-primary ring-1 ring-inset ring-gray-300 transition duration-300 ease-in-out file:-mx-3 file:-my-[0.32rem] file:me-3 file:cursor-pointer file:overflow-hidden file:rounded-none file:border-0 file:border-e file:border-solid file:border-inherit  file:bg-transparent file:px-3 file:py-[0.32rem]  focus:text-gray-700 focus:outline-none dark:border-white/70 dark:text-white  file:dark:text-white'
                           />
@@ -154,7 +154,7 @@ const CreateArticle: FunctionComponent<CreateArticleProps> = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
-                        <div className='prose max-w-full'>
+                        <div className='ck-content prose max-w-full'>
                           <CKEditor
                             config={{
                               extraPlugins: [uploadPlugin],

@@ -2,6 +2,7 @@ import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
 import { FlightLegType } from '@/enums/flightLeg.enums'
+import { PassengerType } from '@/enums/passenger.enums'
 import { SeatClass } from '@/enums/seat.enums'
 import IAircraft from '@/interfaces/aircraft/aircraft.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
@@ -63,7 +64,16 @@ const FlightsIndex: FunctionComponent<FlightsIndexProps> = () => {
               field: 'remainingSeats',
               displayName: 'Số ghế',
               renderFnc: (value: unknown) => {
-                return <>{value}</>
+                const remainingSeats = value as {
+                  [SeatClass.BUSINESS]: number
+                  [SeatClass.ECONOMY]: number
+                }
+                return (
+                  <>
+                    <div>BUSINESS: {remainingSeats[SeatClass.BUSINESS]}</div>
+                    <div>ECONOMY: {remainingSeats[SeatClass.ECONOMY]}</div>
+                  </>
+                )
               },
             },
             {

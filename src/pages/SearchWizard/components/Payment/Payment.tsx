@@ -2,7 +2,7 @@ import { FunctionComponent, useEffect, useState } from 'react'
 import { loadStripe } from '@stripe/stripe-js'
 import config from '@/config'
 import { Elements, PaymentElement } from '@stripe/react-stripe-js'
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import axiosClient from '@/services/api/axios.service'
 import Button from '@/components/ui/Button'
 import StripePaymentForm from '@/components/Payment/StripePaymentForm'
@@ -153,7 +153,7 @@ const Payment: FunctionComponent<PaymentProps> = () => {
         </div> */}
         <PaypalPaymentForm />
       </div>
-      <PaymentSummaryCard className='col-span-4' />
+      <PaymentSummaryCard className='col-span-4' seatsData={data.seatsData} />
     </div>
   )
 }

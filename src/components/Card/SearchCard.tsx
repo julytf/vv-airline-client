@@ -12,7 +12,7 @@ import { SearchData } from '@/contexts/SearchWizard.context'
 import { route } from '@/utils/helpers'
 import _ from 'lodash'
 import { PassengerType } from '@/enums/passenger.enums'
-import Loading from '../Loading/Loading'
+import Loading from '../ui/Loading'
 
 interface SearchCardProps {
   className?: string
@@ -32,7 +32,10 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || undefined,
     departureDate: searchParams.get('departureDate') || undefined,
     returnDate: searchParams.get('returnDate') || undefined,
-    passengers: { [PassengerType.ADULT]: 1, [PassengerType.CHILD]: 0 },
+    passengers: {
+      [PassengerType.ADULT]: Number(searchParams.get('passengers[adult]')) || 1,
+      [PassengerType.CHILD]: Number(searchParams.get('passengers[child]')) || 0,
+    },
   })
   // console.log('formData', formData)
   // console.log('formData', formData.departureDate)
@@ -67,7 +70,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     departureAirport: flattenedOptions.find((option) => option.value === formData.departureAirportIATA),
     arrivalAirport: flattenedOptions.find((option) => option.value === formData.arrivalAirportIATA),
     departureDate: formData.departureDate,
-    returnDate: formData.returnDate,
+    returnDate: formData.returnDate || undefined,
     passengers: formData.passengers,
   }
 

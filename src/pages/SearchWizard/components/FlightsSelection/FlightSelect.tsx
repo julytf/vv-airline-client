@@ -3,7 +3,7 @@ import IAirport from '@/interfaces/flight/airport.interface'
 import IFlight from '@/interfaces/flight/flight.interface'
 import { FunctionComponent } from 'react'
 import Flight from './Flight'
-import SelectedFlight from './SeletecFlight'
+import SelectedFlight from './SeletectedFlight'
 
 interface FlightSelectProps {
   departureAirport: IAirport
@@ -11,7 +11,7 @@ interface FlightSelectProps {
   date: Date
   flights: IFlight[]
   selectedFlightInfo?: { flight: IFlight; seatClass: SeatClass } | null
-  onChange?: (info: { flight: IFlight; seatClass: SeatClass } | null) => void
+  onChange?: (info: { flight: IFlight; seatClass: SeatClass; price: number } | null) => void
 }
 
 const FlightSelect: FunctionComponent<FlightSelectProps> = ({

@@ -1,9 +1,16 @@
 import { SeatIcon } from '@/components/Icons'
+import { useSearchWizard } from '@/contexts/SearchWizard.context'
+import { SeatType } from '@/enums/seat.enums'
 import { FunctionComponent } from 'react'
 
 interface NoteProps {}
 
 const Note: FunctionComponent<NoteProps> = () => {
+  const { data } = useSearchWizard()
+  const surcharges = data.additionalData.surcharges
+
+  const windowSeatSurcharge = surcharges?.find((surcharge) => surcharge.name === `SeatType.${SeatType.WINDOW}`)
+
   return (
     <div className='col-span-6 flex flex-col gap-y-2'>
       <div className='mb-2 text-lg'>Chú Thích</div>
@@ -26,7 +33,7 @@ const Note: FunctionComponent<NoteProps> = () => {
           <SeatIcon color='orange' />
           <span className='ml-2'>Ghế cửa sổ</span>
         </div>
-        <div>0 vnđ</div>
+        <div>{windowSeatSurcharge?.value.toLocaleString()} vnđ</div>
       </div>
       <div className='flex'>
         <div className=' text-red-600'>

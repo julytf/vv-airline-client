@@ -1,5 +1,5 @@
 import { Elements, PaymentElement } from '@stripe/react-stripe-js'
-import Loading from '../Loading/Loading'
+import Loading from '../ui/Loading'
 import { loadStripe } from '@stripe/stripe-js'
 import config from '@/config'
 import { FunctionComponent, useEffect, useState } from 'react'

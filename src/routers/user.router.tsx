@@ -2,6 +2,7 @@
 // import { GlobalContextProvider } from 'utils/GlobalContext'
 
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
+import { UserRole } from '@/enums/user.enums'
 
 import MainLayout from '@/layouts/Main.layout'
 
@@ -18,8 +19,10 @@ import ArticleDetailScreen from '@/pages/Articles/Detail.screen'
 import TestScreen from '@/pages/Test.screen'
 
 import RoleGuard from '@/middlewares/roleGuard.middleware'
-import { UserRole } from '@/enums/user.enums'
 import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
+
+import BookingsIndexScreen from '@/pages/Bookings/Index/Index.screen'
+import BookingsDetailScreen from '@/pages/Bookings/Detail/Detail.screen'
 
 export const userRoutes = [
   {
@@ -93,6 +96,22 @@ export const userRoutes = [
         //     element: <PaymentScreen />,
         //   },
         // ],
+      },
+      {
+        path: 'bookings',
+        breadcrumbName: 'Đặt Vé',
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <BookingsIndexScreen />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Chi tiết',
+            element: <BookingsDetailScreen />,
+          },
+        ],
       },
       {
         path: 'articles',

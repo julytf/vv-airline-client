@@ -1,7 +1,9 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import aircraftModelsService from '@/services/aircraftModels.service'
+import { SeatClass } from '@/enums/seat.enums'
+import IAircraftModel from '@/interfaces/aircraft/aircraftModel.interface'
+import aircraftsService from '@/services/aircrafts.service'
 import { route } from '@/utils/helpers'
 import { FunctionComponent } from 'react'
 import { NavLink } from 'react-router-dom'
@@ -20,10 +22,17 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
         <SmartTable
           title='Máy Bay'
           subTitle='Danh Sách Máy Bay'
-          // data={aircraftModelsData}
-          FetchDataFnc={aircraftModelsService.getAircraftModelsPaginate.bind(aircraftModelsService)}
+          // data={aircraftData}
+          FetchDataFnc={aircraftsService.getAircraftsPaginate.bind(aircraftsService)}
           queryKey='aircrafts'
           renderOptions={[
+            {
+              field: 'registrationNumber',
+              displayName: 'Số Đăng Ký',
+              renderFnc: (value: unknown) => {
+                return <>{value}</>
+              },
+            },
             {
               field: 'name',
               displayName: 'Tên',
@@ -32,10 +41,17 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
               },
             },
             {
-              field: 'seatQuantity',
-              displayName: 'Số Ghế',
+              field: 'status',
+              displayName: 'Trạng Thái',
               renderFnc: (value: unknown) => {
                 return <>{value}</>
+              },
+            },
+            {
+              field: 'aircraftModel',
+              displayName: 'Mẫu Máy Bay',
+              renderFnc: (value: unknown) => {
+                return <>{(value as IAircraftModel).name}</>
               },
             },
             {

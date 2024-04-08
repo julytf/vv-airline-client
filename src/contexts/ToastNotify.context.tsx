@@ -1,7 +1,17 @@
 import { FlightType } from '../enums/flight.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
 import { SeatClass } from '../enums/seat.enums'
-import { FC, FunctionComponent, PropsWithChildren, createContext, useContext, useEffect, useRef, useState } from 'react'
+import {
+  FC,
+  Fragment,
+  FunctionComponent,
+  PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import ISeat from '@/interfaces/aircraft/seat.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
 import { UserGender } from '@/enums/user.enums'
@@ -81,13 +91,15 @@ export const ToastNotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     <ToastNotifyContext.Provider value={toast}>
       {children}
       <div ref={wrapperRef} className='fixed bottom-10 right-10 z-50 flex flex-col gap-1'>
-        {toasts.map((t) => t.element)}
+        {toasts.map((t, index) => (
+          <Fragment key={index}>{t.element}</Fragment>
+        ))}
       </div>
     </ToastNotifyContext.Provider>
   )
 }
 
-export const useToastNotify = (): ContextValue => {
+export const useToast = (): ContextValue => {
   const contextData = useContext(ToastNotifyContext)
 
   if (!contextData) {
@@ -107,9 +119,11 @@ interface ToastProps {
 
 const Toast: FunctionComponent<ToastProps> = ({ type = 'info', title, message, path, onCloseClick }) => {
   const [animationStart, setAnimationStart] = useState(false)
-
+  console.log(animationStart)
   useEffect(() => {
-    setAnimationStart(true)
+    setTimeout(() => {
+      setAnimationStart(true)
+    }, 0)
   }, [])
 
   return (

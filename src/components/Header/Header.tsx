@@ -8,7 +8,7 @@ import DropDown from '../Dropdown/DropDown'
 import Logo from '@/assets/images/logos/logo.png'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '@/services/state/store'
-import Loading from '../Loading/Loading'
+import Loading from '../ui/Loading'
 import authService from '@/services/auth.service'
 import * as auth from '@/services/state/auth/authSlice'
 
@@ -19,7 +19,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
   const { isInitialized, isAuthenticated } = useSelector((state: AppState) => state.auth)
 
   return (
-    <header className='sticky top-0 z-50 bg-white/90 p-2 px-6 '>
+    <header className='sticky top-0 z-50 h-24 bg-white/90 p-2 px-6'>
       <div className='flex items-center justify-between'>
         <NavLink to={'/'}>
           <div className='flex items-center'>
@@ -29,7 +29,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
             <div className='text-xl font-bold'>VV Airline</div>
           </div>
         </NavLink>
-        <div className=' flex'>
+        <div className=' flex items-center justify-center'>
           <NavLink className='pr-4' to={'/articles'}>
             <Button text>Bài Viết</Button>
           </NavLink>
@@ -75,7 +75,7 @@ const LoggedInNavBarButton: FunctionComponent<LoggedInNavBarButtonProps> = () =>
 
   return (
     <div className='flex items-center gap-x-4'>
-      <NavLink to={'/flights'}>
+      <NavLink to={'/bookings'}>
         <Button text>Lịch Sử Đặt Vé</Button>
       </NavLink>
       <div className='relative'>

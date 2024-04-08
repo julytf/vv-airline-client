@@ -1,4 +1,4 @@
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import Button from '@/components/ui/Button'
 import { UserGender, UserRole } from '@/enums/user.enums'
 import IAddress from '@/interfaces/address/address.interface'
@@ -179,7 +179,7 @@ const CreateArticle: FunctionComponent<CreateArticleProps> = () => {
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
-                        <div className='prose max-w-full'>
+                        <div className='ck-content prose max-w-full'>
                           <CKEditor
                             config={{
                               extraPlugins: [uploadPlugin],

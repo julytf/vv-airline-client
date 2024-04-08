@@ -5,7 +5,7 @@ import TablePagination from '../Pagination/TablePagination'
 import classNames from 'classnames'
 import { useNavigate } from 'react-router'
 import Button from '../ui/Button'
-import Loading from '../Loading/Loading'
+import Loading from '../ui/Loading'
 
 export type TableData = {
   [key: string]: unknown

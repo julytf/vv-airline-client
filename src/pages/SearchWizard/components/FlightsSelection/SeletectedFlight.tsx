@@ -1,18 +1,21 @@
 import { FlightLegType } from '@/enums/flightLeg.enums'
-import { SeatClass } from '@/enums/seat.enums'
-import classNames from 'classnames'
 import FlightLeg from './FlightLeg'
-import { differenceInDays, differenceInHours, differenceInMinutes, format, startOfDay } from 'date-fns'
-import { FunctionComponent, useState } from 'react'
+import classNames from 'classnames'
+import { SeatClass } from '@/enums/seat.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
+import { FunctionComponent, useState } from 'react'
+import { differenceInHours, differenceInMinutes, format } from 'date-fns'
 
-interface FlightProps {
-  flight: IFlight
+interface SelectedFlightProps {
+  selectedFlightInfo: { flight: IFlight; seatClass: SeatClass }
   onChange?: (info: { flight: IFlight; seatClass: SeatClass; price: number } | null) => void
 }
 
-const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
+const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlightInfo, onChange }) => {
   const [isExpanded, setIsExpanded] = useState(false)
+
+  const flight = selectedFlightInfo.flight
+  console.log('flight', flight)
 
   const minuteDiff = differenceInMinutes(flight.arrivalTime, flight.departureTime) % 60
   const hourDiff = differenceInHours(flight.arrivalTime, flight.departureTime)
@@ -27,8 +30,6 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
     flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
   )
 
-  const dayDiff = differenceInDays(startOfDay(flight.arrivalTime), startOfDay(flight.departureTime))
-
   const economyPrice = !flight.hasTransit
     ? Number(flight.flightRoute.prices[SeatClass.ECONOMY])
     : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.ECONOMY]) +
@@ -39,13 +40,10 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
     : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.BUSINESS]) +
       Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.BUSINESS])
 
-  // console.log('economyPrice', economyPrice)
-  // console.log('businessPrice', businessPrice)
-
   return (
-    <div className={classNames('w-full rounded-md border-2 shadow-md ', {})}>
-      <div className='grid grid-cols-6 gap-6  p-4'>
-        <div className='col-span-2'>
+    <div className={classNames('w-full', {})}>
+      <div className='relative grid grid-cols-12  gap-6 p-4'>
+        <div className='col-span-4'>
           <div className='flex justify-between'>
             <div className='flex flex-col items-center'>
               <span className='text-2xl text-primary'>{format(flight.departureTime, 'HH:mm')}</span>
@@ -55,16 +53,13 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
               <i className='fa-duotone fa-plane'></i>
             </div>
             <div className=' flex flex-col items-center'>
-              <div>
-                <span className='text-2xl text-primary'>{format(flight.arrivalTime, 'HH:mm')}</span>{' '}
-                {dayDiff !== 0 && <span className=''>(+{dayDiff} ngày)</span>}
-              </div>
+              <span className='text-2xl text-primary'>{format(flight.arrivalTime, 'HH:mm')}</span>
               <span className='text-xl'>{flight.flightRoute.arrivalAirport.IATA}</span>
             </div>
           </div>
 
           <div className='mt-1 flex justify-between gap-x-4'>
-            <div className='flex flex-1 flex-col gap-y-1'>
+            <div className='flex flex-col gap-y-1 '>
               <div className='text-xs'>
                 <span>
                   {`${hourDiff} tiếng `}
@@ -100,38 +95,43 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
             </div>
           </div>
         </div>
-        <div className='col-span-4 grid grid-cols-6 gap-4'>
-          <button
-            onClick={() => onChange?.({ flight, seatClass: SeatClass.ECONOMY, price: economyPrice })}
-            className={classNames(
-              'col-span-3 flex items-center justify-center rounded-md border border-blue-400 bg-blue-100 active:scale-95',
-              {},
-            )}
-          >
-            <div className='flex flex-col justify-center'>
-              <span>PHỔ THÔNG</span>
-              <div className='flex justify-start'>
-                <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span>
-                <span>VNĐ</span>
+        <div className='relative col-span-8 flex justify-center gap-4'>
+          {selectedFlightInfo.seatClass === SeatClass.ECONOMY && (
+            <div
+              className={classNames(
+                'col-span-3 flex w-1/2 items-center justify-center rounded-md border border-blue-400 bg-blue-100',
+                {},
+              )}
+            >
+              <div className='flex flex-col items-center justify-center'>
+                <span>PHỔ THÔNG</span>
+                <div className='flex justify-center'>
+                  <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span>
+                  <span>VNĐ</span>
+                </div>
+                <span>Còn {flight.remainingSeats[SeatClass.ECONOMY]} ghế</span>
               </div>
-              <span>Còn {flight.remainingSeats[SeatClass.ECONOMY]} ghế</span>
             </div>
-          </button>
-          <button
-            onClick={() => onChange?.({ flight, seatClass: SeatClass.BUSINESS, price: businessPrice })}
-            className={classNames(
-              'col-span-3 flex items-center justify-center rounded-md border border-yellow-400 bg-yellow-100 active:scale-95',
-              {},
-            )}
-          >
-            <div className='flex flex-col justify-center'>
-              <span>THƯƠNG GIA</span>
-              <div className='flex justify-start'>
-                <span className='bold text-3xl'>{businessPrice.toLocaleString()}</span>
-                <span>VNĐ</span>
+          )}
+          {selectedFlightInfo.seatClass === SeatClass.BUSINESS && (
+            <div
+              className={classNames(
+                'col-span-3  flex w-1/2 items-center justify-center rounded-md border border-yellow-400 bg-yellow-100 ',
+                {},
+              )}
+            >
+              <div className='flex flex-col items-center justify-center'>
+                <span>THƯƠNG GIA</span>
+                <div className='flex justify-center'>
+                  <span className='bold text-3xl'>{businessPrice.toLocaleString()}</span>
+                  <span>VNĐ</span>
+                </div>
+                <span>Còn {flight.remainingSeats[SeatClass.BUSINESS]} ghế</span>
               </div>
-              <span>Còn {flight.remainingSeats[SeatClass.BUSINESS]} ghế</span>
             </div>
+          )}
+          <button onClick={() => onChange?.(null)} className='absolute right-0 p-10 text-gray-400 active:scale-95'>
+            Hủy
           </button>
         </div>
       </div>
@@ -157,4 +157,4 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
   )
 }
 
-export default Flight
+export default SelectedFlight

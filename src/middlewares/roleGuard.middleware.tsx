@@ -1,4 +1,4 @@
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import { UserRole } from '@/enums/user.enums'
 import { AppState } from '@/services/state/store'
 import { FunctionComponent, PropsWithChildren } from 'react'

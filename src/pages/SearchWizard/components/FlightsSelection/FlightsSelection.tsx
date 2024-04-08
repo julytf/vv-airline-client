@@ -14,7 +14,7 @@ import { FlightsData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
-import Loading from '@/components/Loading/Loading'
+import Loading from '@/components/ui/Loading'
 import FlightSelect from './FlightSelect'
 
 interface FlightsSelectionProps {}

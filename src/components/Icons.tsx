@@ -3,7 +3,6 @@ import { FunctionComponent } from 'react'
 export const SeatIcon: FunctionComponent<{ color?: 'white' | 'blue' | 'orange' | 'green' | 'yellow' }> = ({
   color = 'white',
 }) => {
-console.log('color', color)
 
   if (color === 'white')
     return (
@@ -55,8 +54,8 @@ console.log('color', color)
     return <svg width='24' height='24' xmlns='http://www.w3.org/2000/svg'>
       <g>
         <title>Occupied Seat</title>
-        <rect id='svg_19' height='5' width='20' y='14' x='2' stroke-width='0' stroke='#000' fill='#ffa64d'></rect>
-        <rect stroke='#000' stroke-width='0' id='svg_18' height='12' width='16' y='2' x='4' fill='#ffa64d'></rect>
+        <rect id='svg_19' height='5' width='20' y='14' x='2' strokeWidth='0' stroke='#000' fill='#ffa64d'></rect>
+        <rect stroke='#000' strokeWidth='0' id='svg_18' height='12' width='16' y='2' x='4' fill='#ffa64d'></rect>
         <line stroke='#000' id='svg_2' y2='19' x2='2' y1='14' x1='2' fill='none'></line>
         <line id='svg_3' y2='2' x2='20' y1='2' x1='4' stroke='#000' fill='none'></line>
         <line id='svg_6' y2='6' x2='4' y1='2' x1='4' stroke='#000' fill='none'></line>

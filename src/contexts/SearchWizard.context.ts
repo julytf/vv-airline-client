@@ -7,6 +7,7 @@ import IAirport from '@/interfaces/flight/airport.interface'
 import { UserGender } from '@/enums/user.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
+import ISurcharge from '@/interfaces/flight/surcharge.interface'
 
 export interface SearchData {
   departureAirportIATA: string
@@ -34,10 +35,12 @@ export interface FlightsData {
   [FlightType.OUTBOUND]: {
     flight: IFlight
     seatClass: SeatClass
+    price: number
   } | null
   [FlightType.INBOUND]: {
     flight: IFlight
     seatClass: SeatClass
+    price: number
   } | null
 }
 export interface PassengersData {
@@ -97,6 +100,9 @@ export interface WizardData {
   flightsData: FlightsData
   passengersData: PassengersData
   seatsData: SeatsData
+  additionalData: {
+    surcharges: ISurcharge[] | null
+  }
 }
 export interface ContextData {
   data: WizardData

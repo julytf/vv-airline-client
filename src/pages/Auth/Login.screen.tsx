@@ -10,11 +10,15 @@ import authService from '@/services/auth.service'
 import { AppDispatch } from '@/services/state/store'
 import { useDispatch } from 'react-redux'
 import * as auth from '@/services/state/auth/authSlice'
+import { useToast } from '@/contexts/ToastNotify.context'
+import { AxiosError } from 'axios'
 
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
+
+  const toast = useToast()
 
   const {
     register,
@@ -29,10 +33,22 @@ const Login: FunctionComponent<LoginProps> = () => {
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     const { email, password } = data
-    const { accessToken, user } = await authService.login({ email, password })
-    // console.log({ user, accessToken })
-    dispatch(auth.login({ user, accessToken }))
-    reset()
+    try {
+      const { accessToken, user } = await authService.login({ email, password })
+      toast.success({ message: 'Đâng nhập thành công!' })
+      // console.log({ user, accessToken })
+      dispatch(auth.login({ user, accessToken }))
+    } catch (error) {
+      console.log(error)
+      if (typeof error === 'string') {
+        toast.error({ message: error })
+      } else if (error instanceof AxiosError) {
+        toast.error({ message: error.response?.data.message })
+      } else if (error instanceof Error) {
+        toast.error({ message: error.message })
+      }
+    }
+    // reset()
   }
 
   return (

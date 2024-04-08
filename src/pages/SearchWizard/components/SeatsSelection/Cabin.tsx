@@ -1,7 +1,7 @@
 import { ICabinModel } from '@/interfaces/aircraft/aircraftModel.interface'
 import Seat from './Seat'
 import ISeat from '@/interfaces/aircraft/seat.interface'
-import { FunctionComponent } from 'react'
+import { Fragment, FunctionComponent } from 'react'
 import { numberToAlphabet } from '@/utils/helpers'
 
 interface CabinProps {
@@ -16,17 +16,17 @@ const Cabin: FunctionComponent<CabinProps> = ({ cabin, selectingSeats, occupiedS
     <>
       <div className='flex justify-between'>
         {new Array(cabin.noCol).fill(0).map((_, index) => (
-          <>
+          <Fragment key={index}>
             <div className='bold aspect-square w-10'>{numberToAlphabet(index + 1)}</div>
             {cabin.aisleCol.includes(index + 1) && <div className='bold aspect-square w-10'></div>}
-          </>
+          </Fragment>
         ))}
       </div>
       {cabin.map.map((row, rowIndex) => (
         <div key={rowIndex} className='flex justify-between'>
           {row.seats.map((seat, seatIndex) => {
             return (
-              <>
+              <Fragment key={seatIndex}>
                 <Seat
                   seat={seat}
                   onClick={onSelectSeat}
@@ -38,7 +38,7 @@ const Cabin: FunctionComponent<CabinProps> = ({ cabin, selectingSeats, occupiedS
                 {cabin.aisleCol.includes(seatIndex + 1) && (
                   <div className='aspect-square w-10 p-1'>{row.index + 1}</div>
                 )}
-              </>
+              </Fragment>
             )
           })}
         </div>
