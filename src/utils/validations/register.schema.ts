@@ -8,7 +8,7 @@ import {
   firstNameSchema,
   genderSchema,
   lastNameSchema,
-  passwordConfirmSchema,
+  confirmPasswordSchema,
   passwordSchema,
   phoneNumberSchema,
   provinceSchema,
@@ -30,7 +30,7 @@ const registerSchema = Joi.object({
   },
   email: emailSchema,
   password: passwordSchema,
-  passwordConfirm: passwordConfirmSchema,
+  confirmPassword: confirmPasswordSchema,
 })
 
 export default registerSchema

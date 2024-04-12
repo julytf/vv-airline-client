@@ -11,10 +11,16 @@ import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNav
 import { PassengersData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { UserGender } from '@/enums/user.enums'
 import PassengerInformationForm from './PassengerInformationForm'
+import { useSelector } from 'react-redux'
+import { AppState } from '@/services/state/store'
 
 interface PassengersInformationProps {}
 
 const PassengersInformation: FunctionComponent<PassengersInformationProps> = () => {
+  const { user, isAuthenticated } = useSelector((state: AppState) => state.auth)
+  console.log('user', user)
+  console.log('user', new Date(user?.dateOfBirth || '').toString())
+
   const { data, setData, actions } = useSearchWizard()
 
   const [loading, setLoading] = useState(true)
@@ -27,15 +33,29 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
   } = useForm<PassengersData>({
     mode: 'onChange',
     resolver: joiResolver(passengersInformationSchema),
+    defaultValues: {
+      [PassengerType.ADULT]: [
+        !isAuthenticated
+          ? {}
+          : {
+              lastName: user?.lastName,
+              firstName: user?.firstName,
+              dateOfBirth: format(new Date(user?.dateOfBirth || ''), `yyyy-MM-dd`),
+              gender: user?.gender,
+              phoneNumber: user?.phoneNumber,
+              email: user?.email,
+            },
+      ],
+    },
   })
   const formData = watch()
 
-  console.log('-----------')
-  console.log('errors', errors)
-  console.log('isValid', isValid)
-  console.log('formData', formData)
+  // console.log('-----------')
+  // console.log('errors', errors)
+  // console.log('isValid', isValid)
+  // console.log('formData', formData)
 
-  console.log('validate', passengersInformationSchema.validate(formData))
+  // console.log('validate', passengersInformationSchema.validate(formData))
 
   const isForwardAble = isValid
   const isBackwardAble = true

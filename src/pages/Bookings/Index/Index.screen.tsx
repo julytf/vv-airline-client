@@ -26,7 +26,7 @@ const Index: FunctionComponent<IndexProps> = (props) => {
 
   if (isLoading) return <Loading />
 
-  if (!bookings.length) return <div className='text-center text-2xl'>Không có chuyến bay nào</div>
+  if (!bookings.length) return <div className='text-center text-2xl'>Bạn chưa đặt chuyến bay nào</div>
 
   return (
     <div className={classNames('mx-auto max-w-3xl px-6 py-8 md:px-12 xl:px-6', props.className)}>
@@ -37,7 +37,7 @@ const Index: FunctionComponent<IndexProps> = (props) => {
       <div className='mx-auto flex max-w-5xl  flex-col gap-8'>
         {bookings.map((booking, index) => (
           <NavLink key={index} to={route('/bookings/:id', { params: { id: booking._id! } })} className='col-span-3'>
-            <Booking />
+            <Booking booking={booking}/>
           </NavLink>
         ))}
       </div>

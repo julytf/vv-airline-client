@@ -21,7 +21,7 @@ interface IFormData {
   firstName: string
   lastName: string
   // password: string
-  // passwordConfirm: string
+  // confirmPassword: string
   email: string
   phoneNumber?: string
   dateOfBirth?: Date | string
@@ -446,17 +446,17 @@ const Index: FunctionComponent<IndexProps> = () => {
                     />
                   </div>
                   <div className='col-span-6'>
-                    <label htmlFor='passwordConfirm' className='block text-sm font-medium leading-6 text-gray-900'>
+                    <label htmlFor='confirmPassword' className='block text-sm font-medium leading-6 text-gray-900'>
                       Nhập lại mật khẩu
                     </label>
                     <Controller
-                      name={'passwordConfirm'}
+                      name={'confirmPassword'}
                       control={control}
                       render={({ field, fieldState: { error } }) => (
                         <>
                           <div className='mt-2'>
                             <input
-                              id='passwordConfirm'
+                              id='confirmPassword'
                               value={field.value || ''}
                               onChange={(e) => {
                                 field.onChange(e.target.value)

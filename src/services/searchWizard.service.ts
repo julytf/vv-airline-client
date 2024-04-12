@@ -50,6 +50,7 @@ class searchWizardService {
     departureDate: Date
     totalPassengers: number
   }) {
+    // console.log('here', departureDate)
     const response = await axiosClient.get('/search-wizard/get-flights', {
       params: {
         departureAirportIATA,

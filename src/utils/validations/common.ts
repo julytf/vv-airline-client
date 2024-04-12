@@ -58,7 +58,7 @@ export const passwordSchema = Joi.string()
     'string.empty': 'Mật khẩu không thể để trống',
     'string.pattern.base': 'Mật khẩu không hợp lệ (ít nhất 8 ký tự, 1 chữ cái, 1 số và 1 ký tự đặc biệt)',
   })
-export const passwordConfirmSchema = Joi.string().required().valid(Joi.ref('password')).messages({
+export const confirmPasswordSchema = Joi.string().required().valid(Joi.ref('password')).messages({
   'any.required': 'Nhập lại mật khẩu không thể để trống',
   'string.empty': 'Nhập lại mật khẩu không thể để trống',
   'any.only': 'Nhập lại mật khẩu không trùng khớp với mật khẩu',

@@ -49,7 +49,7 @@ export interface PassengersData {
         {
           lastName: string
           firstName: string
-          dateOfBirth: Date
+          dateOfBirth: string
           gender: UserGender
           phoneNumber: string
           email: string
@@ -58,7 +58,7 @@ export interface PassengersData {
         ...{
           lastName: string
           firstName: string
-          dateOfBirth: Date
+          dateOfBirth: string
           gender: UserGender
           // type: PassengerType
         }[],
@@ -67,7 +67,7 @@ export interface PassengersData {
   [PassengerType.CHILD]: {
     lastName: string
     firstName: string
-    dateOfBirth: Date
+    dateOfBirth: string
     gender: UserGender
     // type: PassengerType
   }[]

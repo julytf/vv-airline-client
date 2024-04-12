@@ -13,6 +13,8 @@ import { route } from '@/utils/helpers'
 import _ from 'lodash'
 import { PassengerType } from '@/enums/passenger.enums'
 import Loading from '../ui/Loading'
+import { useToast } from '@/contexts/ToastNotify.context'
+import { addYears, format, startOfDay } from 'date-fns'
 
 interface SearchCardProps {
   className?: string
@@ -39,6 +41,9 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   })
   // console.log('formData', formData)
   // console.log('formData', formData.departureDate)
+
+  const isValid =
+    formData.departureAirportIATA && formData.arrivalAirportIATA && formData.departureDate && formData.passengers
 
   useEffect(() => {
     searchWizardService.getAirports().then((airports) => {
@@ -69,7 +74,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   const defaultValues = {
     departureAirport: flattenedOptions.find((option) => option.value === formData.departureAirportIATA),
     arrivalAirport: flattenedOptions.find((option) => option.value === formData.arrivalAirportIATA),
-    departureDate: formData.departureDate,
+    departureDate: formData.departureDate || startOfDay(new Date()).toString(),
     returnDate: formData.returnDate || undefined,
     passengers: formData.passengers,
   }
@@ -132,16 +137,23 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           name='departureDate'
           placeholder='Ngày đi'
           icon={<i className='fa-light fa-calendar-days'></i>}
-          defaultValue={defaultValues.departureDate}
+          max={formData.returnDate || undefined}
+          // defaultValue={defaultValues.departureDate}
+          value={formData.departureDate || ''}
           onChange={(v) => {
-            setFormData((prev) => ({ ...prev, departureDate: v }) as Partial<SearchData>)
+            setFormData((prev) => ({ ...prev, 
+              departureDate: v,
+              // returnDate: new Date(v) > new Date(formData.returnDate) ? ,
+             }) as Partial<SearchData>)
           }}
         />
         <DateInput
           name='returnDate'
           placeholder='Ngày về'
           icon={<i className='fa-light fa-calendar-days'></i>}
-          defaultValue={defaultValues.returnDate}
+          min={formData.departureDate}
+          // defaultValue={defaultValues.returnDate}
+          value={formData.returnDate || ''}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, returnDate: v }) as Partial<SearchData>)
           }}
@@ -153,7 +165,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           }}
         />
         {/* <NavLink to={'/wizard/flights-selection'}> */}
-        <Button className='p-2.5 px-5' onClick={onSearch}>
+        <Button className='p-2.5 px-5' disabled={!isValid} onClick={onSearch}>
           Tìm
         </Button>
         {/* </NavLink> */}
@@ -260,22 +272,40 @@ interface DateInputProps {
   name?: string
   placeholder?: string
   icon?: ReactElement
-  defaultValue?: string
+  min?: string
+  max?: string
+  // defaultValue?: string
+  value: string
   onChange?: (e: unknown) => void
 }
 
-const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon, defaultValue, onChange }) => {
-  // console.log(defaultValue)
+const DateInput: FunctionComponent<DateInputProps> = ({
+  name,
+  placeholder,
+  icon,
+  min,
+  max,
+  // defaultValue,
+  value,
+  onChange,
+}) => {
+  // console.log('min', min)
+  // console.log('max', max)
+  // console.log('new Date(min || "").toString()', new Date(min || '').toString())
+  // console.log(
+  //   'min ? new Date(min || "").toString() : new Date().toString()',
+  //   min ? new Date(min || '').toString() : new Date().toString(),
+  // )
 
-  const [dateString, setDateString] = useState(defaultValue || '')
-  const selectedDate = new Date(dateString)
+  // const [dateString, setDateString] = useState(defaultValue || '')
+  // const selectedDate = new Date(dateString)
   //   console.log(date)
 
   const inputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    onChange?.(dateString)
-  }, [dateString])
+  // useEffect(() => {
+  //   onChange?.(dateString)
+  // }, [dateString])
 
   return (
     <div className='relative'>
@@ -292,15 +322,15 @@ const DateInput: FunctionComponent<DateInputProps> = ({ name, placeholder, icon,
           placeholder={placeholder}
           className='invisible w-0 p-0'
           ref={inputRef}
-          value={dateString}
+          value={value}
           onChange={(e) => {
-            setDateString(e.target.value)
+            onChange?.(e.target.value)
           }}
+          min={format(min ? new Date(min || '').toString() : new Date().toString(), 'yyyy-MM-dd')}
+          max={format(max ? new Date(max || '').toString() : addYears(new Date(), 1), 'yyyy-MM-dd')}
         />
-        {dateString ? (
-          <span className=' pl-2 '>
-            {selectedDate.getDate()}/{selectedDate.getMonth() + 1}/{selectedDate.getFullYear()}
-          </span>
+        {value ? (
+          <span className=' pl-2 '>{format(value, 'dd/MM/yyyy')}</span>
         ) : (
           <span className=' pl-2 text-gray-500'>{placeholder}</span>
         )}
@@ -315,8 +345,12 @@ interface PassengerQuantityInputProps {
 }
 
 const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = ({ defaultValue, onChange }) => {
+  const toast = useToast()
+
   const [adultPassengerQuantity, setAdultPassengerQuantity] = useState(defaultValue?.[PassengerType.ADULT] || 1)
+  console.log('adultPassengerQuantity', adultPassengerQuantity)
   const [childPassengerQuantity, setChildPassengerQuantity] = useState(defaultValue?.[PassengerType.CHILD] || 0)
+  console.log('childPassengerQuantity', childPassengerQuantity)
 
   const buttonRef = useRef<HTMLDivElement>(null)
 
@@ -329,9 +363,40 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
     onChange?.({ [PassengerType.ADULT]: adultPassengerQuantity, [PassengerType.CHILD]: childPassengerQuantity })
   }, [adultPassengerQuantity, childPassengerQuantity])
 
+  const setAdultPassengerQuantityHandler = (quantity: number) => {
+    if (quantity < 1) {
+      toast.warning({ message: 'Số lượng hành khách người lớn không thể nhỏ hơn 1' })
+      return
+    }
+    if (quantity + childPassengerQuantity > 9) {
+      toast.warning({ message: 'Tổng số hành khách không thể lớn hơn 9' })
+      return
+    }
+    if (quantity < childPassengerQuantity) {
+      setChildPassengerQuantity(quantity)
+    }
+
+    setAdultPassengerQuantity(quantity)
+  }
+  const setChildPassengerQuantityHandler = (quantity: number) => {
+    if (quantity < 0) {
+      toast.warning({ message: 'Số lượng hành khách trẻ em không thể nhỏ hơn 0' })
+      return
+    }
+    if (quantity + adultPassengerQuantity > 9) {
+      toast.warning({ message: 'Tổng số hành khách không thể lớn hơn 9' })
+      return
+    }
+    if (quantity > adultPassengerQuantity) {
+      toast.warning({ message: 'Số lượng hành khách trẻ em không thể nhỏ hơn số lượng hành khách người lớn' })
+      return
+    }
+    setChildPassengerQuantity(quantity)
+  }
+
   return (
     <>
-      <input
+      {/* <input
         type='text'
         value={adultPassengerQuantity}
         onChange={(e) => setAdultPassengerQuantity(+e.target.value)}
@@ -342,7 +407,7 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
         value={childPassengerQuantity}
         onChange={(e) => setChildPassengerQuantity(+e.target.value)}
         className='hidden'
-      />
+      /> */}
       <div className='relative' ref={buttonRef}>
         <div
           onClick={onClick}
@@ -376,14 +441,14 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
                 </div>
                 <div className='flex gap-2'>
                   <button
-                    onClick={() => setAdultPassengerQuantity((prev) => prev - 1)}
+                    onClick={() => setAdultPassengerQuantityHandler(adultPassengerQuantity - 1)}
                     className='aspect-square w-6 rounded-full border'
                   >
                     <i className='fa-solid fa-minus'></i>
                   </button>
                   <span>{adultPassengerQuantity}</span>
                   <button
-                    onClick={() => setAdultPassengerQuantity((prev) => prev + 1)}
+                    onClick={() => setAdultPassengerQuantityHandler(adultPassengerQuantity + 1)}
                     className='aspect-square w-6 rounded-full border'
                   >
                     <i className='fa-solid fa-plus'></i>
@@ -406,14 +471,14 @@ const PassengerQuantityInput: FunctionComponent<PassengerQuantityInputProps> = (
                 </div>
                 <div className='flex gap-2'>
                   <button
-                    onClick={() => setChildPassengerQuantity((prev) => prev - 1)}
+                    onClick={() => setChildPassengerQuantityHandler(childPassengerQuantity - 1)}
                     className='aspect-square w-6 rounded-full border'
                   >
                     <i className='fa-solid fa-minus'></i>
                   </button>
                   <span>{childPassengerQuantity}</span>
                   <button
-                    onClick={() => setChildPassengerQuantity((prev) => prev + 1)}
+                    onClick={() => setChildPassengerQuantityHandler(childPassengerQuantity + 1)}
                     className='aspect-square w-6 rounded-full border'
                   >
                     <i className='fa-solid fa-plus'></i>

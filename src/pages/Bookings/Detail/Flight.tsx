@@ -42,7 +42,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
   return (
     <div className='w-full max-w-4xl rounded-md border-2 shadow-md'>
       <div className='relative grid grid-cols-12  gap-6 p-4'>
-        <div className='col-span-6 border-r pr-4'>
+        <div className='col-span-7 border-r p-4'>
           <div className='flex justify-between'>
             <div className='flex flex-col items-center'>
               <div>
@@ -100,7 +100,8 @@ const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
             </div>
           </div>
         </div>
-        <div className='relative col-span-6 flex flex-col items-center justify-center gap-4'>
+        {/* TODO: */}
+        <div className='relative col-span-5 flex flex-col items-center justify-center gap-4'>
           <span className='bold text-2xl text-yellow-400'>Thương Gia</span>
           <span className=''>2,000,000 vnđ</span>
         </div>

@@ -3,26 +3,48 @@
 
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 import { UserRole } from '@/enums/user.enums'
+import { lazy } from 'react'
+import ForgotPasswordScreen from '@/pages/Auth/ForgotPassword/ForgotPassword.screen'
 
-import MainLayout from '@/layouts/Main.layout'
+// import MainLayout from '@/layouts/Main.layout'
 
-import HomeScreen from '@/pages/Home.screen'
-import LoginScreen from '@/pages/Auth/Login.screen'
-import RegisterScreen from '@/pages/Auth/Register.screen'
+// import HomeScreen from '@/pages/Home.screen'
+// import LoginScreen from '@/pages/Auth/Login.screen'
+// import RegisterScreen from '@/pages/Auth/Register.screen'
 
-import AccountIndexScreen from '@/pages/Account/Index.screen'
-import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
+// import AccountIndexScreen from '@/pages/Account/Index.screen'
+// import ChangePasswordScreen from '@/pages/Account/ChangePassword.screen'
 
-import ArticleIndexScreen from '@/pages/Articles/Index.screen'
-import ArticleDetailScreen from '@/pages/Articles/Detail.screen'
+// import ArticleIndexScreen from '@/pages/Articles/Index.screen'
+// import ArticleDetailScreen from '@/pages/Articles/Detail.screen'
 
-import TestScreen from '@/pages/Test.screen'
+// import TestScreen from '@/pages/Test.screen'
 
-import RoleGuard from '@/middlewares/roleGuard.middleware'
-import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
+// import RoleGuard from '@/middlewares/roleGuard.middleware'
+// import SearchWizardScreen from '@/pages/SearchWizard/SearchWizard.screen'
 
-import BookingsIndexScreen from '@/pages/Bookings/Index/Index.screen'
-import BookingsDetailScreen from '@/pages/Bookings/Detail/Detail.screen'
+// import BookingsIndexScreen from '@/pages/Bookings/Index/Index.screen'
+// import BookingsDetailScreen from '@/pages/Bookings/Detail/Detail.screen'
+
+const MainLayout = lazy(() => import('@/layouts/Main.layout'))
+
+const HomeScreen = lazy(() => import('@/pages/Home.screen'))
+const LoginScreen = lazy(() => import('@/pages/Auth/Login.screen'))
+const RegisterScreen = lazy(() => import('@/pages/Auth/Register.screen'))
+
+const AccountIndexScreen = lazy(() => import('@/pages/Account/Index.screen'))
+const ChangePasswordScreen = lazy(() => import('@/pages/Account/ChangePassword.screen'))
+
+const ArticleIndexScreen = lazy(() => import('@/pages/Articles/Index.screen'))
+const ArticleDetailScreen = lazy(() => import('@/pages/Articles/Detail.screen'))
+
+const TestScreen = lazy(() => import('@/pages/Test.screen'))
+
+const RoleGuard = lazy(() => import('@/middlewares/roleGuard.middleware'))
+const SearchWizardScreen = lazy(() => import('@/pages/SearchWizard/SearchWizard.screen'))
+
+const BookingsIndexScreen = lazy(() => import('@/pages/Bookings/Index/Index.screen'))
+const BookingsDetailScreen = lazy(() => import('@/pages/Bookings/Detail/Detail.screen'))
 
 export const userRoutes = [
   {
@@ -63,7 +85,7 @@ export const userRoutes = [
           </RoleGuard>
         ),
       },
-      // { path: 'forgot-password', element: <ForgotPassword /> },
+      { path: 'forgot-password', element: <ForgotPasswordScreen /> },
       // { path: 'reset-password', element: <ResetPassword /> },
       // { path: 'profile', element: <Profile /> },
       // { path: 'settings', element: <Settings /> },

@@ -27,6 +27,48 @@ class AuthService {
     })
     console.log(response.data.data.user)
   }
+  async requestResetPasswordOTPEmail(email: string) {
+    const response = await axiosClient.post(
+      '/auth/request-reset-password-otp-email',
+      {
+        email,
+      },
+      {
+        headers: {},
+      },
+    )
+
+    return response.data
+  }
+  async verifyOTP(email: string, OTP: string) {
+    const response = await axiosClient.post(
+      '/auth/verify-otp',
+      {
+        email,
+        OTP,
+      },
+      {
+        headers: {},
+      },
+    )
+
+    return response.data
+  }
+  async resetPasswordWithOTP(email: string, OTP: string, newPassword: string) {
+    const response = await axiosClient.post(
+      '/auth/reset-password-with-otp',
+      {
+        email,
+        OTP,
+        newPassword,
+      },
+      {
+        headers: {},
+      },
+    )
+
+    return response.data
+  }
 }
 
 export default new AuthService()

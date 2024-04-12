@@ -44,7 +44,7 @@ const FlightLegsIndex: FunctionComponent<FlightLegsIndexProps> = () => {
               },
             },
             {
-              field: 'departureTime',
+              field: 'departureDate',
               displayName: 'Thời gian đi',
               renderFnc: (value) => {
                 return <>{format(value as Date, 'dd/MM/yyyy')}</>

@@ -54,7 +54,7 @@ const Detail: FunctionComponent<DetailProps> = () => {
     return <ErrorText />
 
   return (
-    <div className='mx-auto my-8 max-w-6xl'>
+    <div className='mx-auto my-8 max-w-6xl w-full'>
       <div className='text-center text-3xl font-bold'>Thông tin Chuyến bay đã đặt</div>
       <div className='my-8 flex  flex-col items-center justify-center gap-8'>
         <Flight

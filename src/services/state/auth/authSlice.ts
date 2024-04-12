@@ -42,7 +42,7 @@ export const authSlice = createSlice({
       const { user, accessToken } = action.payload
       console.log(state.tokenName)
       localStorage.setItem(state.tokenName!, accessToken || '')
-      sessionStorage.setItem(state.tokenName!, accessToken || '')
+      sessionStorage.setItem('token', accessToken || '')
       // serviceManager.setAccessToken(accessToken || '')
 
       return {
@@ -64,7 +64,7 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       localStorage.removeItem(state.tokenName!)
-      sessionStorage.removeItem(state.tokenName!)
+      sessionStorage.removeItem('token')
       // serviceManager.setAccessToken('')
       return {
         ...state,

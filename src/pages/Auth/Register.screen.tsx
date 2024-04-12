@@ -27,7 +27,7 @@ const Register: FunctionComponent<RegisterProps> = () => {
     reset()
   }
   return (
-    <div className='mx-auto mb-24 mt-16 max-w-2xl  px-4 sm:px-6 lg:px-8' onSubmit={handleSubmit(onSubmit)}>
+    <div className='mx-auto mb-24 mt-16 max-w-2xl  px-4 sm:px-6 lg:px-8 w-full' onSubmit={handleSubmit(onSubmit)}>
       <form method='post' className='rounded-md border-2 border-solid p-8 pt-0 shadow-lg'>
         <div className='sm:mx-auto sm:w-full sm:max-w-sm'>
           <h2 className='mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>ĐĂNG KÝ</h2>
@@ -388,17 +388,17 @@ const Register: FunctionComponent<RegisterProps> = () => {
                 />
               </div>
               <div className='sm:col-span-6'>
-                <label htmlFor='passwordConfirm' className='block text-sm font-medium leading-6 text-gray-900'>
+                <label htmlFor='confirmPassword' className='block text-sm font-medium leading-6 text-gray-900'>
                   Nhập lại mật khẩu
                 </label>
                 <Controller
-                  name={'passwordConfirm'}
+                  name={'confirmPassword'}
                   control={control}
                   render={({ field, fieldState: { error } }) => (
                     <>
                       <div className='mt-2'>
                         <input
-                          id='passwordConfirm'
+                          id='confirmPassword'
                           value={field.value || ''}
                           onChange={(e) => {
                             field.onChange(e.target.value)

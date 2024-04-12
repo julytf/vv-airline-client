@@ -1,50 +1,89 @@
 import NotImplemented from '@/components/Error/NotImplemented'
 import { lazy } from 'react'
+import { UserRole } from '@/enums/user.enums'
 // import { AuthContextProvider } from 'utils/AuthContext'
 // import { GlobalContextProvider } from 'utils/GlobalContext'
 
 import { Suspense } from 'react'
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 
-import Loading from '@/components/ui/Loading'
-import AdminLayout from '@/layouts/Admin.layout'
-import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
-import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
-import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
+// import Loading from '@/components/ui/Loading'
+// import AdminLayout from '@/layouts/Admin.layout'
+// import AdminDashboardScreen from '@/pages/Admin/Dashboard.screen'
+// import AdminLoginScreen from '@/pages/Admin/Auth/Login.screen'
+// import AdminUsersIndexScreen from '@/pages/Admin/Users/Index.screen'
 
-import AdminAirportsIndexScreen from '@/pages/Admin/Airports/Index.screen'
-import AdminCreateAirportScreen from '@/pages/Admin/Airports/Create.screen'
-import AdminUpdateAirportScreen from '@/pages/Admin/Airports/Update.screen'
+// import AdminAirportsIndexScreen from '@/pages/Admin/Airports/Index.screen'
+// import AdminCreateAirportScreen from '@/pages/Admin/Airports/Create.screen'
+// import AdminUpdateAirportScreen from '@/pages/Admin/Airports/Update.screen'
 
-import AdminFlightRoutesIndexScreen from '@/pages/Admin/FlightRoutes/Index.screen'
-// import AdminCreateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Create.screen'
-// import AdminUpdateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Update.screen'
+// import AdminFlightRoutesIndexScreen from '@/pages/Admin/FlightRoutes/Index.screen'
+// // import AdminCreateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Create.screen'
+// // import AdminUpdateFlightRouteScreen from '@/pages/Admin/FlightRoutes/Update.screen'
 
-import AdminFlightLegsIndexScreen from '@/pages/Admin/FlightLegs/Index.screen'
-// import AdminCreateFlightLegScreen from '@/pages/Admin/FlightLegs/Create.screen'
-// import AdminUpdateFlightLegScreen from '@/pages/Admin/FlightLegs/Update.screen'
+// import AdminFlightLegsIndexScreen from '@/pages/Admin/FlightLegs/Index.screen'
+// // import AdminCreateFlightLegScreen from '@/pages/Admin/FlightLegs/Create.screen'
+// // import AdminUpdateFlightLegScreen from '@/pages/Admin/FlightLegs/Update.screen'
 
-import AdminFlightsIndexScreen from '@/pages/Admin/Flights/Index.screen'
-// import AdminCreateFlightScreen from '@/pages/Admin/Flights/Create.screen'
-// import AdminUpdateFlightScreen from '@/pages/Admin/Flights/Update.screen'
+// import AdminFlightsIndexScreen from '@/pages/Admin/Flights/Index.screen'
+// // import AdminCreateFlightScreen from '@/pages/Admin/Flights/Create.screen'
+// // import AdminUpdateFlightScreen from '@/pages/Admin/Flights/Update.screen'
 
-import AdminAircraftsIndexScreen from '@/pages/Admin/Aircrafts/Index.screen'
-// import AdminCreateAircraftscreen from '@/pages/Admin/Aircrafts/Create.screen'
-// import AdminUpdateAircraftscreen from '@/pages/Admin/Aircrafts/Update.screen'
+// import AdminAircraftsIndexScreen from '@/pages/Admin/Aircrafts/Index.screen'
+// // import AdminCreateAircraftscreen from '@/pages/Admin/Aircrafts/Create.screen'
+// // import AdminUpdateAircraftscreen from '@/pages/Admin/Aircrafts/Update.screen'
 
-import AdminAircraftModelsIndexScreen from '@/pages/Admin/AircraftModels/Index.screen'
-// import AdminCreateAircraftModelscreen from '@/pages/Admin/AircraftModels/Create.screen'
-// import AdminUpdateAircraftModelscreen from '@/pages/Admin/AircraftModels/Update.screen'
+// import AdminAircraftModelsIndexScreen from '@/pages/Admin/AircraftModels/Index.screen'
+// // import AdminCreateAircraftModelscreen from '@/pages/Admin/AircraftModels/Create.screen'
+// // import AdminUpdateAircraftModelscreen from '@/pages/Admin/AircraftModels/Update.screen'
 
-import AdminArticlesIndexScreen from '@/pages/Admin/Articles/Index.screen'
-import AdminCreateArticleScreen from '@/pages/Admin/Articles/Create.screen'
-import AdminUpdateArticleScreen from '@/pages/Admin/Articles/Update.screen'
+// import AdminArticlesIndexScreen from '@/pages/Admin/Articles/Index.screen'
+// import AdminCreateArticleScreen from '@/pages/Admin/Articles/Create.screen'
+// import AdminUpdateArticleScreen from '@/pages/Admin/Articles/Update.screen'
 
-import AdminAccountIndexScreen from '@/pages/Admin/Account/Index.screen'
-import AdminChangePasswordScreen from '@/pages/Admin/Account/ChangePassword.screen'
+// import AdminAccountIndexScreen from '@/pages/Admin/Account/Index.screen'
+// import AdminChangePasswordScreen from '@/pages/Admin/Account/ChangePassword.screen'
 
-import RoleGuard from '@/middlewares/roleGuard.middleware'
-import { UserRole } from '@/enums/user.enums'
+// import RoleGuard from '@/middlewares/roleGuard.middleware'
+
+const Loading = lazy(() => import('@/components/ui/Loading'))
+const AdminLayout = lazy(() => import('@/layouts/Admin.layout'))
+const AdminDashboardScreen = lazy(() => import('@/pages/Admin/Dashboard.screen'))
+const AdminLoginScreen = lazy(() => import('@/pages/Admin/Auth/Login.screen'))
+const AdminUsersIndexScreen = lazy(() => import('@/pages/Admin/Users/Index.screen'))
+
+const AdminAirportsIndexScreen = lazy(() => import('@/pages/Admin/Airports/Index.screen'))
+const AdminCreateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Create.screen'))
+const AdminUpdateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Update.screen'))
+
+const AdminFlightRoutesIndexScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Index.screen'))
+// const AdminCreateFlightRouteScreen = lazy(() => import( '@/pages/Admin/FlightRoutes/Create.screen'))
+// const AdminUpdateFlightRouteScreen = lazy(() => import( '@/pages/Admin/FlightRoutes/Update.screen'))
+
+const AdminFlightLegsIndexScreen = lazy(() => import('@/pages/Admin/FlightLegs/Index.screen'))
+// const AdminCreateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Create.screen'))
+// const AdminUpdateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Update.screen'))
+
+const AdminFlightsIndexScreen = lazy(() => import('@/pages/Admin/Flights/Index.screen'))
+// const AdminCreateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Create.screen'))
+// const AdminUpdateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Update.screen'))
+
+const AdminAircraftsIndexScreen = lazy(() => import('@/pages/Admin/Aircrafts/Index.screen'))
+// const AdminCreateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Create.screen'))
+// const AdminUpdateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Update.screen'))
+
+const AdminAircraftModelsIndexScreen = lazy(() => import('@/pages/Admin/AircraftModels/Index.screen'))
+// const AdminCreateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Create.screen'))
+// const AdminUpdateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Update.screen'))
+
+const AdminArticlesIndexScreen = lazy(() => import('@/pages/Admin/Articles/Index.screen'))
+const AdminCreateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Create.screen'))
+const AdminUpdateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Update.screen'))
+
+const AdminAccountIndexScreen = lazy(() => import('@/pages/Admin/Account/Index.screen'))
+const AdminChangePasswordScreen = lazy(() => import('@/pages/Admin/Account/ChangePassword.screen'))
+
+const RoleGuard = lazy(() => import('@/middlewares/roleGuard.middleware'))
 
 export const adminRoutes = [
   {

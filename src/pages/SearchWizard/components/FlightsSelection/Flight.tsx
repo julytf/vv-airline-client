@@ -8,10 +8,14 @@ import IFlight from '@/interfaces/flight/flight.interface'
 
 interface FlightProps {
   flight: IFlight
+  disabled?: {
+    [SeatClass.ECONOMY]: boolean
+    [SeatClass.BUSINESS]: boolean
+  }
   onChange?: (info: { flight: IFlight; seatClass: SeatClass; price: number } | null) => void
 }
 
-const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
+const Flight: FunctionComponent<FlightProps> = ({ flight, disabled, onChange }) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   const minuteDiff = differenceInMinutes(flight.arrivalTime, flight.departureTime) % 60
@@ -103,10 +107,11 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
         <div className='col-span-4 grid grid-cols-6 gap-4'>
           <button
             onClick={() => onChange?.({ flight, seatClass: SeatClass.ECONOMY, price: economyPrice })}
-            className={classNames(
-              'col-span-3 flex items-center justify-center rounded-md border border-blue-400 bg-blue-100 active:scale-95',
-              {},
-            )}
+            disabled={disabled?.[SeatClass.ECONOMY]}
+            className={classNames('col-span-3 flex items-center justify-center rounded-md border  active:scale-95', {
+              'border-blue-400 bg-blue-100': !disabled?.[SeatClass.ECONOMY],
+              'border-gray-300 bg-gray-100 text-gray-500': disabled?.[SeatClass.ECONOMY],
+            })}
           >
             <div className='flex flex-col justify-center'>
               <span>PHỔ THÔNG</span>
@@ -119,10 +124,11 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, onChange }) => {
           </button>
           <button
             onClick={() => onChange?.({ flight, seatClass: SeatClass.BUSINESS, price: businessPrice })}
-            className={classNames(
-              'col-span-3 flex items-center justify-center rounded-md border border-yellow-400 bg-yellow-100 active:scale-95',
-              {},
-            )}
+            disabled={disabled?.[SeatClass.BUSINESS]}
+            className={classNames('col-span-3 flex items-center justify-center rounded-md border  active:scale-95', {
+              'border-yellow-400 bg-yellow-100': !disabled?.[SeatClass.BUSINESS],
+              'border-gray-300 bg-gray-100 text-gray-500': disabled?.[SeatClass.BUSINESS],
+            })}
           >
             <div className='flex flex-col justify-center'>
               <span>THƯƠNG GIA</span>

@@ -10,7 +10,7 @@ export interface IUser {
   _hashedPassword: string
   email: string
   phoneNumber?: string
-  dateOfBirth?: Date | string
+  dateOfBirth?: string
   gender?: UserGender
   idNumber?: string
   address?: IAddress

@@ -91,9 +91,7 @@ export const ToastNotifyProvider: FC<PropsWithChildren> = ({ children }) => {
     <ToastNotifyContext.Provider value={toast}>
       {children}
       <div ref={wrapperRef} className='fixed bottom-10 right-10 z-50 flex flex-col gap-1'>
-        {toasts.map((t, index) => (
-          <Fragment key={index}>{t.element}</Fragment>
-        ))}
+        {toasts.map((t) => t.element)}
       </div>
     </ToastNotifyContext.Provider>
   )
