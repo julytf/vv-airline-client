@@ -1,7 +1,7 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import aircraftModelsService from '@/services/aircraftModels.service'
 import { route } from '@/utils/helpers'
 import { FunctionComponent } from 'react'
@@ -15,15 +15,15 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
       <div className='w-full max-w-full flex-none'>
         <div className='flex justify-end py-3'>
           <NavLink to={route('/admin/aircraft-models/create')}>
-            <Button>Thêm Máy Bay</Button>
+            <Button>Thêm Mẫu Máy Bay</Button>
           </NavLink>
         </div>
         <SmartTable
-          title='Máy Bay'
-          subTitle='Danh Sách Máy Bay'
+          title='Mẫu  Máy Bay'
+          subTitle='Danh Sách Mẫu Máy Bay'
           // data={aircraftModelsData}
           FetchDataFnc={aircraftModelsService.getAircraftModelsPaginate.bind(aircraftModelsService)}
-          queryKey='aircrafts'
+          queryKey='aircraft-models'
           renderOptions={[
             {
               field: 'name',
@@ -37,13 +37,13 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
               displayName: 'Số ghế',
               renderFnc: (value: unknown) => {
                 const seatQuantity = value as {
-                  [SeatClass.BUSINESS]: number
-                  [SeatClass.ECONOMY]: number
+                  [TicketClass.BUSINESS]: number
+                  [TicketClass.ECONOMY]: number
                 }
                 return (
                   <>
-                    <div>BUSINESS: {seatQuantity[SeatClass.BUSINESS]}</div>
-                    <div>ECONOMY: {seatQuantity[SeatClass.ECONOMY]}</div>
+                    <div>BUSINESS: {seatQuantity[TicketClass.BUSINESS]}</div>
+                    <div>ECONOMY: {seatQuantity[TicketClass.ECONOMY]}</div>
                   </>
                 )
               },

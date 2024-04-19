@@ -1,4 +1,5 @@
 import { FlightType } from '@/enums/flight.enums'
+import { PassengerType } from '@/enums/passenger.enums'
 import IBooking from '@/interfaces/booking/booking.interface'
 import { format } from 'date-fns'
 import { FunctionComponent } from 'react'
@@ -44,8 +45,8 @@ const Booking: FunctionComponent<BookingProps> = ({ booking }) => {
         )}
       </div>
       <div className='col-span-3 p-8'>
-        <div>{booking.adults} Người lớn</div>
-        <div>{booking.children} Trẻ em</div>
+        <div>{booking.passengersQuantity[PassengerType.ADULT]} Người lớn</div>
+        <div>{booking.passengersQuantity[PassengerType.CHILD]} Trẻ em</div>
       </div>
     </div>
   )

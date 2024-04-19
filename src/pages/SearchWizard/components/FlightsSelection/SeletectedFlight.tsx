@@ -1,14 +1,14 @@
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import FlightLeg from './FlightLeg'
 import classNames from 'classnames'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
 import { FunctionComponent, useState } from 'react'
 import { differenceInHours, differenceInMinutes, format } from 'date-fns'
 
 interface SelectedFlightProps {
-  selectedFlightInfo: { flight: IFlight; seatClass: SeatClass }
-  onChange?: (info: { flight: IFlight; seatClass: SeatClass; price: number } | null) => void
+  selectedFlightInfo: { flight: IFlight; ticketClass: TicketClass; ticketType: TicketType; price: number }
+  onChange?: (info: { flight: IFlight; ticketClass: TicketClass; ticketType: TicketType; price: number } | null) => void
 }
 
 const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlightInfo, onChange }) => {
@@ -30,15 +30,15 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
     flight?.flightLegs[FlightLegType.DEPARTURE]?.arrivalTime,
   )
 
-  const economyPrice = !flight.hasTransit
-    ? Number(flight.flightRoute.prices[SeatClass.ECONOMY])
-    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.ECONOMY]) +
-      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.ECONOMY])
+  // const economyPrice = !flight.hasTransit
+  //   ? Number(flight.flightRoute.prices[TicketClass.ECONOMY])
+  //   : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[TicketClass.ECONOMY]) +
+  //     Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[TicketClass.ECONOMY])
 
-  const businessPrice = !flight.hasTransit
-    ? Number(flight.flightRoute.prices[SeatClass.BUSINESS])
-    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.BUSINESS]) +
-      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.BUSINESS])
+  // const businessPrice = !flight.hasTransit
+  //   ? Number(flight.flightRoute.prices[TicketClass.BUSINESS])
+  //   : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[TicketClass.BUSINESS]) +
+  //     Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[TicketClass.BUSINESS])
 
   return (
     <div className={classNames('w-full', {})}>
@@ -96,24 +96,35 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
           </div>
         </div>
         <div className='relative col-span-8 flex justify-center gap-4'>
-          {selectedFlightInfo.seatClass === SeatClass.ECONOMY && (
+          {
             <div
-              className={classNames(
-                'col-span-3 flex w-1/2 items-center justify-center rounded-md border border-blue-400 bg-blue-100',
-                {},
-              )}
+              className={classNames('col-span-3 flex w-1/2 items-center justify-center rounded-md border ', {
+                'border-blue-400 bg-blue-100': selectedFlightInfo.ticketClass === TicketClass.ECONOMY,
+                'border-yellow-400 bg-yellow-100': selectedFlightInfo.ticketClass === TicketClass.BUSINESS,
+              })}
             >
               <div className='flex flex-col items-center justify-center'>
-                <span>PHỔ THÔNG</span>
+                <span>
+                  <span>
+                    {selectedFlightInfo.ticketClass === TicketClass.ECONOMY && 'PHỔ THÔNG'}
+                    {selectedFlightInfo.ticketClass === TicketClass.BUSINESS && 'THƯƠNG GIA'}
+                  </span>{' '}
+                  <span>
+                    {selectedFlightInfo.ticketType === TicketType.BUDGET && 'TIẾT KIỆM'}
+                    {selectedFlightInfo.ticketType === TicketType.STANDARD && 'TIÊU CHUẨN'}
+                    {selectedFlightInfo.ticketType === TicketType.FLEXIBLE && 'LINH HOẠT'}
+                  </span>
+                </span>
                 <div className='flex justify-center'>
-                  <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span>
+                  <span className='bold text-3xl'>{selectedFlightInfo?.price?.toLocaleString()}</span>
+                  {/* <span className='bold text-3xl'>{economyPrice.toLocaleString()}</span> */}
                   <span>VNĐ</span>
                 </div>
-                <span>Còn {flight.remainingSeats[SeatClass.ECONOMY]} ghế</span>
+                <span>Còn {flight.remainingSeats[selectedFlightInfo.ticketClass]} ghế</span>
               </div>
             </div>
-          )}
-          {selectedFlightInfo.seatClass === SeatClass.BUSINESS && (
+          }
+          {/* {selectedFlightInfo.ticketClass === TicketClass.BUSINESS && (
             <div
               className={classNames(
                 'col-span-3  flex w-1/2 items-center justify-center rounded-md border border-yellow-400 bg-yellow-100 ',
@@ -123,13 +134,13 @@ const SelectedFlight: FunctionComponent<SelectedFlightProps> = ({ selectedFlight
               <div className='flex flex-col items-center justify-center'>
                 <span>THƯƠNG GIA</span>
                 <div className='flex justify-center'>
-                  <span className='bold text-3xl'>{businessPrice.toLocaleString()}</span>
+                  <span className='bold text-3xl'>{selectedFlightInfo?.price?.toLocaleString()}</span>
                   <span>VNĐ</span>
                 </div>
-                <span>Còn {flight.remainingSeats[SeatClass.BUSINESS]} ghế</span>
+                <span>Còn {flight.remainingSeats[TicketClass.BUSINESS]} ghế</span>
               </div>
             </div>
-          )}
+          )} */}
           <button onClick={() => onChange?.(null)} className='absolute right-0 p-10 text-gray-400 active:scale-95'>
             Hủy
           </button>

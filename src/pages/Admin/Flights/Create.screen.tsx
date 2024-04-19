@@ -1,47 +1,62 @@
 import Button from '@/components/ui/Button'
-import { AirportType } from '@/enums/airport.enums'
-import { UserGender, UserRole } from '@/enums/user.enums'
-import IAddress from '@/interfaces/address/address.interface'
-import ICountry from '@/interfaces/address/country.interface'
-import IAirport from '@/interfaces/flight/airport.interface'
-import addressService from '@/services/address.service'
-import airportsService from '@/services/airports.service'
+import { TicketClass } from '@/enums/ticket.enums'
+import IAircraft from '@/interfaces/aircraft/aircraft.interface'
+import IFlight from '@/interfaces/flight/flight.interface'
+import IFlightRoute from '@/interfaces/flight/flightRoute.interface'
+import aircraftsService from '@/services/aircrafts.service'
+import flightsService from '@/services/flights.service'
+import flightRoutesService from '@/services/flightRoutes.service'
 import updateUserSchema from '@/utils/validations/user/updateUser.schema'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
+import flightLegsService from '@/services/flightLegs.service'
+import { FlightLegType } from '@/enums/flightLeg.enums'
+import { minNotNull } from '@/utils/helpers'
 
 interface IFormData {
-  IATA: string
-  //   countryCode: string
-  city: string
-  country: string
-  type: AirportType
-  name: string
-  description?: string
-  longitude?: number
-  latitude?: number
-  address?: IAddress
+  departureDate: Date
+  // arrivalDate: Date
+
+  // hasTransit: boolean
+  // departureTime: Date
+  // arrivalTime: Date
+  // remainingSeats: {
+  //   [ticketClass.ECONOMY]: number
+  //   [ticketClass.BUSINESS]: number
+  // }
+  // flightRoute: IFlightRoute
+  flightLegs: {
+    [FlightLegType.DEPARTURE]: string
+    [FlightLegType.TRANSIT]: string | null
+  }
 }
 
 const formSchema = Joi.object({
-  IATA: Joi.string().required(),
-  //   countryCode: Joi.string().required(),
-  city: Joi.string().required(),
-  country: Joi.string().required(),
-  type: Joi.string().required(),
-  name: Joi.string().required(),
-  description: Joi.string(),
-  //   longitude: Joi.number(),
-  //   latitude: Joi.number(),
-  //   address: Joi.object(),
+  departureDate: Joi.date().required(),
+  // arrivalDate: Joi.date().required().greater(Joi.ref('departureDate')),
+
+  // hasTransit: boolean
+  // departureTime: Date
+  // arrivalTime: Date
+  // remainingSeats: {
+  //   [ticketClass.ECONOMY]: number
+  //   [ticketClass.BUSINESS]: number
+  // }
+  // flightRoute: IFlightRoute
+  flightLegs: {
+    [FlightLegType.DEPARTURE]: Joi.string().required(),
+    [FlightLegType.TRANSIT]: Joi.string().optional().allow(''),
+  },
 })
 
-interface CreateAirportProps {}
+interface CreateFlightProps {}
 
-const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
-  const [countries, setCountries] = useState<ICountry[]>([])
+const CreateFlight: FunctionComponent<CreateFlightProps> = () => {
+  const [departureFlightLegs, setDepartureFlightLegs] = useState<IFlightLeg[]>([])
+  const [transitFlightLegs, setTransitFlightLegs] = useState<IFlightLeg[]>([])
 
   const {
     register,
@@ -55,22 +70,67 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
     resolver: joiResolver(formSchema),
   })
 
-  const watchAllFields = watch()
+  const formData = watch()
 
-  console.log(isValid)
-  console.log(errors)
-  console.log(formSchema.validate(watchAllFields))
+  // console.log(isValid)
+  // console.log(errors)
+  // console.log(formSchema.validate(formData))
+
+  const departureFlightLeg = departureFlightLegs.find(
+    (flightLeg) => flightLeg._id === formData.flightLegs?.[FlightLegType.DEPARTURE],
+  )
+  const transitFlightLeg = transitFlightLegs.find(
+    (flightLeg) => flightLeg._id === formData.flightLegs?.[FlightLegType.TRANSIT],
+  )
+
+  const displayData = {
+    // hasTransit: boolean,
+    departureTime: departureFlightLeg?.departureTime,
+    arrivalTime: transitFlightLeg?.arrivalTime ?? departureFlightLeg?.arrivalTime,
+    remainingSeats: {
+      [TicketClass.ECONOMY]: minNotNull(
+        departureFlightLeg?.remainingSeats[TicketClass.ECONOMY] || null,
+        transitFlightLeg?.remainingSeats[TicketClass.ECONOMY] || null,
+      ),
+      [TicketClass.BUSINESS]: minNotNull(
+        departureFlightLeg?.remainingSeats[TicketClass.BUSINESS] || null,
+        transitFlightLeg?.remainingSeats[TicketClass.BUSINESS] || null,
+      ),
+    },
+    flightRoute: {
+      departureAirport: departureFlightLeg?.flightRoute.departureAirport,
+      arrivalAirport: transitFlightLeg?.flightRoute.arrivalAirport ?? departureFlightLeg?.flightRoute.arrivalAirport,
+    },
+  }
 
   useEffect(() => {
-    addressService.getCountries().then((data) => {
-      setCountries(data)
+    if (!formData.departureDate) {
+      setDepartureFlightLegs([])
+      return
+    }
+
+    flightLegsService.getFlightLegsByDepartureTime(formData.departureDate).then((data) => {
+      setDepartureFlightLegs(data)
     })
-  }, [])
+  }, [formData.departureDate])
+
+  useEffect(() => {
+    if (!formData.flightLegs?.[FlightLegType.DEPARTURE]) {
+      setDepartureFlightLegs([])
+      return
+    }
+    const departureFlightLegDepartureTime = departureFlightLegs.find(
+      (flightLeg) => flightLeg._id === formData.flightLegs?.[FlightLegType.DEPARTURE],
+    )?.arrivalTime
+    flightLegsService.getFlightLegsByDepartureTime(departureFlightLegDepartureTime!).then((data) => {
+      setTransitFlightLegs(data)
+    })
+  }, [formData.flightLegs?.[FlightLegType.DEPARTURE]])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await airportsService.createAirport(data as IAirport)
+    await flightsService.createFlight(data as IFlight)
     // reset()
   }
 
@@ -78,29 +138,29 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
     <div className='flex justify-center p-8'>
       <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
         <div className='mx-auto w-full max-w-sm pt-6'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Sân Bay</h2>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Chuyến Bay</h2>
         </div>
         <div className='mx-auto'>
           <div className='space-y-12'>
             <div className='border-b border-gray-900/10 pb-12'>
               <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
                 <div className='col-span-3'>
-                  <label htmlFor='IATA' className='block text-sm font-medium leading-6 text-gray-900'>
-                    IATA
+                  <label htmlFor={'departureDate'} className='block text-sm font-medium leading-6 text-gray-900'>
+                    Ngày đi
                   </label>
                   <Controller
-                    name={'IATA'}
+                    name={'departureDate'}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='IATA'
-                            value={field.value || ''}
+                            id={'departureDate'}
+                            value={field.value?.toString() || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            type='text'
+                            type='date'
                             className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
@@ -110,25 +170,37 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='col-span-3'>
-                  <label htmlFor='city' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Thành phố
+                <div className='col-span-3'></div>
+                <div className='col-span-6'>
+                  <label
+                    htmlFor={`flightLegs.${FlightLegType.DEPARTURE}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Chặng bay đi
                   </label>
                   <Controller
-                    name={'city'}
+                    name={`flightLegs.${FlightLegType.DEPARTURE}`}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
-                          <input
-                            id='city'
+                          <select
+                            id={`flightLegs.${FlightLegType.DEPARTURE}`}
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            type='text'
                             className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
-                          />
+                          >
+                            <option value=''>--Chọn--</option>
+                            {departureFlightLegs.map((flightLeg) => (
+                              <option key={flightLeg._id} value={flightLeg._id}>
+                                {flightLeg.flightRoute.departureAirport.IATA}-
+                                {flightLeg.flightRoute.arrivalAirport.IATA} ({flightLeg.aircraft.name} ) -{' '}
+                                {flightLeg._id}
+                              </option>
+                            ))}
+                          </select>
                         </div>
 
                         <small className='text-red-600'>{error?.message}</small>
@@ -137,6 +209,241 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                   />
                 </div>
                 <div className='col-span-6'>
+                  <label
+                    htmlFor={`flightLegs.${FlightLegType.TRANSIT}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Chặng bay nối chuyến
+                  </label>
+                  <Controller
+                    name={`flightLegs.${FlightLegType.TRANSIT}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id={`flightLegs.${FlightLegType.TRANSIT}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {transitFlightLegs.map((flightLeg) => (
+                              <option key={flightLeg._id} value={flightLeg._id}>
+                                {flightLeg.flightRoute.departureAirport.IATA}-
+                                {flightLeg.flightRoute.arrivalAirport.IATA} ({flightLeg.aircraft.name} ) -{' '}
+                                {flightLeg._id}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                {/* <div className='col-span-3'>
+                  <label
+                    htmlFor={`remainingSeats.${ticketClass.ECONOMY}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Số ghế hạng phổ thông
+                  </label>
+                  <Controller
+                    name={`remainingSeats.${ticketClass.ECONOMY}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id={`remainingSeats.${ticketClass.ECONOMY}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='number'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label
+                    htmlFor={`remainingSeats.${ticketClass.BUSINESS}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Số ghế hạng thương gia
+                  </label>
+                  <Controller
+                    name={`remainingSeats.${ticketClass.BUSINESS}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id={`remainingSeats.${ticketClass.BUSINESS}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='number'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='flightRoute' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Tuyến bay
+                  </label>
+                  <Controller
+                    name={'flightRoute'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='flightRoute'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {flightRoutes.map((flightRoute) => (
+                              <option key={flightRoute._id} value={flightRoute._id}>
+                                {flightRoute.departureAirport.IATA} - {flightRoute.arrivalAirport.IATA}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='aircraft' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Máy bay
+                  </label>
+                  <Controller
+                    name={'aircraft'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='aircraft'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {aircrafts.map((aircraft) => (
+                              <option key={aircraft._id} value={aircraft._id}>
+                                {aircraft.name} - {aircraft.aircraftModel?.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div> */}
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Sân bay khởi hành
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData?.flightRoute?.departureAirport?.IATA ?? '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Sân bay đến
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData?.flightRoute?.arrivalAirport?.IATA ?? '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Thời gian khởi hành
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData.departureTime ? new Date(displayData.departureTime).toLocaleString() : '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Thời gian đến
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData.arrivalTime ? new Date(displayData.arrivalTime).toLocaleString() : '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Số ghế hạng phổ thông
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData.remainingSeats[TicketClass.ECONOMY] !== Infinity
+                        ? displayData.remainingSeats[TicketClass.ECONOMY]
+                        : '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Số ghế hạng thương gia
+                  </label>
+                  <div className='mt-2'>
+                    <div className='block w-full rounded-md border-0 bg-gray-300 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'>
+                      {displayData.remainingSeats[TicketClass.BUSINESS] !== Infinity
+                        ? displayData.remainingSeats[TicketClass.BUSINESS]
+                        : '---'}
+                    </div>
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                {/* <div className='col-span-6'>
                   <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tên
                   </label>
@@ -161,43 +468,9 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
+                </div> */}
 
-                <div className='col-span-3'>
-                  <label htmlFor='country' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Quốc gia
-                  </label>
-                  <Controller
-                    name={'country'}
-                    control={control}
-                    render={({ field, fieldState: { error } }) => (
-                      <>
-                        <div className='mt-2'>
-                          <select
-                            id='country'
-                            value={field.value || ''}
-                            onChange={(e) => {
-                              field.onChange(e.target.value)
-                            }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
-                            // onChange='provinceChangeHandler(this.value)'
-                          >
-                            <option value=''>--Chọn--</option>
-                            {/* <option value='test value'>test</option> */}
-                            {countries.map((country, index) => (
-                              <option key={index} value={country._id}>
-                                {country.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <small className='text-red-600'>{error?.message}</small>
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='col-span-3'>
+                {/* <div className='col-span-3'>
                   <label htmlFor='type' className='block text-sm font-medium leading-6 text-gray-900'>
                     Loại Sân bay
                   </label>
@@ -217,7 +490,7 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
-                            {Object.values(AirportType).map((type) => (
+                            {Object.values(FlightType).map((type) => (
                               <option key={type} value={type}>
                                 {type}
                               </option>
@@ -229,8 +502,8 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
-                <div className='col-span-6'>
+                </div> */}
+                {/* <div className='col-span-6'>
                   <label htmlFor='description' className='block text-sm font-medium leading-6 text-gray-900'>
                     Thông tin
                   </label>
@@ -255,7 +528,7 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -268,4 +541,4 @@ const CreateAirport: FunctionComponent<CreateAirportProps> = () => {
   )
 }
 
-export default CreateAirport
+export default CreateFlight

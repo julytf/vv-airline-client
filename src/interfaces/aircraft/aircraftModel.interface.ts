@@ -1,4 +1,4 @@
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import ISeat from './seat.interface'
 
 export interface IRowModel {
@@ -8,7 +8,7 @@ export interface IRowModel {
 }
 
 export interface ICabinModel {
-  class: SeatClass
+  class: TicketClass
   noRow: number
   noCol: number
   aisleCol: number[]
@@ -18,10 +18,11 @@ export interface ICabinModel {
 export type IAircraftSeatMap = ICabinModel[]
 
 export interface IAircraftModel {
+  _id?: string
   name?: string
   seatQuantity: {
-    [SeatClass.ECONOMY]: number
-    [SeatClass.BUSINESS]: number
+    [TicketClass.ECONOMY]: number
+    [TicketClass.BUSINESS]: number
   }
   seatMap: ICabinModel[]
 }

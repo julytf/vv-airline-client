@@ -21,6 +21,7 @@ const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
           subTitle='Danh Sách Người Dùng'
           // data={usersData}
           FetchDataFnc={usersService.getUsersPaginate.bind(usersService)}
+          queryKey='users'
           renderOptions={[
             // {
             //   field: '_id',

@@ -1,13 +1,13 @@
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import FlightLeg from './FlightLeg'
 import classNames from 'classnames'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
 import { FunctionComponent, useState } from 'react'
 import { differenceInDays, differenceInHours, differenceInMinutes, format } from 'date-fns'
 
 interface FlightProps {
-  flightInfo: { flight: IFlight; seatClass: SeatClass }
+  flightInfo: { flight: IFlight; ticketClass: TicketClass; ticketType: TicketType; price: number }
 }
 
 const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
@@ -30,14 +30,14 @@ const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
   )
 
   const economyPrice = !flight.hasTransit
-    ? Number(flight.flightRoute.prices[SeatClass.ECONOMY])
-    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.ECONOMY]) +
-      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.ECONOMY])
+    ? Number(flight.flightRoute.prices[TicketClass.ECONOMY])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[TicketClass.ECONOMY]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[TicketClass.ECONOMY])
 
   const businessPrice = !flight.hasTransit
-    ? Number(flight.flightRoute.prices[SeatClass.BUSINESS])
-    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[SeatClass.BUSINESS]) +
-      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[SeatClass.BUSINESS])
+    ? Number(flight.flightRoute.prices[TicketClass.BUSINESS])
+    : Number(flight?.flightLegs?.[FlightLegType.DEPARTURE]?.flightRoute?.prices[TicketClass.BUSINESS]) +
+      Number(flight?.flightLegs?.[FlightLegType.TRANSIT]?.flightRoute?.prices[TicketClass.BUSINESS])
 
   return (
     <div className='w-full max-w-4xl rounded-md border-2 shadow-md'>
@@ -102,8 +102,18 @@ const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
         </div>
         {/* TODO: */}
         <div className='relative col-span-5 flex flex-col items-center justify-center gap-4'>
-          <span className='bold text-2xl text-yellow-400'>Thương Gia</span>
-          <span className=''>2,000,000 vnđ</span>
+          <span className='bold text-2xl text-yellow-400'>
+            <span>
+              {flightInfo.ticketClass === TicketClass.ECONOMY && 'PHỔ THÔNG'}
+              {flightInfo.ticketClass === TicketClass.BUSINESS && 'THƯƠNG GIA'}
+            </span>{' '}
+            <span>
+              {flightInfo.ticketType === TicketType.BUDGET && 'TIẾT KIỆM'}
+              {flightInfo.ticketType === TicketType.STANDARD && 'TIÊU CHUẨN'}
+              {flightInfo.ticketType === TicketType.FLEXIBLE && 'LINH HOẠT'}
+            </span>
+          </span>
+          <span className=''>{flightInfo.price.toLocaleString()} vnđ</span>
         </div>
       </div>
       <div

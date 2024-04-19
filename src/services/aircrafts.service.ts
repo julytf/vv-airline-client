@@ -3,7 +3,7 @@ import axiosClient from './api/axios.service'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IAircraft from '@/interfaces/aircraft/aircraft.interface'
 
 interface QueryOption {
@@ -30,6 +30,10 @@ class AircraftsService {
     })
     const data = response.data.data
     return data
+  }
+  async getAllAircrafts() {
+    const response = await axiosClient.get(`/aircrafts/all`)
+    return response.data.data
   }
   async getAircraft(id: string) {
     const response = await axiosClient.get(`/aircrafts/${id}`)

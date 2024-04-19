@@ -1,6 +1,5 @@
 import { FlightType } from './../enums/flight.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
-import { SeatClass } from './../enums/seat.enums'
 import { FC, PropsWithChildren, createContext, useContext, useState } from 'react'
 import ISeat from '@/interfaces/aircraft/seat.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
@@ -8,6 +7,7 @@ import { UserGender } from '@/enums/user.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import ISurcharge from '@/interfaces/flight/surcharge.interface'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 
 export interface SearchData {
   departureAirportIATA: string
@@ -21,10 +21,9 @@ export interface SearchData {
 
   isRoundTrip: boolean
 
-  passengers: {
+  passengersQuantity: {
     [PassengerType.ADULT]: number
     [PassengerType.CHILD]: number
-    // infant: number
   }
 }
 
@@ -34,36 +33,29 @@ export interface FlightsData {
 
   [FlightType.OUTBOUND]: {
     flight: IFlight
-    seatClass: SeatClass
+    ticketClass: TicketClass
+    ticketType: TicketType
     price: number
   } | null
   [FlightType.INBOUND]: {
     flight: IFlight
-    seatClass: SeatClass
+    ticketClass: TicketClass
+    ticketType: TicketType
     price: number
   } | null
 }
 export interface PassengersData {
-  [PassengerType.ADULT]:
-    | [
-        {
-          lastName: string
-          firstName: string
-          dateOfBirth: string
-          gender: UserGender
-          phoneNumber: string
-          email: string
-          // type: PassengerType
-        },
-        ...{
-          lastName: string
-          firstName: string
-          dateOfBirth: string
-          gender: UserGender
-          // type: PassengerType
-        }[],
-      ]
-    | []
+  contactInfo: {
+    email: string
+    phoneNumber: string
+  }
+  [PassengerType.ADULT]: {
+    lastName: string
+    firstName: string
+    dateOfBirth: string
+    gender: UserGender
+    // type: PassengerType
+  }[]
   [PassengerType.CHILD]: {
     lastName: string
     firstName: string

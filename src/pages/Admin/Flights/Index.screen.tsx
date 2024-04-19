@@ -3,7 +3,7 @@ import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { PassengerType } from '@/enums/passenger.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IAircraft from '@/interfaces/aircraft/aircraft.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
 import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
@@ -21,29 +21,40 @@ const FlightsIndex: FunctionComponent<FlightsIndexProps> = () => {
     <div className='flex flex-wrap p-3 px-6'>
       <div className='w-full max-w-full flex-none'>
         <div className='flex justify-end py-3'>
-          <NavLink to={route('/admin/flight-legs/create')}>
-            <Button>Thêm Chặng Bay</Button>
+          <NavLink to={route('/admin/flights/create')}>
+            <Button>Thêm Chuyến Bay</Button>
           </NavLink>
         </div>
         <SmartTable
-          title='Chặng Bay'
-          subTitle='Danh Sách Chặng Bay'
+          title='Chuyến Bay'
+          subTitle='Danh Sách Chuyến Bay'
           // data={flightsData}
           FetchDataFnc={flightsService.getFlightsPaginate.bind(flightsService)}
           queryKey='flights'
           renderOptions={[
+            // {
+            //   field: 'flightRoute',
+            //   displayName: 'Điểm đi',
+            //   renderFnc: (value: unknown) => {
+            //     return <>{(value as IFlightRoute)?.departureAirport?.IATA}</>
+            //   },
+            // },
+            // {
+            //   field: 'flightRoute',
+            //   displayName: 'Điểm đến',
+            //   renderFnc: (value: unknown) => {
+            //     return <>{(value as IFlightRoute)?.arrivalAirport?.IATA}</>
+            //   },
+            // },
             {
               field: 'flightRoute',
-              displayName: 'Điểm đi',
-              renderFnc: (value: unknown) => {
-                return <>{(value as IFlightRoute)?.departureAirport?.IATA}</>
-              },
-            },
-            {
-              field: 'flightRoute',
-              displayName: 'Điểm đến',
-              renderFnc: (value: unknown) => {
-                return <>{(value as IFlightRoute)?.arrivalAirport?.IATA}</>
+              displayName: 'Tuyến bay',
+              renderFnc: (value) => {
+                return (
+                  <>
+                    {(value as IFlightRoute)?.departureAirport?.IATA} - {(value as IFlightRoute)?.arrivalAirport?.IATA}
+                  </>
+                )
               },
             },
             {
@@ -65,13 +76,13 @@ const FlightsIndex: FunctionComponent<FlightsIndexProps> = () => {
               displayName: 'Số ghế',
               renderFnc: (value: unknown) => {
                 const remainingSeats = value as {
-                  [SeatClass.BUSINESS]: number
-                  [SeatClass.ECONOMY]: number
+                  [TicketClass.BUSINESS]: number
+                  [TicketClass.ECONOMY]: number
                 }
                 return (
                   <>
-                    <div>BUSINESS: {remainingSeats[SeatClass.BUSINESS]}</div>
-                    <div>ECONOMY: {remainingSeats[SeatClass.ECONOMY]}</div>
+                    <div>BUSINESS: {remainingSeats[TicketClass.BUSINESS]}</div>
+                    <div>ECONOMY: {remainingSeats[TicketClass.ECONOMY]}</div>
                   </>
                 )
               },
@@ -105,7 +116,7 @@ const FlightsIndex: FunctionComponent<FlightsIndexProps> = () => {
               renderFnc: (value: unknown, data?: TableData) => {
                 return (
                   <div className='flex gap-x-4'>
-                    <NavLink to={route('/admin/flight-legs/:id', { params: { id: String(data?._id) } })}>
+                    <NavLink to={route('/admin/flights/:id', { params: { id: String(data?._id) } })}>
                       <i className='fa-regular fa-pen-to-square'></i>
                     </NavLink>
                   </div>

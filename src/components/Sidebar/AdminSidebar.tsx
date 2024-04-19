@@ -78,7 +78,7 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
             <Button
               icon={<i className='fa-solid fa-chart-simple'></i>}
               title='Đặt Vé'
-              path={route('/admin/flight-routes')}
+              path={route('/admin/bookings')}
             />
           </Group>
           <Group name='Quản Lý Articles'>

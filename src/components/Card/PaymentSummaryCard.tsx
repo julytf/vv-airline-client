@@ -2,7 +2,7 @@ import { SeatsData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { FlightType } from '@/enums/flight.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { PassengerType } from '@/enums/passenger.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import ISeat from '@/interfaces/aircraft/seat.interface'
 import IFlight from '@/interfaces/flight/flight.interface'
 import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
@@ -19,13 +19,13 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
   const { data } = useSearchWizard()
 
   const totalPassengers =
-    data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD]
+    data.searchData.passengersQuantity[PassengerType.ADULT] + data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const outboundFlight = data.flightsData[FlightType.OUTBOUND]!.flight
-  const outboundSeatClass = data.flightsData[FlightType.OUTBOUND]!.seatClass
+  const outboundTicketClass = data.flightsData[FlightType.OUTBOUND]!.ticketClass
   const outboundPrice = data.flightsData[FlightType.OUTBOUND]!.price
   const inboundFlight = data.flightsData[FlightType.INBOUND]?.flight
-  const inboundSeatClass = data.flightsData[FlightType.INBOUND]?.seatClass
+  const inboundTicketClass = data.flightsData[FlightType.INBOUND]?.ticketClass
   const inboundPrice = data.flightsData[FlightType.INBOUND]?.price
 
   const allSelectedSeats = [
@@ -44,6 +44,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
 
   allSelectedSeats.forEach((seat) => {
     console.log(seat)
+    if (!seat) return
     const seatCharge =
       data.additionalData.surcharges?.find((surcharge) => surcharge.name === `SeatType.${seat.seatType}`)?.value || 0
 
@@ -55,7 +56,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
   // du lieu seat chi nam trong step seats Selection, card ko xem dc @ _ @
 
   return (
-    <div className={className}>
+    <div className={classNames('w-full', className)}>
       <div className=' overflow-hidden rounded-md shadow-md'>
         <div className='bg-primary p-6 px-8'>
           <span className='text-xl'>Chi Tiết Đặt Vé</span>
@@ -63,7 +64,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
         <div className=' '>
           <Flight
             flight={outboundFlight}
-            seatClass={outboundSeatClass}
+            ticketClass={outboundTicketClass}
             price={outboundPrice}
             totalPassengers={totalPassengers}
           />
@@ -72,7 +73,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
             <>
               <Flight
                 flight={inboundFlight}
-                seatClass={inboundSeatClass!}
+                ticketClass={inboundTicketClass!}
                 price={inboundPrice!}
                 totalPassengers={totalPassengers}
               />
@@ -101,14 +102,14 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                   <FlightSeatDetail
                     flight={outboundFlight}
                     seatsData={seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE]}
-                    passengers={data.searchData.passengers}
+                    passengers={data.searchData.passengersQuantity}
                   />
 
                   {outboundFlight.hasTransit && (
                     <FlightSeatDetail
                       flight={outboundFlight}
                       seatsData={seatsData[FlightType.INBOUND][FlightLegType.TRANSIT]}
-                      passengers={data.searchData.passengers}
+                      passengers={data.searchData.passengersQuantity}
                     />
                   )}
 
@@ -116,7 +117,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                     <FlightSeatDetail
                       flight={inboundFlight}
                       seatsData={seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE]}
-                      passengers={data.searchData.passengers}
+                      passengers={data.searchData.passengersQuantity}
                     />
                   )}
 
@@ -124,7 +125,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                     <FlightSeatDetail
                       flight={inboundFlight}
                       seatsData={seatsData[FlightType.INBOUND][FlightLegType.TRANSIT]}
-                      passengers={data.searchData.passengers}
+                      passengers={data.searchData.passengersQuantity}
                     />
                   )}
 
@@ -197,45 +198,45 @@ interface RowProps extends PropsWithChildren {
 }
 
 const Row: FunctionComponent<RowProps> = ({ children, title }) => {
-  const [isExpaned, setIsExpaned] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   return (
     <div className=''>
       <button
-        onClick={() => setIsExpaned((prev) => !prev)}
+        onClick={() => setIsExpanded((prev) => !prev)}
         className={classNames('flex w-full justify-between p-4', {
-          'bg-gray-100': isExpaned,
+          'bg-gray-100': isExpanded,
         })}
       >
         {title}
         <div className='pl-4'>
-          {isExpaned ? <i className='fa-regular fa-angle-up'></i> : <i className='fa-regular fa-angle-down'></i>}
+          {isExpanded ? <i className='fa-regular fa-angle-up'></i> : <i className='fa-regular fa-angle-down'></i>}
         </div>
       </button>
-      {isExpaned && <div className='p-4 pt-0'>{children}</div>}
+      {isExpanded && <div className='p-4 pt-0'>{children}</div>}
     </div>
   )
 }
 
 interface FlightProps {
   flight: IFlight
-  seatClass: SeatClass
+  ticketClass: TicketClass
   price: number
   totalPassengers: number
 }
 
-const Flight: FunctionComponent<FlightProps> = ({ flight, seatClass, price, totalPassengers }) => {
+const Flight: FunctionComponent<FlightProps> = ({ flight, ticketClass, price, totalPassengers }) => {
   const departureFlightLeg = flight.flightLegs[FlightLegType.DEPARTURE]
   const transitFlightLeg = flight.flightLegs[FlightLegType.TRANSIT]
 
   // const totalPrice =
-  //   flight.flightLegs[FlightLegType.DEPARTURE].flightRoute.prices[seatClass] +
-  //   (flight.flightLegs[FlightLegType.TRANSIT]?.flightRoute.prices[seatClass] || 0)
+  //   flight.flightLegs[FlightLegType.DEPARTURE].flightRoute.prices[ticketClass] +
+  //   (flight.flightLegs[FlightLegType.TRANSIT]?.flightRoute.prices[ticketClass] || 0)
 
   return (
     <Row
       title={
         <div className='flex w-full justify-between'>
-          <div>
+          <div className='pr-4'>
             <span className='pr-4'>
               <i className='fa-duotone fa-plane'></i>
             </span>

@@ -70,7 +70,7 @@ const ChangePassword: FunctionComponent<ChangePasswordProps> = () => {
     reset()
   }
   return (
-    <div className='mt-16 grid grid-cols-12 gap-6'>
+    <div className='mt-16 grid grid-cols-12 gap-6 w-full'>
       <UserProfileSidebar className='col-span-3' />
       <div className='col-span-9 w-full'>
         <div className='mx-auto mb-24 max-w-2xl'>

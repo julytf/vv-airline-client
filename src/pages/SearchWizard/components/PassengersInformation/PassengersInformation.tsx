@@ -13,6 +13,7 @@ import { UserGender } from '@/enums/user.enums'
 import PassengerInformationForm from './PassengerInformationForm'
 import { useSelector } from 'react-redux'
 import { AppState } from '@/services/state/store'
+import ContactInfoForm from './ContactInfoForm'
 
 interface PassengersInformationProps {}
 
@@ -34,6 +35,10 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
     mode: 'onChange',
     resolver: joiResolver(passengersInformationSchema),
     defaultValues: {
+      contactInfo: {
+        email: user?.email,
+        phoneNumber: user?.phoneNumber,
+      },
       [PassengerType.ADULT]: [
         !isAuthenticated
           ? {}
@@ -42,8 +47,6 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
               firstName: user?.firstName,
               dateOfBirth: format(new Date(user?.dateOfBirth || ''), `yyyy-MM-dd`),
               gender: user?.gender,
-              phoneNumber: user?.phoneNumber,
-              email: user?.email,
             },
       ],
     },
@@ -87,14 +90,15 @@ const PassengersInformation: FunctionComponent<PassengersInformationProps> = () 
   // }
   return (
     <div>
-      <div className='mx-auto mb-24 mt-16 grid grid-cols-12 gap-16'>
+      <div className='mx-auto mb-24 mt-16 grid w-full grid-cols-12 gap-16'>
         <div className='col-span-8'>
           <form onSubmit={handleSubmit(onSubmit)} className='mx-auto flex max-w-2xl flex-col gap-y-16'>
             {/* <button>button</button> */}
-            {new Array(data.searchData.passengers[PassengerType.ADULT]).fill(0).map((_, index) => (
+            <ContactInfoForm control={control} />
+            {new Array(data.searchData.passengersQuantity[PassengerType.ADULT]).fill(0).map((_, index) => (
               <PassengerInformationForm key={index} type={PassengerType.ADULT} index={index} control={control} />
             ))}
-            {new Array(data.searchData.passengers[PassengerType.CHILD]).fill(0).map((_, index) => (
+            {new Array(data.searchData.passengersQuantity[PassengerType.CHILD]).fill(0).map((_, index) => (
               <PassengerInformationForm key={index} type={PassengerType.CHILD} index={index} control={control} />
             ))}
           </form>

@@ -1,15 +1,15 @@
 import { FlightLegStatus } from '@/enums/flightLeg.enums'
 import IFlightRoute from './flightRoute.interface'
 import IAircraft from '../aircraft/aircraft.interface'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 
 export interface IFlightLeg {
   _id?: string
   departureTime: Date
   arrivalTime: Date
   remainingSeats: {
-    [SeatClass.ECONOMY]: number
-    [SeatClass.BUSINESS]: number
+    [TicketClass.ECONOMY]: number
+    [TicketClass.BUSINESS]: number
   }
   status: FlightLegStatus
   flightRoute: IFlightRoute

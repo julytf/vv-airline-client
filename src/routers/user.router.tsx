@@ -3,8 +3,10 @@
 
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
 import { UserRole } from '@/enums/user.enums'
-import { lazy } from 'react'
+import { lazy, Suspense } from 'react'
 import ForgotPasswordScreen from '@/pages/Auth/ForgotPassword/ForgotPassword.screen'
+import Error404 from '@/pages/Error/Error404'
+import Loading from '@/components/ui/Loading'
 
 // import MainLayout from '@/layouts/Main.layout'
 
@@ -46,16 +48,22 @@ const SearchWizardScreen = lazy(() => import('@/pages/SearchWizard/SearchWizard.
 const BookingsIndexScreen = lazy(() => import('@/pages/Bookings/Index/Index.screen'))
 const BookingsDetailScreen = lazy(() => import('@/pages/Bookings/Detail/Detail.screen'))
 
+const TicketClassPolicyScreen = lazy(() => import('@/pages/Policy/TicketClassPolicy.screen'))
+
 export const userRoutes = [
   {
     path: '',
     breadcrumbName: 'Trang chủ',
     element: (
-      // <AuthContextProvider>
-      //   <GlobalContextProzvider>
-      <MainLayout />
-      //    </GlobalContextProzvider>
-      // </AuthContextProvider>
+      <Suspense
+        fallback={
+          <div className='flex h-screen items-center justify-center'>
+            <Loading />
+          </div>
+        }
+      >
+        <MainLayout />
+      </Suspense>
     ),
     children: [
       {
@@ -172,7 +180,23 @@ export const userRoutes = [
           },
         ],
       },
+      {
+        path: 'policy',
+        breadcrumbName: 'Chính sách',
+        children: [
+          {
+            path: 'ticket-class-policy',
+            breadcrumbName: 'Chính sách hạng vé máy bay',
+            element: <TicketClassPolicyScreen />,
+          },
+        ],
+      },
     ],
+  },
+  {
+    path: '*',
+    breadcrumbName: '404',
+    element: <Error404 />,
   },
 ]
 

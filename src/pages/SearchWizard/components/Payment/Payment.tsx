@@ -11,25 +11,30 @@ import PaypalPaymentForm from '@/components/Payment/PaypalPaymentForm'
 import PaymentSummaryCard from '@/components/Card/PaymentSummaryCard'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightType } from '@/enums/flight.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import { UserGender } from '@/enums/user.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import bookingService from '@/services/booking.service'
 import { useSearchWizard } from '@/contexts/SearchWizard.context'
+import classNames from 'classnames'
+import paymentService from '@/services/payment.service'
+
+const stripePromise = loadStripe(config.stripe.publicKey)
 
 interface PaymentProps {}
 
 const Payment: FunctionComponent<PaymentProps> = () => {
   const { data } = useSearchWizard()
 
-  const [loading, setLoading] = useState(true)
-  const [paymentMethod, setPaymentMethod] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
+  const [bookingId, setBookingId] = useState('')
+  const [clientSecret, setClientSecret] = useState('')
 
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //     setLoading(false)
-  //   }, 500)
-  // }, [])
+  useEffect(() => {}, [])
+
+  const options = {
+    clientSecret,
+  }
 
   useEffect(() => {
     bookingService
@@ -48,13 +53,17 @@ const Payment: FunctionComponent<PaymentProps> = () => {
         flightsData: {
           [FlightType.OUTBOUND]: {
             flight: data.flightsData[FlightType.OUTBOUND]!.flight._id,
-            seatClass: data.flightsData[FlightType.OUTBOUND]!.seatClass,
+            ticketClass: data.flightsData[FlightType.OUTBOUND]!.ticketClass,
+            ticketType: data.flightsData[FlightType.OUTBOUND]!.ticketType,
+            // khong gui price, server tu tinh price
           },
           [FlightType.INBOUND]: !data.searchData.isRoundTrip
             ? null
             : {
                 flight: data.flightsData[FlightType.INBOUND]!.flight._id,
-                seatClass: data.flightsData[FlightType.OUTBOUND]!.seatClass,
+                ticketClass: data.flightsData[FlightType.OUTBOUND]!.ticketClass,
+                ticketType: data.flightsData[FlightType.OUTBOUND]!.ticketType,
+                // khong gui price, server tu tinh price
               },
         },
         passengersData: data.passengersData,
@@ -97,30 +106,30 @@ const Payment: FunctionComponent<PaymentProps> = () => {
           },
         },
       })
-      .then(() => setLoading(false))
+      .then((booking) => {
+        setBookingId(booking._id)
+        setIsLoading(false)
+        paymentService.getPaymentIntent(booking._id).then((paymentIntent) => {
+          console.log(paymentIntent)
+          setClientSecret(paymentIntent.client_secret)
+          // setLoading(false)
+        })
+      })
   }, [])
 
-  const testSuccessPayment = async () => {
-    // const response = await axiosClient.post('/payment/success', {
-    //   amount: 100000,
-    //   currency: 'usd',
-    // })
-    // console.log(response)
-  }
-
-  if (loading) {
+  if (isLoading) {
     return <Loading />
   }
 
   return (
     <div className=' my-16 grid grid-cols-12 gap-16'>
       <div className='col-span-8 flex flex-col gap-y-8'>
-        <button
+        {/* <button
           onClick={testSuccessPayment}
           className='rounded-md border-2 p-8 py-4 text-2xl font-bold active:scale-95'
         >
           Test Success Payment
-        </button>
+        </button> */}
         {/* <div className='rounded-md border-2 shadow-md'>
           <div className='border-b-2 p-4'>Phương thức thanh toán</div>
           <div>
@@ -151,7 +160,19 @@ const Payment: FunctionComponent<PaymentProps> = () => {
           {paymentMethod === PaymentMethod.CARD && <StripePaymentForm />}
           {paymentMethod === PaymentMethod.PAYPAL && <PaypalPaymentForm />}
         </div> */}
-        <PaypalPaymentForm />
+        {/* <PaypalPaymentForm /> */}
+        {isLoading && <Loading />}
+        {clientSecret && (
+          <div
+            className={classNames({
+              hidden: isLoading,
+            })}
+          >
+            <Elements stripe={stripePromise} options={options}>
+              <StripePaymentForm bookingId={bookingId} />
+            </Elements>
+          </div>
+        )}
       </div>
       <PaymentSummaryCard className='col-span-4' seatsData={data.seatsData} />
     </div>

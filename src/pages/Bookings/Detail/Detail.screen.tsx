@@ -50,24 +50,28 @@ const Detail: FunctionComponent<DetailProps> = () => {
     return <Loading />
   }
 
-  if (!booking?.flightsInfo[FlightType.OUTBOUND].flight || !booking?.flightsInfo[FlightType.OUTBOUND].seatClass)
+  if (!booking?.flightsInfo[FlightType.OUTBOUND].flight || !booking?.flightsInfo[FlightType.OUTBOUND].ticketClass)
     return <ErrorText />
 
   return (
-    <div className='mx-auto my-8 max-w-6xl w-full'>
+    <div className='mx-auto my-8 w-full max-w-6xl'>
       <div className='text-center text-3xl font-bold'>Thông tin Chuyến bay đã đặt</div>
       <div className='my-8 flex  flex-col items-center justify-center gap-8'>
         <Flight
           flightInfo={{
             flight: booking?.flightsInfo[FlightType.OUTBOUND].flight,
-            seatClass: booking?.flightsInfo[FlightType.OUTBOUND].seatClass,
+            ticketClass: booking?.flightsInfo[FlightType.OUTBOUND].ticketClass,
+            ticketType: booking?.flightsInfo[FlightType.OUTBOUND].ticketType,
+            price: booking?.flightsInfo[FlightType.OUTBOUND].price,
           }}
         />
         {booking?.flightsInfo[FlightType.INBOUND] && (
           <Flight
             flightInfo={{
               flight: booking?.flightsInfo[FlightType.INBOUND].flight,
-              seatClass: booking?.flightsInfo[FlightType.INBOUND].seatClass,
+              ticketClass: booking?.flightsInfo[FlightType.INBOUND].ticketClass,
+              ticketType: booking?.flightsInfo[FlightType.INBOUND].ticketType,
+              price: booking?.flightsInfo[FlightType.INBOUND].price,
             }}
           />
         )}
@@ -75,11 +79,11 @@ const Detail: FunctionComponent<DetailProps> = () => {
       <div className='mx-auto max-w-4xl'>
         <div className=''>
           <div className='p-4 text-xl font-bold'>Thông tin Liên hệ</div>
-          <div>
+          {/* <div>
             Họ Tên: {booking.passengers[0].lastName} {booking.passengers[0].firstName}
-          </div>
-          <div>Số điện thoại: {booking.passengers[0].phoneNumber}</div>
-          <div>email: {booking.passengers[0].email}</div>
+          </div> */}
+          <div>Số điện thoại: {booking.contactInfo.phoneNumber}</div>
+          <div>email: {booking.contactInfo.email}</div>
         </div>
       </div>
       <div className='mx-auto max-w-4xl'>

@@ -1,4 +1,3 @@
-import NotImplemented from '@/components/Error/NotImplemented'
 import { lazy } from 'react'
 import { UserRole } from '@/enums/user.enums'
 // import { AuthContextProvider } from 'utils/AuthContext'
@@ -6,6 +5,8 @@ import { UserRole } from '@/enums/user.enums'
 
 import { Suspense } from 'react'
 import { Navigate, Outlet, RouteObject, createBrowserRouter, redirect } from 'react-router-dom'
+import NotImplemented from '@/pages/Admin/Error/NotImplemented'
+import Error404 from '@/pages/Admin/Error/Error404'
 
 // import Loading from '@/components/ui/Loading'
 // import AdminLayout from '@/layouts/Admin.layout'
@@ -57,24 +58,28 @@ const AdminCreateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Creat
 const AdminUpdateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Update.screen'))
 
 const AdminFlightRoutesIndexScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Index.screen'))
-// const AdminCreateFlightRouteScreen = lazy(() => import( '@/pages/Admin/FlightRoutes/Create.screen'))
+const AdminCreateFlightRouteScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Create.screen'))
 // const AdminUpdateFlightRouteScreen = lazy(() => import( '@/pages/Admin/FlightRoutes/Update.screen'))
 
 const AdminFlightLegsIndexScreen = lazy(() => import('@/pages/Admin/FlightLegs/Index.screen'))
-// const AdminCreateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Create.screen'))
+const AdminCreateFlightLegScreen = lazy(() => import('@/pages/Admin/FlightLegs/Create.screen'))
 // const AdminUpdateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Update.screen'))
 
 const AdminFlightsIndexScreen = lazy(() => import('@/pages/Admin/Flights/Index.screen'))
-// const AdminCreateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Create.screen'))
+const AdminCreateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Create.screen'))
 // const AdminUpdateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Update.screen'))
 
 const AdminAircraftsIndexScreen = lazy(() => import('@/pages/Admin/Aircrafts/Index.screen'))
-// const AdminCreateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Create.screen'))
+const AdminCreateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Create.screen'))
 // const AdminUpdateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Update.screen'))
 
 const AdminAircraftModelsIndexScreen = lazy(() => import('@/pages/Admin/AircraftModels/Index.screen'))
 // const AdminCreateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Create.screen'))
 // const AdminUpdateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Update.screen'))
+
+const AdminBookingsIndexScreen = lazy(() => import('@/pages/Admin/Bookings/Index.screen'))
+// const AdminCreateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Create.screen'))
+// const AdminUpdateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Update.screen'))
 
 const AdminArticlesIndexScreen = lazy(() => import('@/pages/Admin/Articles/Index.screen'))
 const AdminCreateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Create.screen'))
@@ -91,7 +96,13 @@ export const adminRoutes = [
     redirect: '/admin/dashboard',
     breadcrumbName: 'Admin',
     element: (
-      <Suspense fallback={<Loading />}>
+      <Suspense
+        fallback={
+          <div className='flex h-screen items-center justify-center'>
+            <Loading />
+          </div>
+        }
+      >
         <RoleGuard unrestrictedTo={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF]} redirect='/admin/login'>
           <AdminLayout />
         </RoleGuard>
@@ -178,6 +189,22 @@ export const adminRoutes = [
         ],
       },
       {
+        path: 'bookings',
+        breadcrumbName: 'Đặt vé',
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Danh sách',
+            element: <AdminBookingsIndexScreen />,
+          },
+          {
+            path: ':id',
+            breadcrumbName: 'Chi tiết',
+            element: <NotImplemented />,
+          },
+        ],
+      },
+      {
         path: 'aircraft-models',
         breadcrumbName: 'Mẫu Máy bay',
         children: [
@@ -220,8 +247,8 @@ export const adminRoutes = [
           {
             path: 'create',
             breadcrumbName: 'Thêm Máy bay',
-            // element: <AdminCreateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminCreateAircraftscreen />,
+            // element: <NotImplemented />,
           },
         ],
       },
@@ -258,14 +285,14 @@ export const adminRoutes = [
           {
             path: ':id',
             breadcrumbName: 'Cập nhật Tuyến bay',
-            // element: <AdminUpdateAirportScreen />,
+            // element: <AdminUpdateFlightRouteScreen />,
             element: <NotImplemented />,
           },
           {
             path: 'create',
             breadcrumbName: 'Thêm Tuyến bay',
-            // element: <AdminCreateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminCreateFlightRouteScreen />,
+            // element: <NotImplemented />,
           },
         ],
       },
@@ -287,8 +314,8 @@ export const adminRoutes = [
           {
             path: 'create',
             breadcrumbName: 'Thêm Chặng bay',
-            // element: <AdminCreateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminCreateFlightLegScreen />,
+            // element: <NotImplemented />,
           },
         ],
       },
@@ -311,10 +338,15 @@ export const adminRoutes = [
           {
             path: 'create',
             breadcrumbName: 'Thêm Chuyến bay',
-            // element: <AdminCreateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminCreateFlightScreen />,
+            // element: <NotImplemented />,
           },
         ],
+      },
+      {
+        path: '*',
+        breadcrumbName: '404',
+        element: <Error404 />,
       },
     ],
   },

@@ -1,6 +1,6 @@
 import { FlightType } from '../enums/flight.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
-import { SeatClass } from '../enums/seat.enums'
+import { TicketClass } from '../enums/seat.enums'
 import {
   FC,
   Fragment,

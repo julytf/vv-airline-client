@@ -1,4 +1,5 @@
-import { SeatClass, SeatStatus, SeatType } from '@/enums/seat.enums'
+import { SeatStatus, SeatType } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 
 export interface ISeat {
   _id: string
@@ -7,7 +8,7 @@ export interface ISeat {
   col: string
   status?: SeatStatus
   seatType?: SeatType
-  seatClass?: SeatClass
+  ticketClass?: TicketClass
   // aircraftModel: string
 }
 

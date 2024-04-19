@@ -10,18 +10,22 @@ import {
 import { PassengerType } from '@/enums/passenger.enums'
 
 const passengersInformationSchema = Joi.object({
+  contactInfo: Joi.object({
+    email: emailSchema,
+    phoneNumber: phoneNumberSchema,
+  }),
   [PassengerType.ADULT]: Joi.array()
-    .ordered(
-      Joi.object({
-        lastName: lastNameSchema,
-        firstName: firstNameSchema,
-        dateOfBirth: dateOfBirthSchema,
-        gender: genderSchema,
-        phoneNumber: phoneNumberSchema,
-        email: emailSchema,
-        // type: Joi.string().valid(PassengerType.ADULT, PassengerType.CHILD).required(),
-      }),
-    )
+    // .ordered(
+    //   Joi.object({
+    //     lastName: lastNameSchema,
+    //     firstName: firstNameSchema,
+    //     dateOfBirth: dateOfBirthSchema,
+    //     gender: genderSchema,
+    //     phoneNumber: phoneNumberSchema,
+    //     email: emailSchema,
+    //     // type: Joi.string().valid(PassengerType.ADULT, PassengerType.CHILD).required(),
+    //   }),
+    // )
     .items(
       Joi.object({
         lastName: lastNameSchema,

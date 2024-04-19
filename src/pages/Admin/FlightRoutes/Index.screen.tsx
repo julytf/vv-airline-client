@@ -1,7 +1,7 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IAirport from '@/interfaces/flight/airport.interface'
 import flightRoutesService from '@/services/flightRoutes.service'
 import { route } from '@/utils/helpers'
@@ -52,16 +52,16 @@ const FlightRoutesIndex: FunctionComponent<FlightRoutesIndexProps> = () => {
               displayName: 'Giá vé',
               renderFnc: (value: unknown) => {
                 const prices = value as {
-                  [SeatClass.ECONOMY]: number
-                  [SeatClass.BUSINESS]: number
+                  [TicketClass.ECONOMY]: number
+                  [TicketClass.BUSINESS]: number
                 }
                 return (
                   <>
                     <div>
-                      {SeatClass.ECONOMY}: {prices[SeatClass.ECONOMY].toLocaleString()} vnđ
+                      {TicketClass.ECONOMY}: {prices[TicketClass.ECONOMY].toLocaleString()} vnđ
                     </div>
                     <div>
-                      {SeatClass.BUSINESS}: {prices[SeatClass.BUSINESS].toLocaleString()} vnđ
+                      {TicketClass.BUSINESS}: {prices[TicketClass.BUSINESS].toLocaleString()} vnđ
                     </div>
                   </>
                 )

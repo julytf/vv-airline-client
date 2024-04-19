@@ -62,13 +62,14 @@ const AdminApp: FunctionComponent<AdminAppProps> = () => {
     ;(async () => {
       const tokenName = 'adminAccessToken'
       const accessToken = localStorage.getItem(tokenName)
-      console.log(accessToken)
+      // console.log(accessToken)
 
       if (!accessToken)
         return dispatch(auth.initialize({ isAuthenticated: false, user: null, accessToken: null, tokenName }))
 
       try {
         sessionStorage.setItem('token', accessToken)
+        console.log('here accessToken', accessToken)
         const user = await usersService.getProfile()
         dispatch(auth.initialize({ isAuthenticated: true, user, accessToken: accessToken, tokenName }))
       } catch (error) {

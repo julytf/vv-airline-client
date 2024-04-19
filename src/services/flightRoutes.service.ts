@@ -3,7 +3,7 @@ import axiosClient from './api/axios.service'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IFlightRoute from '@/interfaces/flight/flightRoute.interface'
 
 interface QueryOption {
@@ -30,6 +30,10 @@ class FlightRoutesService {
     })
     const data = response.data.data
     return data
+  }
+  async getAllFlightRoutes() {
+    const response = await axiosClient.get(`/flight-routes/all`)
+    return response.data.data
   }
   async getFlightRoute(id: string) {
     const response = await axiosClient.get(`/flight-routes/${id}`)

@@ -1,4 +1,4 @@
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IFlightLeg from '../flight/flightLeg.interface'
 import IPassenger from './passenger.interface'
 import ISeat from '../aircraft/seat.interface'

@@ -64,7 +64,7 @@ const ArticlesIndex: FunctionComponent<ArticlesIndexProps> = () => {
               field: 'isFeatured',
               displayName: 'Nổi bật',
               renderFnc: (value: unknown, data: TableData) => {
-                return <IsFeaturedButton id={String(data?._id)} value={value == true} />
+                return <IsFeaturedButton key={data?._id as string} id={String(data?._id)} value={value == true} />
               },
             },
             {
@@ -114,7 +114,7 @@ const IsFeaturedButton: FunctionComponent<IsFeaturedButtonProps> = ({ id, value 
         onChange={(e) => onUpdateFeatured(id, e.target.checked)}
         className='hidden'
       />
-      <div className='flex aspect-square w-8 items-center justify-center rounded-md border cursor-pointer'>
+      <div className='flex aspect-square w-8 cursor-pointer items-center justify-center rounded-md border'>
         <span className='text-yellow-300'>
           {isFeatured ? <i className='fa-solid fa-star'></i> : <i className='fa-light fa-star'></i>}
         </span>

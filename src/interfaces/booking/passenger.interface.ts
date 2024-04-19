@@ -3,8 +3,8 @@ import { PassengerType } from '@/enums/passenger.enums'
 
 export interface IPassenger {
   type: PassengerType
-  email?: string
-  phoneNumber?: string
+  // email?: string
+  // phoneNumber?: string
   firstName: string
   lastName: string
   dateOfBirth?: Date

@@ -3,7 +3,7 @@ import axiosClient from './api/axios.service'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 
 interface SearchData {
   departureAirportIATA: string
@@ -24,36 +24,30 @@ interface SearchData {
 interface FlightsData {
   [FlightType.OUTBOUND]: {
     flight: string
-    seatClass: SeatClass
+    ticketClass: TicketClass
+    ticketType: TicketType
   }
   [FlightType.INBOUND]: {
     flight: string
-    seatClass: SeatClass
+    ticketClass: TicketClass
+    ticketType: TicketType
   } | null
 }
 interface PassengersData {
-  [PassengerType.ADULT]:
-    | [
-        {
-          lastName: string
-          firstName: string
-          dateOfBirth: Date
-          gender: UserGender
-          phoneNumber: string
-          email: string
-        },
-        ...{
-          lastName: string
-          firstName: string
-          dateOfBirth: Date
-          gender: UserGender
-        }[],
-      ]
-    | []
+  contactInfo: {
+    email: string
+    phoneNumber: string
+  }
+  [PassengerType.ADULT]: {
+    lastName: string
+    firstName: string
+    dateOfBirth: string
+    gender: UserGender
+  }[]
   [PassengerType.CHILD]: {
     lastName: string
     firstName: string
-    dateOfBirth: Date
+    dateOfBirth: string
     gender: UserGender
   }[]
 }
@@ -102,7 +96,7 @@ class bookingService {
       },
     })
 
-    const booking = response.data.booking
+    const booking = response.data.data.booking
 
     return booking
   }

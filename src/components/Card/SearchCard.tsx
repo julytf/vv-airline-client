@@ -34,16 +34,19 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || undefined,
     departureDate: searchParams.get('departureDate') || undefined,
     returnDate: searchParams.get('returnDate') || undefined,
-    passengers: {
-      [PassengerType.ADULT]: Number(searchParams.get('passengers[adult]')) || 1,
-      [PassengerType.CHILD]: Number(searchParams.get('passengers[child]')) || 0,
+    passengersQuantity: {
+      [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 1,
+      [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
     },
   })
   // console.log('formData', formData)
   // console.log('formData', formData.departureDate)
 
   const isValid =
-    formData.departureAirportIATA && formData.arrivalAirportIATA && formData.departureDate && formData.passengers
+    formData.departureAirportIATA &&
+    formData.arrivalAirportIATA &&
+    formData.departureDate &&
+    formData.passengersQuantity
 
   useEffect(() => {
     searchWizardService.getAirports().then((airports) => {
@@ -76,7 +79,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     arrivalAirport: flattenedOptions.find((option) => option.value === formData.arrivalAirportIATA),
     departureDate: formData.departureDate || startOfDay(new Date()).toString(),
     returnDate: formData.returnDate || undefined,
-    passengers: formData.passengers,
+    passengersQuantity: formData.passengersQuantity,
   }
 
   const onSearch = () => {
@@ -85,7 +88,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       !formData.arrivalAirportIATA ||
       !formData.departureDate ||
       // !formData.returnDate ||
-      !formData.passengers
+      !formData.passengersQuantity
     ) {
       throw new Error('Invalid form data')
     }
@@ -96,8 +99,8 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       arrivalAirportIATA: formData.arrivalAirportIATA,
       departureDate: formData.departureDate.toString(),
       returnDate: formData?.returnDate?.toString() || '',
-      'passengers[adult]': formData.passengers[PassengerType.ADULT].toString(),
-      'passengers[child]': formData.passengers[PassengerType.CHILD].toString(),
+      'passengersQuantity.ADULT': formData.passengersQuantity[PassengerType.ADULT].toString(),
+      'passengersQuantity.CHILD': formData.passengersQuantity[PassengerType.CHILD].toString(),
     }
     // console.log(query)
 
@@ -108,7 +111,12 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     )
   }
 
-  if (isLoading) return <Loading />
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
 
   return (
     <div className={classNames('inline-block rounded-xl border-2 border-primary p-6', props.className)}>
@@ -141,10 +149,14 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           // defaultValue={defaultValues.departureDate}
           value={formData.departureDate || ''}
           onChange={(v) => {
-            setFormData((prev) => ({ ...prev, 
-              departureDate: v,
-              // returnDate: new Date(v) > new Date(formData.returnDate) ? ,
-             }) as Partial<SearchData>)
+            setFormData(
+              (prev) =>
+                ({
+                  ...prev,
+                  departureDate: v,
+                  // returnDate: new Date(v) > new Date(formData.returnDate) ? ,
+                }) as Partial<SearchData>,
+            )
           }}
         />
         <DateInput
@@ -159,7 +171,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
           }}
         />
         <PassengerQuantityInput
-          defaultValue={defaultValues.passengers}
+          defaultValue={defaultValues.passengersQuantity}
           onChange={(v) => {
             setFormData((prev) => ({ ...prev, passengers: v }) as Partial<SearchData>)
           }}

@@ -1,7 +1,7 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IAircraftModel from '@/interfaces/aircraft/aircraftModel.interface'
 import aircraftsService from '@/services/aircrafts.service'
 import { route } from '@/utils/helpers'
@@ -15,7 +15,7 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
     <div className='flex flex-wrap p-3 px-6'>
       <div className='w-full max-w-full flex-none'>
         <div className='flex justify-end py-3'>
-          <NavLink to={route('/admin/aircraft-models/create')}>
+          <NavLink to={route('/admin/aircrafts/create')}>
             <Button>Thêm Máy Bay</Button>
           </NavLink>
         </div>

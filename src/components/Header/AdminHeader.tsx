@@ -17,7 +17,7 @@ const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
   // console.log(matchedRoutes)
 
   return (
-    <nav className='bg-white left-0 top-0 z-30 flex w-full items-center border-b bg-transparent p-4 md:flex-row md:flex-nowrap md:justify-start'>
+    <nav className='left-0 top-0 z-30 flex w-full items-center border-b bg-transparent bg-white p-4 md:flex-row md:flex-nowrap md:justify-start'>
       <div className='mx-auto flex w-full flex-wrap items-center justify-between px-4 md:flex-nowrap '>
         <div>
           {matchedRoutes.map((matchRoute, i) => {

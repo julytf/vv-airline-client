@@ -1,5 +1,5 @@
 import { FunctionComponent, useEffect, useState } from 'react'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import SearchCard from '@/components/Card/SearchCard'
 import WizardBottomNavBar from '@/components/SearchWizard/NavBar/WizardBottomNavBar'
 import classNames from 'classnames'
@@ -9,7 +9,6 @@ import IFlight from '@/interfaces/flight/flight.interface'
 import { addHours, differenceInHours, differenceInMinutes, format } from 'date-fns'
 import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
-import vi from 'date-fns/locale/vi'
 import { FlightsData, useSearchWizard } from '@/contexts/SearchWizard.context'
 import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
@@ -36,7 +35,7 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
   })
 
   const totalPassengers =
-    data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD]
+    data.searchData.passengersQuantity[PassengerType.ADULT] + data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const inboundDateGTEOutboundDate: boolean =
     !data.searchData.returnDate || new Date(data.searchData.departureDate) <= new Date(data.searchData.returnDate)
@@ -50,6 +49,8 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
       addHours(new Date(flightsData[FlightType.OUTBOUND]?.flight.arrivalTime || ''), 6) <=
         new Date(flightsData[FlightType.INBOUND]?.flight.departureTime || ''))
   console.log('inboundTimeGTEOutboundTimeAnd6Hours', inboundTimeGTEOutboundTimeAnd6Hours)
+  console.log(addHours(new Date(flightsData[FlightType.OUTBOUND]?.flight.arrivalTime || ''), 6))
+  console.log(new Date(flightsData[FlightType.INBOUND]?.flight.departureTime || ''))
 
   const isForwardAble =
     Boolean(flightsData[FlightType.OUTBOUND]) &&
@@ -74,7 +75,8 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
         arrivalAirportIATA: data.searchData.arrivalAirportIATA,
         departureDate: new Date(data.searchData.departureDate),
         totalPassengers:
-          data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD],
+          data.searchData.passengersQuantity[PassengerType.ADULT] +
+          data.searchData.passengersQuantity[PassengerType.CHILD],
       })
       .then((flights) => {
         flights.forEach((flight: IFlight) => {
@@ -91,7 +93,8 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
           arrivalAirportIATA: data.searchData.departureAirportIATA,
           departureDate: new Date(data.searchData.returnDate!),
           totalPassengers:
-            data.searchData.passengers[PassengerType.ADULT] + data.searchData.passengers[PassengerType.CHILD],
+            data.searchData.passengersQuantity[PassengerType.ADULT] +
+            data.searchData.passengersQuantity[PassengerType.CHILD],
         })
         .then((flights) => {
           flights.forEach((flight: IFlight) => {
@@ -109,7 +112,7 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
     data.searchData.departureDate,
     data.searchData.returnDate,
     // TODO: check this again, will this trigger research
-    data.searchData.passengers,
+    data.searchData.passengersQuantity,
     data.searchData.isRoundTrip,
   ])
   // console.log('data.searchData.departureDate', data.searchData.departureDate)
@@ -158,7 +161,7 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
     return <Loading />
   }
   return (
-    <div className='mx-auto my-16 flex max-w-screen-xl flex-col items-center justify-center gap-y-6'>
+    <div className='mx-auto my-16 flex w-full max-w-5xl flex-col items-center justify-center gap-y-6'>
       <SearchCard className='shadow-lg' />
       <div className='mt-16 flex w-full max-w-screen-xl flex-col gap-y-8'>
         <div className='flex w-full flex-col gap-y-4 rounded-md border shadow-inner'>
@@ -244,7 +247,9 @@ const FlightsSelection: FunctionComponent<FlightsSelectionProps> = () => {
                   flights={inboundFlights || []}
                   selectedFlightInfo={flightsData![FlightType.INBOUND]}
                   quantityLimit={totalPassengers}
-                  timeLimit={flightsData[FlightType.OUTBOUND]?.flight.arrivalTime || undefined}
+                  timeLimit={
+                    addHours(new Date(flightsData[FlightType.OUTBOUND]?.flight.arrivalTime || ''), 6) || undefined
+                  }
                   onChange={(info) => {
                     setFlightsData((prev) => {
                       prev[FlightType.INBOUND] = info

@@ -1,7 +1,7 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IAircraft from '@/interfaces/aircraft/aircraft.interface'
 import IAirport from '@/interfaces/flight/airport.interface'
 import IFlightRoute from '@/interfaces/flight/flightRoute.interface'
@@ -29,24 +29,36 @@ const FlightLegsIndex: FunctionComponent<FlightLegsIndexProps> = () => {
           FetchDataFnc={flightLegsService.getFlightLegsPaginate.bind(flightLegsService)}
           queryKey='flightLegs'
           renderOptions={[
+            // {
+            //   field: 'flightRoute',
+            //   displayName: 'Điểm đi',
+            //   renderFnc: (value) => {
+            //     return <>{(value as IFlightRoute)?.departureAirport?.IATA}</>
+            //   },
+            // },
+            // {
+            //   field: 'flightRoute',
+            //   displayName: 'Điểm đến',
+            //   renderFnc: (value) => {
+            //     return <>{(value as IFlightRoute)?.arrivalAirport?.IATA}</>
+            //   },
+            // },
             {
               field: 'flightRoute',
-              displayName: 'Điểm đi',
+              displayName: 'Tuyến bay',
               renderFnc: (value) => {
-                return <>{(value as IFlightRoute)?.departureAirport?.IATA}</>
+                return (
+                  <>
+                    {(value as IFlightRoute)?.departureAirport?.IATA} - {(value as IFlightRoute)?.arrivalAirport?.IATA}
+                  </>
+                )
               },
             },
             {
-              field: 'flightRoute',
-              displayName: 'Điểm đến',
-              renderFnc: (value) => {
-                return <>{(value as IFlightRoute)?.arrivalAirport?.IATA}</>
-              },
-            },
-            {
-              field: 'departureDate',
+              field: 'departureTime',
               displayName: 'Thời gian đi',
               renderFnc: (value) => {
+                console.log('value', value)
                 return <>{format(value as Date, 'dd/MM/yyyy')}</>
               },
             },
@@ -62,13 +74,13 @@ const FlightLegsIndex: FunctionComponent<FlightLegsIndexProps> = () => {
               displayName: 'Số ghế',
               renderFnc: (value: unknown) => {
                 const remainingSeats = value as {
-                  [SeatClass.BUSINESS]: number
-                  [SeatClass.ECONOMY]: number
+                  [TicketClass.BUSINESS]: number
+                  [TicketClass.ECONOMY]: number
                 }
                 return (
                   <>
-                    <div>BUSINESS: {remainingSeats[SeatClass.BUSINESS]}</div>
-                    <div>ECONOMY: {remainingSeats[SeatClass.ECONOMY]}</div>
+                    <div>BUSINESS: {remainingSeats[TicketClass.BUSINESS]}</div>
+                    <div>ECONOMY: {remainingSeats[TicketClass.ECONOMY]}</div>
                   </>
                 )
               },

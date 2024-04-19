@@ -1,12 +1,20 @@
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import IAirport from './airport.interface'
 
 export interface IFlightRoute {
   _id?: string
   distance?: number
   prices: {
-    [SeatClass.ECONOMY]: number
-    [SeatClass.BUSINESS]: number
+    [TicketClass.ECONOMY]: {
+      [TicketType.BUDGET]: number | null
+      [TicketType.STANDARD]: number | null
+      [TicketType.FLEXIBLE]: number | null
+    }
+    [TicketClass.BUSINESS]: {
+      [TicketType.BUDGET]: number | null
+      [TicketType.STANDARD]: number | null
+      [TicketType.FLEXIBLE]: number | null
+    }
   }
   departureAirport: IAirport
   arrivalAirport: IAirport

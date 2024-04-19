@@ -1,7 +1,7 @@
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import IFlightLeg from './flightLeg.interface'
 import IFlightRoute from './flightRoute.interface'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 
 export interface IFlight {
   _id: string
@@ -9,8 +9,8 @@ export interface IFlight {
   departureTime: Date
   arrivalTime: Date
   remainingSeats: {
-    [SeatClass.ECONOMY]: number
-    [SeatClass.BUSINESS]: number
+    [TicketClass.ECONOMY]: number
+    [TicketClass.BUSINESS]: number
   }
   flightRoute: IFlightRoute
   flightLegs: {

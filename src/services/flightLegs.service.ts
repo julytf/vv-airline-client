@@ -3,7 +3,7 @@ import axiosClient from './api/axios.service'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
 
 interface QueryOption {
@@ -30,6 +30,14 @@ class FlightLegsService {
     })
     const data = response.data.data
     return data
+  }
+  async getFlightLegsByDepartureTime(departureTime: Date) {
+    const response = await axiosClient.get(`/flight-legs/get-by-departure-time`, {
+      params: {
+        departureTime,
+      },
+    })
+    return response.data.data
   }
   async getFlightLeg(id: string) {
     const response = await axiosClient.get(`/flight-legs/${id}`)

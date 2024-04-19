@@ -2,7 +2,7 @@ import { PassengerType } from '@/enums/passenger.enums'
 import axiosClient from './api/axios.service'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
 
 interface QueryOption {

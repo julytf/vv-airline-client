@@ -1,4 +1,4 @@
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import IAirport from '@/interfaces/flight/airport.interface'
 import IFlight from '@/interfaces/flight/flight.interface'
 import { FunctionComponent } from 'react'
@@ -10,10 +10,10 @@ interface FlightSelectProps {
   // arrivalAirport: IAirport
   // date: Date
   flights: IFlight[]
-  selectedFlightInfo?: { flight: IFlight; seatClass: SeatClass } | null
+  selectedFlightInfo?: { flight: IFlight; ticketClass: TicketClass; ticketType: TicketType; price: number } | null
   timeLimit?: Date
   quantityLimit?: number
-  onChange?: (info: { flight: IFlight; seatClass: SeatClass; price: number } | null) => void
+  onChange?: (info: { flight: IFlight; ticketClass: TicketClass; ticketType: TicketType; price: number } | null) => void
 }
 
 const FlightSelect: FunctionComponent<FlightSelectProps> = ({
@@ -58,12 +58,12 @@ const FlightSelect: FunctionComponent<FlightSelectProps> = ({
         const disabled =
           timeLimit && timeLimit > flight.departureTime
             ? {
-                [SeatClass.ECONOMY]: true,
-                [SeatClass.BUSINESS]: true,
+                [TicketClass.ECONOMY]: true,
+                [TicketClass.BUSINESS]: true,
               }
             : {
-                [SeatClass.ECONOMY]: flight.remainingSeats[SeatClass.ECONOMY] < (quantityLimit || 0),
-                [SeatClass.BUSINESS]: flight.remainingSeats[SeatClass.BUSINESS] < (quantityLimit || 0),
+                [TicketClass.ECONOMY]: flight.remainingSeats[TicketClass.ECONOMY] < (quantityLimit || 0),
+                [TicketClass.BUSINESS]: flight.remainingSeats[TicketClass.BUSINESS] < (quantityLimit || 0),
               }
 
         return <Flight key={index} flight={flight} disabled={disabled} onChange={onChange} />

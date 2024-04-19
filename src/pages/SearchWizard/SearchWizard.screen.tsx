@@ -1,11 +1,13 @@
 import WizardNavBar from '@/components/SearchWizard/NavBar/WizardNavBar'
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, lazy, useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router-dom'
 
-import FlightsSelection from '@/pages/SearchWizard/components/FlightsSelection/FlightsSelection'
-import PassengersInformation from '@/pages/SearchWizard/components/PassengersInformation/PassengersInformation'
-import SeatsSelection from '@/pages/SearchWizard/components/SeatsSelection/SeatsSelection'
-import Payment from '@/pages/SearchWizard/components/Payment/Payment'
+const FlightsSelection = lazy(() => import('@/pages/SearchWizard/components/FlightsSelection/FlightsSelection'))
+const PassengersInformation = lazy(
+  () => import('@/pages/SearchWizard/components/PassengersInformation/PassengersInformation'),
+)
+const SeatsSelection = lazy(() => import('@/pages/SearchWizard/components/SeatsSelection/SeatsSelection'))
+const Payment = lazy(() => import('@/pages/SearchWizard/components/Payment/Payment'))
 import SearchWizardContext, { WizardData } from '@/contexts/SearchWizard.context'
 import searchWizardService from '@/services/searchWizard.service'
 import IFlight from '@/interfaces/flight/flight.interface'
@@ -77,9 +79,9 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
 
       isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
 
-      passengers: {
-        [PassengerType.ADULT]: Number(searchParams.get('passengers[adult]')) || 0,
-        [PassengerType.CHILD]: Number(searchParams.get('passengers[child]')) || 0,
+      passengersQuantity: {
+        [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 0,
+        [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
       },
     },
     flightsData: {
@@ -90,6 +92,10 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       [FlightType.INBOUND]: null,
     },
     passengersData: {
+      contactInfo: {
+        email: '',
+        phoneNumber: '',
+      },
       [PassengerType.ADULT]: [],
       [PassengerType.CHILD]: [],
     },
@@ -193,9 +199,9 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
 
         isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
 
-        passengers: {
-          [PassengerType.ADULT]: Number(searchParams.get('passengers[adult]')) || 0,
-          [PassengerType.CHILD]: Number(searchParams.get('passengers[child]')) || 0,
+        passengersQuantity: {
+          [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 0,
+          [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
         },
       }
       return { ...prev }
@@ -206,8 +212,8 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
     searchParams.get('departureDate'),
     searchParams.get('returnDate'),
     searchParams.get('returnDate'),
-    searchParams.get('passengers[adult]'),
-    searchParams.get('passengers[child]'),
+    searchParams.get('passengersQuantity.ADULT'),
+    searchParams.get('passengersQuantity.CHILD'),
   ])
 
   if (isLoading) {
@@ -223,7 +229,7 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
     >
       <div className='mt-8'>
         <WizardNavBar searchWizardSteps={searchWizardSteps} currentStep={data.currentStep} />
-        <div className='mt-8'>
+        <div className='mt-8 w-full'>
           <CurrentForm />
           <div className='pb-16 pr-6'>
             {/* <WizardBottomNavBar

@@ -3,7 +3,7 @@ import axiosClient from './api/axios.service'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { FlightType } from '@/enums/flight.enums'
 import { UserGender } from '@/enums/user.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IArticle from '@/interfaces/article/article.interface'
 
 interface QueryOption {
@@ -36,11 +36,11 @@ class ArticlesService {
     return response.data.data.doc
   }
   async getFeaturedArticles() {
-    const response = await axiosClient.get(`/articles/get-featured-articles`)
+    const response = await axiosClient.get(`/articles/get-featured`)
     return response.data.data
   }
   async getLatestArticles() {
-    const response = await axiosClient.get(`/articles/get-latest-articles`)
+    const response = await axiosClient.get(`/articles/get-latest`)
     return response.data.data
   }
 

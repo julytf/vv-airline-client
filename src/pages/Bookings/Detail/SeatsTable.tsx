@@ -1,6 +1,6 @@
 import { FlightType } from '@/enums/flight.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
-import { SeatClass } from '@/enums/seat.enums'
+import { TicketClass } from '@/enums/ticket.enums'
 import IPassenger from '@/interfaces/booking/passenger.interface'
 import IReservation from '@/interfaces/booking/reservation.interface'
 import IFlight from '@/interfaces/flight/flight.interface'
@@ -11,7 +11,7 @@ interface SeatsTableProps {
   flightsInfo: {
     [FlightType.OUTBOUND]: {
       flight: IFlight
-      seatClass: SeatClass
+      ticketClass: TicketClass
       price: number
       reservations: {
         [FlightLegType.DEPARTURE]: {
@@ -26,7 +26,7 @@ interface SeatsTableProps {
     }
     [FlightType.INBOUND]?: {
       flight: IFlight
-      seatClass: SeatClass
+      ticketClass: TicketClass
       price: number
       reservations: {
         [FlightLegType.DEPARTURE]: {

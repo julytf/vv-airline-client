@@ -7,11 +7,18 @@ interface FooterProps {}
 const Footer: FunctionComponent<FooterProps> = () => {
   return (
     <footer className='mt-auto grid min-h-40 w-full grid-cols-12 gap-4 bg-sky-100 p-8'>
-      <div className='col-span-4'>
+      <div className='col-span-3'>
         <div className='bold text-2xl'>VV Airline</div>
         <div>Hãng hàng không VV Airline</div>
       </div>
-      <div className='col-span-4'>
+      <div className='col-span-3'>
+        <div className='pb-4 text-gray-400'>Chính Sách</div>
+        <Link to={route('/policy/ticket-class-policy', {})}>
+          <div>Chính Sách Giá Vé </div>
+        </Link>
+      </div>
+      <div className='col-span-3'>
+        {/* TODO: */}
         <div className='pb-4 text-gray-400'>Điểm đến nổi bật</div>
         <Link
           to={route('/articles/:id', {
@@ -41,7 +48,7 @@ const Footer: FunctionComponent<FooterProps> = () => {
           <div>Phú Quốc</div>
         </Link>
       </div>
-      <div className='col-span-4'>
+      <div className='col-span-3'>
         <div className='pb-4 text-gray-400'>Liên hệ</div>
         <div>Hotline: 0939099999</div>
         <div>Email: support@vvairline.com</div>
