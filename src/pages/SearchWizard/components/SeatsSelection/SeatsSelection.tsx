@@ -101,27 +101,27 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
 
   const isOutboundDepartureFlightSeatsValid =
     countNonEmpty(seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][PassengerType.ADULT]) ===
-      data.searchData.passengers[PassengerType.ADULT] &&
+      data.searchData.passengersQuantity[PassengerType.ADULT] &&
     countNonEmpty(seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][PassengerType.CHILD]) ===
-      data.searchData.passengers[PassengerType.CHILD]
+      data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const isOutboundTranSitFlightSeatsValid =
     countNonEmpty(seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][PassengerType.ADULT]) ===
-      data.searchData.passengers[PassengerType.ADULT] &&
+      data.searchData.passengersQuantity[PassengerType.ADULT] &&
     countNonEmpty(seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][PassengerType.CHILD]) ===
-      data.searchData.passengers[PassengerType.CHILD]
+      data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const isInboundDepartureFlightSeatsValid =
     countNonEmpty(seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][PassengerType.ADULT]) ===
-      data.searchData.passengers[PassengerType.ADULT] &&
+      data.searchData.passengersQuantity[PassengerType.ADULT] &&
     countNonEmpty(seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][PassengerType.CHILD]) ===
-      data.searchData.passengers[PassengerType.CHILD]
+      data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const isInboundTranSitFlightSeatsValid =
     countNonEmpty(seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.ADULT]) ===
-      data.searchData.passengers[PassengerType.ADULT] &&
+      data.searchData.passengersQuantity[PassengerType.ADULT] &&
     countNonEmpty(seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.CHILD]) ===
-      data.searchData.passengers[PassengerType.CHILD]
+      data.searchData.passengersQuantity[PassengerType.CHILD]
 
   const isOutboundFlightSeatsValid =
     isOutboundDepartureFlightSeatsValid &&

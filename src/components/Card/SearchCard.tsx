@@ -102,7 +102,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
       'passengersQuantity.ADULT': formData.passengersQuantity[PassengerType.ADULT].toString(),
       'passengersQuantity.CHILD': formData.passengersQuantity[PassengerType.CHILD].toString(),
     }
-    // console.log(query)
+    console.log(query)
 
     navigate(
       route('/wizard', {
@@ -173,7 +173,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
         <PassengerQuantityInput
           defaultValue={defaultValues.passengersQuantity}
           onChange={(v) => {
-            setFormData((prev) => ({ ...prev, passengers: v }) as Partial<SearchData>)
+            setFormData((prev) => ({ ...prev, passengersQuantity: v }) as Partial<SearchData>)
           }}
         />
         {/* <NavLink to={'/wizard/flights-selection'}> */}
