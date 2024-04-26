@@ -1,5 +1,6 @@
 import { FlightType } from '@/enums/flight.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
+import { PaymentStatus } from '@/enums/payment.enums'
 import { TicketClass } from '@/enums/ticket.enums'
 import IPassenger from '@/interfaces/booking/passenger.interface'
 import IReservation from '@/interfaces/booking/reservation.interface'
@@ -14,48 +15,56 @@ interface SeatsTableProps {
       ticketClass: TicketClass
       price: number
       reservations: {
+        paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
+        }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
-      }
+        }
+      }[]
     }
     [FlightType.INBOUND]?: {
       flight: IFlight
       ticketClass: TicketClass
       price: number
       reservations: {
+        paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
+        }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
-      }
+        }
+      }[]
     }
   }
 }
 
 const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInfo }) => {
-  const outboundDepartureSeats = flightsInfo[FlightType.OUTBOUND].reservations[FlightLegType.DEPARTURE]
-  const outboundTransitSeats = !flightsInfo[FlightType.OUTBOUND].flight.hasTransit
-    ? null
-    : flightsInfo[FlightType.OUTBOUND].reservations[FlightLegType.TRANSIT]
-  const inboundDepartureSeats = flightsInfo?.[FlightType.INBOUND]?.reservations[FlightLegType.DEPARTURE]
-  const inboundTransitSeats = !flightsInfo?.[FlightType.INBOUND]?.flight.hasTransit
-    ? null
-    : flightsInfo?.[FlightType.INBOUND]?.reservations[FlightLegType.TRANSIT]
+  console.log('flightsInfo', flightsInfo)
 
-  console.log('outboundDepartureSeats', outboundDepartureSeats)
-  console.log('outboundTransitSeats', outboundTransitSeats)
-  console.log('inboundDepartureSeats', inboundDepartureSeats)
-  console.log('inboundTransitSeats', inboundTransitSeats)
+  const outboundSeats = flightsInfo[FlightType.OUTBOUND].reservations
+  const inboundSeats = flightsInfo?.[FlightType.INBOUND]?.reservations
+
+  // console.log('outboundDepartureSeats', outboundDepartureSeats)
+  // console.log('outboundTransitSeats', outboundTransitSeats)
+  // console.log('inboundDepartureSeats', inboundDepartureSeats)
+  // console.log('inboundTransitSeats', inboundTransitSeats)
+
+  console.log(
+    'Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE]) &&',
+    Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE]),
+  )
+  console.log('                  inboundSeats', inboundSeats)
 
   return (
     <div className=''>
@@ -77,7 +86,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                 }
               </th>
 
-              {Boolean(outboundTransitSeats?.length) && (
+              {Boolean(flightsInfo[FlightType.OUTBOUND].flight.flightLegs[FlightLegType.TRANSIT]) && (
                 <th className='whitespace-nowrap px-4 py-2 font-medium text-gray-900'>
                   {
                     flightsInfo[FlightType.OUTBOUND].flight.flightLegs[FlightLegType.TRANSIT].flightRoute
@@ -90,7 +99,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   }
                 </th>
               )}
-              {Boolean(inboundDepartureSeats?.length) && (
+              {Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE]) && (
                 <th className='whitespace-nowrap px-4 py-2 font-medium text-gray-900'>
                   {
                     flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE].flightRoute
@@ -103,7 +112,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   }
                 </th>
               )}
-              {Boolean(inboundTransitSeats?.length) && (
+              {Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.TRANSIT]) && (
                 <th className='whitespace-nowrap px-4 py-2 font-medium text-gray-900'>
                   {
                     flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.TRANSIT].flightRoute
@@ -126,23 +135,42 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   {passenger.lastName} {passenger.firstName}
                 </td>
                 <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
-                  {outboundDepartureSeats[index]?.reservation.seat.code} ({outboundDepartureSeats[index]?.surcharge.toLocaleString()}vnđ)
+                  {outboundSeats[index][FlightLegType.DEPARTURE]?.reservation.seat.code} (
+                  {outboundSeats[index][FlightLegType.DEPARTURE]?.surcharge.toLocaleString()}vnđ)
+                  <span className='text-red-500'>
+                    {outboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
+                  </span>
                 </td>
-                {outboundTransitSeats && (
-                  <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
-                    {outboundTransitSeats[index]?.reservation.seat.code} ({outboundTransitSeats[index]?.surcharge.toLocaleString()}vnđ)
-                  </td>
-                )}
-                {inboundDepartureSeats && (
-                  <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
-                    {inboundDepartureSeats[index]?.reservation.seat.code} ({inboundDepartureSeats[index]?.surcharge.toLocaleString()}vnđ)
-                  </td>
-                )}
-                {inboundTransitSeats && (
-                  <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
-                    {inboundTransitSeats[index]?.reservation.seat.code} ({inboundTransitSeats[index]?.surcharge.toLocaleString()}vnđ)
-                  </td>
-                )}
+                {Boolean(flightsInfo[FlightType.OUTBOUND].flight.flightLegs[FlightLegType.TRANSIT]) &&
+                  outboundSeats && (
+                    <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
+                      {outboundSeats[index][FlightLegType.TRANSIT]?.reservation.seat.code} (
+                      {outboundSeats[index][FlightLegType.TRANSIT]?.surcharge.toLocaleString()}vnđ)
+                      <span className='text-red-500'>
+                        {outboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
+                      </span>
+                    </td>
+                  )}
+                {Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.DEPARTURE]) &&
+                  inboundSeats && (
+                    <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
+                      {inboundSeats[index][FlightLegType.DEPARTURE]?.reservation.seat.code} (
+                      {inboundSeats[index][FlightLegType.DEPARTURE]?.surcharge.toLocaleString()}vnđ)
+                      <span className='text-red-500'>
+                        {inboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
+                      </span>
+                    </td>
+                  )}
+                {Boolean(flightsInfo?.[FlightType.INBOUND]?.flight.flightLegs[FlightLegType.TRANSIT]) &&
+                  inboundSeats && (
+                    <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
+                      {inboundSeats[index][FlightLegType.TRANSIT]?.reservation.seat.code} (
+                      {inboundSeats[index][FlightLegType.TRANSIT]?.surcharge.toLocaleString()}vnđ)
+                      <span className='text-red-500'>
+                        {inboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
+                      </span>
+                    </td>
+                  )}
               </tr>
             ))}
           </tbody>

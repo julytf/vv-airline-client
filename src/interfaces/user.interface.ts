@@ -12,7 +12,7 @@ export interface IUser {
   phoneNumber?: string
   dateOfBirth?: string
   gender?: UserGender
-  idNumber?: string
+  // idNumber?: string
   address?: IAddress
   isDeleted: boolean
   deletedAt?: Date

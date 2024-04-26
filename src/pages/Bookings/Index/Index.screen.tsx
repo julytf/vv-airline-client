@@ -18,7 +18,7 @@ const Index: FunctionComponent<IndexProps> = (props) => {
 
   const { data, isLoading } = useQuery({
     queryKey: ['bookings', { page }],
-    queryFn: () => bookingsService.getBookingsPaginate({ page, perPage: 12 }),
+    queryFn: () => bookingsService.getMyBookingsPaginate({ page, perPage: 12 }),
   })
 
   const { docs: bookings = [], lastPage } = (data as { docs: IBooking[]; lastPage: number }) || {}

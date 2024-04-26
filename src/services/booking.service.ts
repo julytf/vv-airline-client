@@ -14,7 +14,7 @@ interface SearchData {
 
   isRoundTrip: boolean
 
-  passengers: {
+  passengersQuantity: {
     [PassengerType.ADULT]: number
     [PassengerType.CHILD]: number
     // infant: number

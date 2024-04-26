@@ -1,4 +1,5 @@
 export interface IWard {
+  _id?: string
   code: string
   name: string
   nameEn: string

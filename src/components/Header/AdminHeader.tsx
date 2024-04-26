@@ -6,15 +6,28 @@ import { adminRoutes } from '@/routers/admin.router'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppDispatch, AppState } from '@/services/state/store'
 import * as auth from '@/services/state/auth/authSlice'
+import { UserRole } from '@/enums/user.enums'
 
 interface AdminHeaderProps {}
 
 const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
+  const { user } = useSelector((state: AppState) => state.auth)
+
   const location = useLocation()
   const routes = [...userRoutes, ...adminRoutes]
 
   const matchedRoutes = matchRoutes(routes, location.pathname) || []
   // console.log(matchedRoutes)
+
+  const roleNames = {
+    [UserRole.GUEST]: 'Khách hàng',
+    [UserRole.USER]: 'Người dùng',
+    [UserRole.SUPER_ADMIN]: 'Siêu quản trị viên',
+    [UserRole.ADMIN]: 'Quản trị viên',
+    [UserRole.STAFF]: 'Nhân viên',
+    [UserRole.STAFF_CHECK_IN]: 'Nhân viên check-in',
+    [UserRole.STAFF_SELL_AGENT]: 'Nhân viên bán vé',
+  }
 
   return (
     <nav className='left-0 top-0 z-30 flex w-full items-center border-b bg-transparent bg-white p-4 md:flex-row md:flex-nowrap md:justify-start'>
@@ -52,7 +65,11 @@ const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
             />
           </div>
         </form> */}
-        <div className='flex items-center'>
+        <div className='flex items-center gap-2'>
+          <span>{roleNames[user?.role || UserRole.STAFF]}</span> -
+          <span>
+            {user?.lastName} {user?.firstName}
+          </span>
           <AccountButton />
         </div>
       </div>

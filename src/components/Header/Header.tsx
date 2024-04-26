@@ -33,6 +33,9 @@ const Header: FunctionComponent<HeaderProps> = () => {
           <NavLink className='pr-4' to={'/articles'}>
             <Button text>Bài Viết</Button>
           </NavLink>
+          <NavLink className='pr-4' to={'/bookings/find'}>
+            <Button text>Tìm Chuyến Bay Đã Đặt</Button>
+          </NavLink>
           {!isInitialized && <Loading small />}
           {isInitialized && (isAuthenticated ? <LoggedInNavBarButton /> : <NotLoggedInNavBarButton />)}
         </div>

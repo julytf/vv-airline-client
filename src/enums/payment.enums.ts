@@ -1,6 +1,6 @@
 export enum PaymentMethod {
   CARD = 'CARD',
-  //   CASH= 'CASH',
+  CASH = 'CASH',
   PAYPAL = 'PAYPAL',
 }
 

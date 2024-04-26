@@ -64,6 +64,10 @@ class UsersService {
     const data = response.data.data
     return data
   }
+  async createUser(data: IUser) {
+    const response = await axiosClient.post('/users', data)
+    return response.data
+  }
 }
 
 export default new UsersService()

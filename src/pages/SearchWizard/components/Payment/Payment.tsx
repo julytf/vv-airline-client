@@ -48,7 +48,7 @@ const Payment: FunctionComponent<PaymentProps> = () => {
 
           isRoundTrip: data.searchData.isRoundTrip,
 
-          passengers: data.searchData.passengers,
+          passengersQuantity: data.searchData.passengersQuantity,
         },
         flightsData: {
           [FlightType.OUTBOUND]: {
@@ -61,8 +61,8 @@ const Payment: FunctionComponent<PaymentProps> = () => {
             ? null
             : {
                 flight: data.flightsData[FlightType.INBOUND]!.flight._id,
-                ticketClass: data.flightsData[FlightType.OUTBOUND]!.ticketClass,
-                ticketType: data.flightsData[FlightType.OUTBOUND]!.ticketType,
+                ticketClass: data.flightsData[FlightType.INBOUND]!.ticketClass,
+                ticketType: data.flightsData[FlightType.INBOUND]!.ticketType,
                 // khong gui price, server tu tinh price
               },
         },

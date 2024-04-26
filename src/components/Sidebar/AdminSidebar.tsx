@@ -81,11 +81,19 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/bookings')}
             />
           </Group>
-          <Group name='Quản Lý Articles'>
+          <Group name='Quản Lý Bài Viết'>
             <Button
               icon={<i className='fa-solid fa-chart-simple'></i>}
               title='Bài Viết'
               path={route('/admin/articles')}
+            />
+          </Group>
+          <Group name='Đặt vé'>
+            <Button icon={<i className='fa-solid fa-chart-simple'></i>} title='Đặt vé' path={route('/admin/booking')} />
+            <Button
+              icon={<i className='fa-solid fa-chart-simple'></i>}
+              title='Đặt bởi tôi'
+              path={route('/admin/booking/booking-by-me')}
             />
           </Group>
         </div>

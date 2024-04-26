@@ -23,7 +23,7 @@ export type SearchWizardStep = {
   index: number
   title: string
   icon: string
-  path: string
+  // path: string
   element: FunctionComponent
 }
 
@@ -32,28 +32,28 @@ export const searchWizardSteps: SearchWizardStep[] = [
     index: 0,
     title: 'Chọn chuyến bay',
     icon: 'fa-plane',
-    path: '/wizard/flights-selection',
+    // path: '/wizard/flights-selection',
     element: FlightsSelection,
   },
   {
     index: 1,
     title: 'Thông tin hành khách',
     icon: 'fa-user',
-    path: '/wizard/passengers-information',
+    // path: '/wizard/passengers-information',
     element: PassengersInformation,
   },
   {
     index: 2,
     title: 'Chọn ghế',
     icon: 'fa-seat-airline',
-    path: '/wizard/seats-selection',
+    // path: '/wizard/seats-selection',
     element: SeatsSelection,
   },
   {
     index: 3,
     title: 'Thanh toán',
     icon: 'fa-credit-card',
-    path: '/wizard/payment',
+    // path: '/wizard/payment',
     element: Payment,
   },
 ]
@@ -80,7 +80,7 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
 
       passengersQuantity: {
-        [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 0,
+        [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 1,
         [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
       },
     },

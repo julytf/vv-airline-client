@@ -1,5 +1,6 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
+import Button from '@/components/ui/Button'
 import { UserGender } from '@/enums/user.enums'
 import usersService from '@/services/users.service'
 import { route } from '@/utils/helpers'
@@ -16,6 +17,11 @@ const UsersIndex: FunctionComponent<UsersIndexProps> = () => {
   return (
     <div className='m-3 flex flex-wrap'>
       <div className='w-full max-w-full flex-none px-3'>
+        <div className='flex justify-end py-3'>
+          <NavLink to={route('/admin/users/create')}>
+            <Button>Thêm Tài Khoản</Button>
+          </NavLink>
+        </div>
         <SmartTable
           title='Người Dùng'
           subTitle='Danh Sách Người Dùng'

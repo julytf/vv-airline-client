@@ -30,8 +30,31 @@ class BookingsService {
     const data = response.data.data
     return data
   }
+  async getMyBookingsPaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
+    // const accessToken = this.accessToken
+
+    const response = await axiosClient.get('/bookings/get-my-all-paginate', {
+      params: {
+        page,
+        perPage,
+        q,
+      },
+      headers: {},
+    })
+    const data = response.data.data
+    return data
+  }
   async getBooking(id: string) {
     const response = await axiosClient.get(`/bookings/${id}`)
+    return response.data.data.doc
+  }
+  async getByPnr(pnr: string, email: string) {
+    const response = await axiosClient.get(`/bookings/get-by-pnr`, {
+      params: {
+        pnr,
+        email,
+      },
+    })
     return response.data.data.doc
   }
 }

@@ -102,7 +102,10 @@ const Flight: FunctionComponent<FlightProps> = ({ flightInfo }) => {
         </div>
         {/* TODO: */}
         <div className='relative col-span-5 flex flex-col items-center justify-center gap-4'>
-          <span className='bold text-2xl text-yellow-400'>
+          <span className={classNames('bold text-2xl ',{
+            'text-yellow-400': flightInfo.ticketClass === TicketClass.BUSINESS,
+            'text-sky-400': flightInfo.ticketClass === TicketClass.ECONOMY
+          })}>
             <span>
               {flightInfo.ticketClass === TicketClass.ECONOMY && 'PHỔ THÔNG'}
               {flightInfo.ticketClass === TicketClass.BUSINESS && 'THƯƠNG GIA'}

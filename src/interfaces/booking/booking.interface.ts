@@ -10,6 +10,7 @@ import { PassengerType } from '@/enums/passenger.enums'
 
 export interface IBooking {
   _id?: string
+  pnr: string
   passengersQuantity: {
     [PassengerType.ADULT]: number
     [PassengerType.CHILD]: number
@@ -17,6 +18,7 @@ export interface IBooking {
   isRoundtrip: boolean
   totalPrice: number
   user?: IUser
+  staff?: IUser
   contactInfo: {
     email: string
     phoneNumber: string
@@ -29,15 +31,18 @@ export interface IBooking {
       ticketType: TicketType
       price: number
       reservations: {
+        paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
+        }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
-      }
+        }
+      }[]
     }
     [FlightType.INBOUND]?: {
       flight: IFlight
@@ -45,15 +50,18 @@ export interface IBooking {
       ticketType: TicketType
       price: number
       reservations: {
+        paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
+        }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
+          services: string[]
           surcharge: number
-        }[]
-      }
+        }
+      }[]
     }
   }
   payment: {

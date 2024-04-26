@@ -56,7 +56,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
   // du lieu seat chi nam trong step seats Selection, card ko xem dc @ _ @
 
   return (
-    <div className={classNames('w-full', className)}>
+    <div className={classNames('w-96 bg-white', className)}>
       <div className=' overflow-hidden rounded-md shadow-md'>
         <div className='bg-primary p-6 px-8'>
           <span className='text-xl'>Chi Tiết Đặt Vé</span>

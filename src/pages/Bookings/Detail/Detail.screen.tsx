@@ -6,15 +6,20 @@ import bookingsService from '@/services/bookings.service'
 import classNames from 'classnames'
 import { differenceInHours, differenceInMinutes, format } from 'date-fns'
 import { FunctionComponent, useEffect, useState } from 'react'
-import { useParams } from 'react-router'
+import { useLocation, useNavigate, useParams } from 'react-router'
 import Flight from './Flight'
 import ErrorText from '@/components/ui/ErrorText'
 import PassengersInformation from './PassengersInformation'
 import SeatsTable from './SeatsTable'
+import { NavLink } from 'react-router-dom'
 
 interface DetailProps {}
 
 const Detail: FunctionComponent<DetailProps> = () => {
+  const navigate = useNavigate()
+
+  const { pnr, email } = useLocation().state ?? {}
+
   const { id } = useParams<{ id: string }>()
 
   const [isLoading, setIsLoading] = useState<boolean>(true)
@@ -28,22 +33,47 @@ const Detail: FunctionComponent<DetailProps> = () => {
     (booking?.flightsInfo[FlightType.OUTBOUND].price || 0) + (booking?.flightsInfo[FlightType.INBOUND]?.price || 0)
 
   const totalSurcharge = [
-    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations[FlightLegType.DEPARTURE].map((obj) => obj.surcharge) ||
-      []),
-    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations[FlightLegType.TRANSIT].map((obj) => obj.surcharge) ||
-      []),
-    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations[FlightLegType.DEPARTURE].map((obj) => obj.surcharge) ||
-      []),
-    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations[FlightLegType.TRANSIT].map((obj) => obj.surcharge) ||
-      []),
+    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
+      (obj) => obj[FlightLegType.DEPARTURE]?.surcharge || 0,
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
+      (obj) => obj[FlightLegType.TRANSIT]?.surcharge || 0,
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
+      (obj) => obj[FlightLegType.DEPARTURE]?.surcharge || 0,
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
+      (obj) => obj[FlightLegType.TRANSIT]?.surcharge || 0,
+    ) || []),
   ].reduce((acc, cur) => acc + cur, 0)
 
   useEffect(() => {
     setIsLoading(true)
-    bookingsService.getBooking(id!).then((data) => {
-      setBooking(data)
-      setIsLoading(false)
-    })
+
+    if (pnr && email) {
+      bookingsService
+        .getByPnr(pnr, email)
+        .then((data) => {
+          setBooking(data)
+          setIsLoading(false)
+        })
+        .catch(() => {
+          // TODO:
+          navigate('/404')
+        })
+      return
+    }
+
+    bookingsService
+      .getBooking(id!)
+      .then((data) => {
+        setBooking(data)
+        setIsLoading(false)
+      })
+      .catch(() => {
+        // TODO:
+        navigate('/404')
+      })
   }, [])
 
   if (isLoading) {
@@ -56,6 +86,22 @@ const Detail: FunctionComponent<DetailProps> = () => {
   return (
     <div className='mx-auto my-8 w-full max-w-6xl'>
       <div className='text-center text-3xl font-bold'>Thông tin Chuyến bay đã đặt</div>
+      <div className='mx-auto max-w-4xl'>
+        <div className=''>
+          <div className='flex justify-between p-4 text-xl '>
+            <span className='bold'>Thông tin Liên hệ</span>
+            <span>
+              Mã đặt chỗ:
+              <span className='bold ml-2'>{booking.pnr}</span>
+            </span>
+          </div>
+          {/* <div>
+            Họ Tên: {booking.passengers[0].lastName} {booking.passengers[0].firstName}
+          </div> */}
+          <div>Số điện thoại: {booking.contactInfo.phoneNumber}</div>
+          <div>email: {booking.contactInfo.email}</div>
+        </div>
+      </div>
       <div className='my-8 flex  flex-col items-center justify-center gap-8'>
         <Flight
           flightInfo={{
@@ -77,16 +123,6 @@ const Detail: FunctionComponent<DetailProps> = () => {
         )}
       </div>
       <div className='mx-auto max-w-4xl'>
-        <div className=''>
-          <div className='p-4 text-xl font-bold'>Thông tin Liên hệ</div>
-          {/* <div>
-            Họ Tên: {booking.passengers[0].lastName} {booking.passengers[0].firstName}
-          </div> */}
-          <div>Số điện thoại: {booking.contactInfo.phoneNumber}</div>
-          <div>email: {booking.contactInfo.email}</div>
-        </div>
-      </div>
-      <div className='mx-auto max-w-4xl'>
         <PassengersInformation passengers={booking.passengers} />
       </div>
       <div className='mx-auto max-w-4xl'>
@@ -105,6 +141,21 @@ const Detail: FunctionComponent<DetailProps> = () => {
             Tổng: <span className='bold text-2xl'>{booking.totalPrice.toLocaleString()}</span> vnđ
           </div>
         </div>
+      </div>
+      <div className='mx-auto mb-4 mt-16 flex max-w-4xl justify-end'>
+        <button
+          onClick={() => {
+            navigate(`/bookings/${id}/refund`, {
+              state: {
+                pnr: booking.pnr,
+                email: booking.contactInfo.email,
+              },
+            })
+          }}
+          className='rounded-md border-2 p-4 active:scale-95'
+        >
+          Hoàn Vé
+        </button>
       </div>
     </div>
   )

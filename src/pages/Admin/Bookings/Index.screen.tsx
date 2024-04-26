@@ -3,6 +3,7 @@ import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
 import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
+import { PaymentStatus } from '@/enums/payment.enums'
 import { TicketClass } from '@/enums/ticket.enums'
 import IBooking from '@/interfaces/booking/booking.interface'
 import IUser from '@/interfaces/user.interface'
@@ -72,10 +73,10 @@ const BookingModelsIndex: FunctionComponent<BookingModelsIndexProps> = () => {
               },
             },
             {
-              field: 'paymentStatus',
+              field: 'payment',
               displayName: 'Trạng Thái thanh toán',
               renderFnc: (value) => {
-                return <>{value}</>
+                return <>{(value as { status: PaymentStatus }).status}</>
               },
             },
             {

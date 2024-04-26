@@ -1,6 +1,5 @@
 import { FlightType } from '../enums/flight.enums'
 import IFlight from '@/interfaces/flight/flight.interface'
-import { TicketClass } from '../enums/seat.enums'
 import {
   FC,
   Fragment,
@@ -28,10 +27,10 @@ type ToastParams = {
 }
 
 export type ContextValue = {
-  success: (params: ToastParams) => void
-  error: (params: ToastParams) => void
-  warning: (params: ToastParams) => void
-  info: (params: ToastParams) => void
+  success: (params: ToastParams | string) => void
+  error: (params: ToastParams | string) => void
+  warning: (params: ToastParams | string) => void
+  info: (params: ToastParams | string) => void
 }
 
 const ToastNotifyContext = createContext<ContextValue | undefined>(undefined)
@@ -43,25 +42,53 @@ export const ToastNotifyProvider: FC<PropsWithChildren> = ({ children }) => {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const [toast, setToast] = useState<ContextValue>({
-    success: (params: ToastParams) => {
+    success: (params: ToastParams | string) => {
+      if (typeof params === 'string') {
+        createToast({
+          type: 'success',
+          message: params,
+        })
+        return
+      }
       createToast({
         type: 'success',
         ...params,
       })
     },
-    error: (params: ToastParams) => {
+    error: (params: ToastParams | string) => {
+      if (typeof params === 'string') {
+        createToast({
+          type: 'error',
+          message: params,
+        })
+        return
+      }
       createToast({
         type: 'error',
         ...params,
       })
     },
-    warning: (params: ToastParams) => {
+    warning: (params: ToastParams | string) => {
+      if (typeof params === 'string') {
+        createToast({
+          type: 'warning',
+          message: params,
+        })
+        return
+      }
       createToast({
         type: 'warning',
         ...params,
       })
     },
-    info: (params: ToastParams) => {
+    info: (params: ToastParams | string) => {
+      if (typeof params === 'string') {
+        createToast({
+          type: 'info',
+          message: params,
+        })
+        return
+      }
       createToast({
         type: 'info',
         ...params,

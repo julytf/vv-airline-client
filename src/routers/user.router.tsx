@@ -47,6 +47,8 @@ const SearchWizardScreen = lazy(() => import('@/pages/SearchWizard/SearchWizard.
 
 const BookingsIndexScreen = lazy(() => import('@/pages/Bookings/Index/Index.screen'))
 const BookingsDetailScreen = lazy(() => import('@/pages/Bookings/Detail/Detail.screen'))
+const BookingsFindScreen = lazy(() => import('@/pages/Bookings/Find/Find.screen'))
+const BookingsRefundScreen = lazy(() => import('@/pages/Bookings/Refund/Refund.screen'))
 
 const TicketClassPolicyScreen = lazy(() => import('@/pages/Policy/TicketClassPolicy.screen'))
 
@@ -135,6 +137,16 @@ export const userRoutes = [
             path: '',
             breadcrumbName: 'Danh sách',
             element: <BookingsIndexScreen />,
+          },
+          {
+            path: ':id/refund',
+            breadcrumbName: 'Hoàn vé',
+            element: <BookingsRefundScreen />,
+          },
+          {
+            path: 'find',
+            breadcrumbName: 'Chi tiết',
+            element: <BookingsFindScreen />,
           },
           {
             path: ':id',

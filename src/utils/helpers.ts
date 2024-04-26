@@ -21,7 +21,7 @@ export const route = (path: string, { params, query }: RouteOptions = {}) => {
   }
 
   Object.entries(params || {}).forEach(([key, value]) => {
-    path = path.replace(`:${key}`, value.toString())
+    path = path.replace(`:${key}`, value?.toString() || '')
   })
 
   if (query) {

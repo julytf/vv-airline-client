@@ -51,7 +51,10 @@ const Loading = lazy(() => import('@/components/ui/Loading'))
 const AdminLayout = lazy(() => import('@/layouts/Admin.layout'))
 const AdminDashboardScreen = lazy(() => import('@/pages/Admin/Dashboard.screen'))
 const AdminLoginScreen = lazy(() => import('@/pages/Admin/Auth/Login.screen'))
+
 const AdminUsersIndexScreen = lazy(() => import('@/pages/Admin/Users/Index.screen'))
+const AdminUpdateUsersScreen = lazy(() => import('@/pages/Admin/Users/Update.screen'))
+const AdminCreateUsersScreen = lazy(() => import('@/pages/Admin/Users/Create.screen'))
 
 const AdminAirportsIndexScreen = lazy(() => import('@/pages/Admin/Airports/Index.screen'))
 const AdminCreateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Create.screen'))
@@ -66,11 +69,11 @@ const AdminCreateFlightLegScreen = lazy(() => import('@/pages/Admin/FlightLegs/C
 // const AdminUpdateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Update.screen'))
 
 const AdminFlightsIndexScreen = lazy(() => import('@/pages/Admin/Flights/Index.screen'))
-const AdminCreateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Create.screen'))
+const AdminCreateFlightScreen = lazy(() => import('@/pages/Admin/Flights/Create.screen'))
 // const AdminUpdateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Update.screen'))
 
 const AdminAircraftsIndexScreen = lazy(() => import('@/pages/Admin/Aircrafts/Index.screen'))
-const AdminCreateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Create.screen'))
+const AdminCreateAircraftscreen = lazy(() => import('@/pages/Admin/Aircrafts/Create.screen'))
 // const AdminUpdateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Update.screen'))
 
 const AdminAircraftModelsIndexScreen = lazy(() => import('@/pages/Admin/AircraftModels/Index.screen'))
@@ -80,6 +83,7 @@ const AdminAircraftModelsIndexScreen = lazy(() => import('@/pages/Admin/Aircraft
 const AdminBookingsIndexScreen = lazy(() => import('@/pages/Admin/Bookings/Index.screen'))
 // const AdminCreateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Create.screen'))
 // const AdminUpdateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Update.screen'))
+const AdminDetailBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Detail.screen'))
 
 const AdminArticlesIndexScreen = lazy(() => import('@/pages/Admin/Articles/Index.screen'))
 const AdminCreateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Create.screen'))
@@ -87,6 +91,8 @@ const AdminUpdateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Updat
 
 const AdminAccountIndexScreen = lazy(() => import('@/pages/Admin/Account/Index.screen'))
 const AdminChangePasswordScreen = lazy(() => import('@/pages/Admin/Account/ChangePassword.screen'))
+
+const AdminSearchWizardScreen = lazy(() => import('@/pages/Admin/SearchWizard/SearchWizard.screen'))
 
 const RoleGuard = lazy(() => import('@/middlewares/roleGuard.middleware'))
 
@@ -153,7 +159,7 @@ export const adminRoutes = [
       },
       {
         path: 'articles',
-        breadcrumbName: 'Article',
+        breadcrumbName: 'Bài viết',
         children: [
           {
             path: '',
@@ -162,12 +168,12 @@ export const adminRoutes = [
           },
           {
             path: ':id',
-            breadcrumbName: 'Cập nhật Article',
+            breadcrumbName: 'Cập nhật Bài viết',
             element: <AdminUpdateArticleScreen />,
           },
           {
             path: 'create',
-            breadcrumbName: 'Thêm Article',
+            breadcrumbName: 'Thêm Bài viết',
             element: <AdminCreateArticleScreen />,
           },
         ],
@@ -183,8 +189,13 @@ export const adminRoutes = [
           },
           {
             path: ':id',
-            breadcrumbName: 'Chi tiết',
-            element: <NotImplemented />,
+            breadcrumbName: 'Cap nhật Người dùng',
+            element: <AdminUpdateUsersScreen />,
+          },
+          {
+            path: 'create',
+            breadcrumbName: 'Thêm Người dùng',
+            element: <AdminCreateUsersScreen />,
           },
         ],
       },
@@ -200,7 +211,7 @@ export const adminRoutes = [
           {
             path: ':id',
             breadcrumbName: 'Chi tiết',
-            element: <NotImplemented />,
+            element: <AdminDetailBookingscreen />,
           },
         ],
       },
@@ -340,6 +351,23 @@ export const adminRoutes = [
             breadcrumbName: 'Thêm Chuyến bay',
             element: <AdminCreateFlightScreen />,
             // element: <NotImplemented />,
+          },
+        ],
+      },
+      {
+        path: 'booking',
+        breadcrumbName: 'Đặt vé',
+        children: [
+          {
+            path: '',
+            breadcrumbName: 'Đặt vé',
+            element: <AdminSearchWizardScreen />,
+          },
+          {
+            path: 'booking-by-me',
+            breadcrumbName: 'Đặt bởi tôi',
+            // element: <AdminCreateFlightScreen />,
+            element: <NotImplemented />,
           },
         ],
       },

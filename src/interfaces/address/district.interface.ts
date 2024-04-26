@@ -1,4 +1,5 @@
 export interface IDistrict {
+  _id?: string
   code: string
   name: string
   nameEn: string

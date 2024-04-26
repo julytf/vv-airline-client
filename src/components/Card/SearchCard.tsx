@@ -119,7 +119,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
     )
 
   return (
-    <div className={classNames('inline-block rounded-xl border-2 border-primary p-6', props.className)}>
+    <div className={classNames('inline-block rounded-xl border-2 border-primary p-6 bg-white', props.className)}>
       <div className='flex gap-4'>
         <SelectInput
           name='departureAirport'

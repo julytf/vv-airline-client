@@ -340,6 +340,7 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                 aircraftModel={aircraftModel!}
                 selectingSeats={selectingSeats}
                 occupiedSeats={occupiedSeats}
+                ticketClass={data.flightsData[flightType]!.ticketClass}
                 onSelectSeat={selectSeat}
               />
             </div>
