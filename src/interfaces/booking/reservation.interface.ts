@@ -3,8 +3,10 @@ import IFlightLeg from '../flight/flightLeg.interface'
 import IPassenger from './passenger.interface'
 import ISeat from '../aircraft/seat.interface'
 import IService from './service.interface'
+import { PaymentStatus } from '@/enums/payment.enums'
 
 export interface IReservation {
+  _id?: string
   price: number
   // status?: string
   // booking: string
@@ -12,6 +14,7 @@ export interface IReservation {
   passenger: IPassenger
   seat: ISeat
   services: IService[]
+  paymentStatus?: PaymentStatus
 }
 
 export default IReservation

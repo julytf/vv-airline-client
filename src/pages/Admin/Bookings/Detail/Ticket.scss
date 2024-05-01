@@ -1,0 +1,10 @@
+@media print {
+  .not-scale-on-print {
+    transform: scale(1) !important;
+  }
+}
+
+.ticket svg {
+  width: 100%;
+  height: 100%;
+}

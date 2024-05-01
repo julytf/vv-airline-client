@@ -92,19 +92,21 @@ const BookingModelsIndex: FunctionComponent<BookingModelsIndexProps> = () => {
                 )
               },
             },
-            // {
-            //   field: '',
-            //   displayName: 'Sửa đổi',
-            //   renderFnc: (value, data?: TableData) => {
-            //     return (
-            //       <div className='flex gap-x-4'>
-            //         <NavLink to={route('/admin/booking/:id', { params: { id: String(data?._id) } })}>
-            //           <i className='fa-regular fa-pen-to-square'></i>
-            //         </NavLink>
-            //       </div>
-            //     )
-            //   },
-            // },
+            {
+              field: '',
+              displayName: 'Chi Tiết',
+              renderFnc: (value, data?: TableData) => {
+                return (
+                  <div className='flex gap-x-4'>
+                    <NavLink to={route('/admin/bookings/:id', { params: { id: String(data?._id) } })}>
+                      <span className='p-2'>
+                        <i className='fa-regular fa-circle-info'></i>
+                      </span>
+                    </NavLink>
+                  </div>
+                )
+              },
+            },
           ]}
         />
       </div>

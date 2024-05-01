@@ -12,7 +12,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
             <th className='border p-2'>Hạng vé</th>
             <th className='border p-2'>Hành lý</th>
             <th className='border p-2'>Hoàn vé</th>
-            <th className='border p-2'>Đổi vé</th>
+            {/* <th className='border p-2'>Đổi vé</th> */}
             <th className='border p-2'>Chọn trước chỗ ngồi</th>
           </tr>
         </thead>
@@ -24,7 +24,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
               <p> Hành lý ký gửi: Cho phép mang theo 01 kiện không quá 32kg.</p>
             </td>
             <td className='border p-2'>Thu phí 360.000 VNĐ</td>
-            <td className='border p-2'>Miễn phí</td>
+            {/* <td className='border p-2'>Miễn phí</td> */}
             <td className='border p-2'>Miễn phí</td>
           </tr>
           <tr>
@@ -34,7 +34,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
               <p> Hành lý ký gửi: Cho phép mang theo 01 kiện không quá 32kg.</p>
             </td>
             <td className='border p-2'>Thu phí 500.000 VNĐ</td>
-            <td className='border p-2'>Thu phí 360.000 VNĐ/1 lần đổi</td>
+            {/* <td className='border p-2'>Thu phí 360.000 VNĐ/1 lần đổi</td> */}
             <td className='border p-2'>Miễn phí</td>
           </tr>
           <tr>
@@ -44,7 +44,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
               <p>Hành lý ký gửi: Không quá 23kg.</p>
             </td>
             <td className='border p-2'>Thu phí 500.000 VNĐ</td>
-            <td className='border p-2'>Miễn phí</td>
+            {/* <td className='border p-2'>Miễn phí</td> */}
             <td className='border p-2'>Thu phí</td>
           </tr>
           <tr>
@@ -54,7 +54,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
               <p>Hành lý ký gửi: Không quá 23kg.</p>
             </td>
             <td className='border p-2'>Không áp dụng</td>
-            <td className='border p-2'>Thu phí 500.000 VNĐ/1 lần đổi</td>
+            {/* <td className='border p-2'>Thu phí 500.000 VNĐ/1 lần đổi</td> */}
             <td className='border p-2'>Thu phí</td>
           </tr>
           <tr>
@@ -64,7 +64,7 @@ const TicketClassPolicy: FunctionComponent<TicketClassPolicyProps> = () => {
               {/* <p> Hành lý ký gửi: Cho phép mang theo 01 kiện không quá 32kg.</p> */}
             </td>
             <td className='border p-2'>Không áp dụng</td>
-            <td className='border p-2'>Không áp dụng</td>
+            {/* <td className='border p-2'>Không áp dụng</td> */}
             <td className='border p-2'>Thu phí</td>
           </tr>
         </tbody>

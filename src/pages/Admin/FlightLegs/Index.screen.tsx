@@ -36,13 +36,13 @@ const FlightLegsIndex: FunctionComponent<FlightLegsIndexProps> = () => {
             //     return <>{(value as IFlightRoute)?.departureAirport?.IATA}</>
             //   },
             // },
-            // {
-            //   field: 'flightRoute',
-            //   displayName: 'Điểm đến',
-            //   renderFnc: (value) => {
-            //     return <>{(value as IFlightRoute)?.arrivalAirport?.IATA}</>
-            //   },
-            // },
+            {
+              field: 'flightNumber',
+              displayName: 'Số hiệu chuyến bay',
+              renderFnc: (value) => {
+                return <>{value}</>
+              },
+            },
             {
               field: 'flightRoute',
               displayName: 'Tuyến bay',

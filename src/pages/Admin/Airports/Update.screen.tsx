@@ -70,28 +70,27 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   // console.log(formSchema.validate(watchAllFields))
 
   useEffect(() => {
-    addressService
-      .getCountries()
-      .then((data) => {
+    Promise.all([
+      addressService.getCountries().then((data) => {
         setCountries(data)
-      })
-      .then(() => {
-        airportsService.getAirport(id!).then((data) => {
-          setAirport(data)
-          reset({
-            IATA: data.IATA,
-            city: data.city,
-            country: data.country?._id || data.country,
-            type: data.type,
-            name: data.name,
-            description: data.description,
-            // longitude: data.longitude,
-            // latitude: data.latitude,
-            // address: data.address,
-          })
-          setIsLoading(false)
+      }),
+      airportsService.getAirport(id!).then((data) => {
+        setAirport(data)
+        reset({
+          IATA: data.IATA,
+          city: data.city,
+          country: data.country?._id || data.country,
+          type: data.type,
+          name: data.name,
+          description: data.description,
+          // longitude: data.longitude,
+          // latitude: data.latitude,
+          // address: data.address,
         })
-      })
+      }),
+    ]).then(() => {
+      setIsLoading(false)
+    })
   }, [])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {

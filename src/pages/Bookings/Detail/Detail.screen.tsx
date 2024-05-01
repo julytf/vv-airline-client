@@ -143,19 +143,15 @@ const Detail: FunctionComponent<DetailProps> = () => {
         </div>
       </div>
       <div className='mx-auto mb-4 mt-16 flex max-w-4xl justify-end'>
-        <button
-          onClick={() => {
-            navigate(`/bookings/${id}/refund`, {
-              state: {
-                pnr: booking.pnr,
-                email: booking.contactInfo.email,
-              },
-            })
+        <NavLink
+          to={`/bookings/${id}/refund`}
+          state={{
+            pnr: booking.pnr,
+            email: booking.contactInfo.email,
           }}
-          className='rounded-md border-2 p-4 active:scale-95'
         >
-          Hoàn Vé
-        </button>
+          <button className='rounded-md border-2 p-4 active:scale-95'>Hoàn Vé</button>
+        </NavLink>
       </div>
     </div>
   )

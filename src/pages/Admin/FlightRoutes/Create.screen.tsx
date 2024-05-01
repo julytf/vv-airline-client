@@ -1,5 +1,5 @@
 import Button from '@/components/ui/Button'
-import { TicketClass } from '@/enums/ticket.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import { UserGender, UserRole } from '@/enums/user.enums'
 import IAddress from '@/interfaces/address/address.interface'
 import ICountry from '@/interfaces/address/country.interface'
@@ -17,8 +17,15 @@ import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form
 interface IFormData {
   distance?: number
   prices: {
-    [TicketClass.ECONOMY]: number
-    [TicketClass.BUSINESS]: number
+    [TicketClass.ECONOMY]: {
+      [TicketType.BUDGET]: number | null
+      [TicketType.STANDARD]: number | null
+      [TicketType.FLEXIBLE]: number | null
+    }
+    [TicketClass.BUSINESS]: {
+      [TicketType.STANDARD]: number | null
+      [TicketType.FLEXIBLE]: number | null
+    }
   }
   departureAirport: string
   arrivalAirport: string
@@ -27,8 +34,15 @@ interface IFormData {
 const formSchema = Joi.object({
   distance: Joi.number().required(),
   prices: {
-    [TicketClass.ECONOMY]: Joi.number().required(),
-    [TicketClass.BUSINESS]: Joi.number().required(),
+    [TicketClass.ECONOMY]: {
+      [TicketType.BUDGET]: Joi.number().required(),
+      [TicketType.STANDARD]: Joi.number().required(),
+      [TicketType.FLEXIBLE]: Joi.number().required(),
+    },
+    [TicketClass.BUSINESS]: {
+      [TicketType.STANDARD]: Joi.number().required(),
+      [TicketType.FLEXIBLE]: Joi.number().required(),
+    },
   },
   departureAirport: Joi.string().required(),
   arrivalAirport: Joi.string().required(),
@@ -147,26 +161,81 @@ const CreateFlightRoute: FunctionComponent<CreateFlightRouteProps> = () => {
                   />
                 </div>
                 <div className='col-span-3'>
-                  <label
-                    htmlFor={`prices.${TicketClass.ECONOMY}`}
-                    className='block text-sm font-medium leading-6 text-gray-900'
-                  >
-                    Giá vé hạng Phổ thông
-                  </label>
+                  <label className='block text-sm font-medium leading-6 text-gray-900'>Giá vé hạng Phổ thông</label>
                   <Controller
-                    name={`prices.${TicketClass.ECONOMY}`}
+                    name={`prices.${TicketClass.ECONOMY}.${TicketType.FLEXIBLE}`}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
-                        <div className='mt-2'>
+                        <div className='mt-2 flex justify-between'>
+                          <label
+                            htmlFor={`prices.${TicketClass.ECONOMY}.${TicketType.FLEXIBLE}`}
+                            className='block text-sm font-medium leading-6 text-gray-900'
+                          >
+                            Linh hoạt
+                          </label>
                           <input
-                            id={`prices.${TicketClass.ECONOMY}`}
+                            id={`prices.${TicketClass.ECONOMY}.${TicketType.FLEXIBLE}`}
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
                             type='number'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                            className='block rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                  <Controller
+                    name={`prices.${TicketClass.ECONOMY}.${TicketType.STANDARD}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2 flex justify-between'>
+                          <label
+                            htmlFor={`prices.${TicketClass.ECONOMY}.${TicketType.STANDARD}`}
+                            className='block text-sm font-medium leading-6 text-gray-900'
+                          >
+                            Tiêu chuẩn
+                          </label>
+                          <input
+                            id={`prices.${TicketClass.ECONOMY}.${TicketType.STANDARD}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='number'
+                            className='block rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                  <Controller
+                    name={`prices.${TicketClass.ECONOMY}.${TicketType.BUDGET}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2 flex justify-between'>
+                          <label
+                            htmlFor={`prices.${TicketClass.ECONOMY}.${TicketType.BUDGET}`}
+                            className='block text-sm font-medium leading-6 text-gray-900'
+                          >
+                            Tiết kiệm
+                          </label>
+                          <input
+                            id={`prices.${TicketClass.ECONOMY}.${TicketType.BUDGET}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='number'
+                            className='block rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -176,26 +245,54 @@ const CreateFlightRoute: FunctionComponent<CreateFlightRouteProps> = () => {
                   />
                 </div>
                 <div className='col-span-3'>
-                  <label
-                    htmlFor={`prices.${TicketClass.BUSINESS}`}
-                    className='block text-sm font-medium leading-6 text-gray-900'
-                  >
-                    Giá vé hạng Thương gia
-                  </label>
+                  <label className='block text-sm font-medium leading-6 text-gray-900'>Giá vé hạng Thương gia</label>
                   <Controller
-                    name={`prices.${TicketClass.BUSINESS}`}
+                    name={`prices.${TicketClass.BUSINESS}.${TicketType.FLEXIBLE}`}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
-                        <div className='mt-2'>
+                        <div className='mt-2 flex justify-between'>
+                          <label
+                            htmlFor={`prices.${TicketClass.BUSINESS}.${TicketType.FLEXIBLE}`}
+                            className='block text-sm font-medium leading-6 text-gray-900'
+                          >
+                            Linh hoạt
+                          </label>
                           <input
-                            id={`prices.${TicketClass.BUSINESS}`}
+                            id={`prices.${TicketClass.BUSINESS}.${TicketType.FLEXIBLE}`}
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
                             type='number'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                            className='block rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                  <Controller
+                    name={`prices.${TicketClass.BUSINESS}.${TicketType.STANDARD}`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2 flex justify-between'>
+                          <label
+                            htmlFor={`prices.${TicketClass.BUSINESS}.${TicketType.STANDARD}`}
+                            className='block text-sm font-medium leading-6 text-gray-900'
+                          >
+                            Tiêu chuẩn
+                          </label>
+                          <input
+                            id={`prices.${TicketClass.BUSINESS}.${TicketType.STANDARD}`}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='number'
+                            className='block rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 

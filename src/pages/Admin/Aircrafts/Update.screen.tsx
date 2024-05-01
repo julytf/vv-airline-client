@@ -1,13 +1,14 @@
-import Loading from '@/components/ui/Loading'
 import Button from '@/components/ui/Button'
-import { AirportType } from '@/enums/airport.enums'
-import { UserGender, UserRole } from '@/enums/user.enums'
+import Loading from '@/components/ui/Loading'
+import { useToast } from '@/contexts/ToastNotify.context'
+import { AircraftStatus } from '@/enums/aircraft.enums'
 import IAddress from '@/interfaces/address/address.interface'
 import ICountry from '@/interfaces/address/country.interface'
-import IAirport from '@/interfaces/flight/airport.interface'
+import IAircraft from '@/interfaces/aircraft/aircraft.interface'
+import IAircraftModel from '@/interfaces/aircraft/aircraftModel.interface'
 import addressService from '@/services/address.service'
-import airportsService from '@/services/airports.service'
-import updateUserSchema from '@/utils/validations/user/updateUser.schema'
+import aircraftModelsService from '@/services/aircraftModels.service'
+import aircraftsService from '@/services/aircrafts.service'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
@@ -15,92 +16,77 @@ import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form
 import { useParams } from 'react-router'
 
 interface IFormData {
-  IATA: string
-  //   countryCode: string
-  city: string
-  country: string
-  type: AirportType
-  name: string
-  description?: string
-  longitude?: number
-  latitude?: number
-  address?: IAddress
+  registrationNumber: string
+  name?: string
+  status?: AircraftStatus
+  aircraftModel?: string
 }
 
 const formSchema = Joi.object({
-  IATA: Joi.string().required(),
-  //   countryCode: Joi.string().required(),
-  city: Joi.string().required(),
-  country: Joi.string().required(),
-  type: Joi.string().required(),
+  registrationNumber: Joi.string().required(),
   name: Joi.string().required(),
-  description: Joi.string(),
-  //   longitude: Joi.number(),
-  //   latitude: Joi.number(),
-  //   address: Joi.object(),
+  status: Joi.string()
+    .required()
+    .valid(...Object.values(AircraftStatus)),
+  aircraftModel: Joi.string().required(),
 })
 
-interface UpdateAirportProps {}
+interface UpdateAircraftProps {}
 
-const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
-  const { id } = useParams()
+const UpdateAircraft: FunctionComponent<UpdateAircraftProps> = () => {
+  const { id } = useParams() as { id: string }
+  const toast = useToast()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  const [airport, setAirport] = useState<IAirport | null>(null)
-
-  const [countries, setCountries] = useState<ICountry[]>([])
+  const [aircraftModels, setAircraftModels] = useState<IAircraftModel[]>([])
 
   const {
-    register,
     handleSubmit,
-    reset,
     control,
     formState: { errors, isValid },
     watch,
+    reset,
   } = useForm<IFormData>({
     mode: 'onChange',
     resolver: joiResolver(formSchema),
   })
 
-  // const watchAllFields = watch()
+  const watchAllFields = watch()
 
   // console.log(isValid)
   // console.log(errors)
-  // console.log(formSchema.validate(watchAllFields))
+  console.log(formSchema.validate(watchAllFields))
 
   useEffect(() => {
-    addressService
-      .getCountries()
-      .then((data) => {
-        setCountries(data)
+    aircraftModelsService.getAllAircraftModel().then((data) => {
+      setAircraftModels(data)
+    })
+  }, [])
+
+  useEffect(() => {
+    aircraftsService.getAircraft(id).then((data) => {
+      reset({
+        registrationNumber: data.registrationNumber,
+        name: data.name,
+        status: data.status,
+        aircraftModel: data.aircraftModel,
       })
-      .then(() => {
-        airportsService.getAirport(id!).then((data) => {
-          setAirport(data)
-          reset({
-            IATA: data.IATA,
-            city: data.city,
-            country: data.country?._id || data.country,
-            type: data.type,
-            name: data.name,
-            description: data.description,
-            // longitude: data.longitude,
-            // latitude: data.latitude,
-            // address: data.address,
-          })
-          setIsLoading(false)
-        })
-      })
+      setIsLoading(false)
+    })
   }, [])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await airportsService.updateAirport({
-      _id: id!,
-      ...data,
-    } as IAirport)
+    await aircraftsService
+      .updateAircraft({
+        _id: id!,
+        ...data,
+      } as IAircraft)
+      .then((data) => {
+        toast.success('Cập nhật thành công')
+      })
     // reset()
   }
 
@@ -111,31 +97,31 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   return (
     <div className='flex justify-center p-8'>
       <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
-        <div className='pt-8 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Sân Bay</h2>
+        <div className='mx-auto w-full max-w-sm pt-6'>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Máy bay</h2>
         </div>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto'>
           <div className='space-y-12'>
             <div className='border-b border-gray-900/10 pb-12'>
-              <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
-                <div className='sm:col-span-3'>
-                  <label htmlFor='IATA' className='block text-sm font-medium leading-6 text-gray-900'>
-                    IATA
+              <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
+                <div className='col-span-3'>
+                  <label htmlFor='registrationNumber' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Số đăng ký
                   </label>
                   <Controller
-                    name={'IATA'}
+                    name={'registrationNumber'}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='IATA'
+                            id='registrationNumber'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -144,40 +130,14 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
-                  <label htmlFor='city' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Thành phố
-                  </label>
-                  <Controller
-                    name={'city'}
-                    control={control}
-                    render={({ field, fieldState: { error }, formState }) => (
-                      <>
-                        <div className='mt-2'>
-                          <input
-                            id='city'
-                            value={field.value || ''}
-                            onChange={(e) => {
-                              field.onChange(e.target.value)
-                            }}
-                            type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
-                          />
-                        </div>
-
-                        <small className='text-red-600'>{error?.message}</small>
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='sm:col-span-6'>
+                <div className='col-span-6'>
                   <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tên
                   </label>
                   <Controller
                     name={'name'}
                     control={control}
-                    render={({ field, fieldState: { error } }) => (
+                    render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
@@ -187,7 +147,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -197,30 +157,30 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                   />
                 </div>
 
-                <div className='sm:col-span-3'>
-                  <label htmlFor='country' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Quốc gia
+                <div className='col-span-3'>
+                  <label htmlFor='aircraftModel' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Mẫu Máy bay
                   </label>
                   <Controller
-                    name={'country'}
+                    name={'aircraftModel'}
                     control={control}
                     render={({ field, fieldState: { error } }) => (
                       <>
                         <div className='mt-2'>
                           <select
-                            id='country'
+                            id='aircraftModel'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
                             {/* <option value='test value'>test</option> */}
-                            {countries.map((country, index) => (
-                              <option key={index} value={country._id}>
-                                {country.name}
+                            {aircraftModels.map((model, index) => (
+                              <option key={index} value={model._id}>
+                                {model.name}
                               </option>
                             ))}
                           </select>
@@ -231,7 +191,41 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
+                <div className='col-span-3'>
+                  <label htmlFor='status' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Trạng thái
+                  </label>
+                  <Controller
+                    name={'status'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='status'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                            // onChange='provinceChangeHandler(this.value)'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {/* <option value='test value'>test</option> */}
+                            {Object.values(AircraftStatus).map((status, index) => (
+                              <option key={index} value={status}>
+                                {status}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                {/* <div className='col-span-3'>
                   <label htmlFor='type' className='block text-sm font-medium leading-6 text-gray-900'>
                     Loại Sân bay
                   </label>
@@ -247,11 +241,11 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
-                            {Object.values(AirportType).map((type) => (
+                            {Object.values(AircraftType).map((type) => (
                               <option key={type} value={type}>
                                 {type}
                               </option>
@@ -263,8 +257,8 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
-                <div className='sm:col-span-6'>
+                </div> */}
+                {/* <div className='col-span-6'>
                   <label htmlFor='description' className='block text-sm font-medium leading-6 text-gray-900'>
                     Thông tin
                   </label>
@@ -281,7 +275,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             //   type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -289,7 +283,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -302,4 +296,4 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   )
 }
 
-export default UpdateAirport
+export default UpdateAircraft

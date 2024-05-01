@@ -2,8 +2,8 @@ import { FlightType } from '@/enums/flight.enums'
 import axiosClient from './api/axios.service'
 
 interface RefundData {
-  pnr: string
-  email: string
+  pnr?: string
+  email?: string
   [FlightType.OUTBOUND]: boolean[]
   [FlightType.INBOUND]: boolean[]
 }

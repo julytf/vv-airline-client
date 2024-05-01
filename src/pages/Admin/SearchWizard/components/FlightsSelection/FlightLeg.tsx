@@ -33,6 +33,10 @@ const FlightLeg: FunctionComponent<FlightLegProps> = ({ flightLeg }) => {
           </div>
           <div className='mt-4 flex flex-col gap-y-2 text-sm'>
             <div>
+              <span className='bold'>Số hiệu chuyến bay: </span>
+              <span>{flightLeg.flightNumber}</span>
+            </div>
+            <div>
               <span className='bold'>Máy bay: </span>
               <span>{flightLeg.aircraft.name}</span>
             </div>

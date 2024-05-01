@@ -88,6 +88,21 @@ const CreateFlightLeg: FunctionComponent<CreateFlightLegProps> = () => {
             <div className='border-b border-gray-900/10 pb-12'>
               <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
                 <div className='col-span-3'>
+                  <label htmlFor={''} className='block text-sm font-medium leading-6 text-gray-900'>
+                    Số hiệu chuyến bay
+                  </label>
+                  <div className='mt-2'>
+                    <input
+                      disabled
+                      className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                      placeholder='Tự động tạo'
+                    />
+                  </div>
+
+                  {/* <small className='text-red-600'>{error?.message}</small> */}
+                </div>
+                <div className='col-span-3'></div>
+                <div className='col-span-3'>
                   <label htmlFor={'departureTime'} className='block text-sm font-medium leading-6 text-gray-900'>
                     Thời gian khởi hành
                   </label>

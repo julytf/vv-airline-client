@@ -1,7 +1,6 @@
 import SmartTable from '@/components/Table/SmartTable'
-import Table, { TableData } from '@/components/Table/Table'
+import { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { TicketClass } from '@/enums/ticket.enums'
 import IAircraftModel from '@/interfaces/aircraft/aircraftModel.interface'
 import aircraftsService from '@/services/aircrafts.service'
 import { route } from '@/utils/helpers'
@@ -60,7 +59,7 @@ const AircraftModelsIndex: FunctionComponent<AircraftModelsIndexProps> = () => {
               renderFnc: (value: unknown, data?: TableData) => {
                 return (
                   <div className='flex gap-x-4'>
-                    <NavLink to={route('/admin/aircraft-models/:id', { params: { id: String(data?._id) } })}>
+                    <NavLink to={route('/admin/aircrafts/:id', { params: { id: String(data?._id) } })}>
                       <i className='fa-regular fa-pen-to-square'></i>
                     </NavLink>
                   </div>

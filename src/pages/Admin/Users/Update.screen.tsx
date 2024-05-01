@@ -1,106 +1,137 @@
-import Loading from '@/components/ui/Loading'
 import Button from '@/components/ui/Button'
-import { AirportType } from '@/enums/airport.enums'
+import Loading from '@/components/ui/Loading'
+import { useToast } from '@/contexts/ToastNotify.context'
 import { UserGender, UserRole } from '@/enums/user.enums'
 import IAddress from '@/interfaces/address/address.interface'
 import ICountry from '@/interfaces/address/country.interface'
-import IAirport from '@/interfaces/flight/airport.interface'
+import IDistrict from '@/interfaces/address/district.interface'
+import IProvince from '@/interfaces/address/province.interface'
+import IWard from '@/interfaces/address/ward.interface'
+import IUser from '@/interfaces/user.interface'
 import addressService from '@/services/address.service'
-import airportsService from '@/services/airports.service'
-import updateUserSchema from '@/utils/validations/user/updateUser.schema'
+import usersService from '@/services/users.service'
 import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import { useParams } from 'react-router'
 
 interface IFormData {
-  IATA: string
-  //   countryCode: string
-  city: string
-  country: string
-  type: AirportType
-  name: string
-  description?: string
-  longitude?: number
-  latitude?: number
+  firstName: string
+  lastName: string
+  role: UserRole
+  password: string
+  email: string
+  phoneNumber?: string
+  dateOfBirth?: string
+  gender?: UserGender
   address?: IAddress
 }
 
 const formSchema = Joi.object({
-  IATA: Joi.string().required(),
-  //   countryCode: Joi.string().required(),
-  city: Joi.string().required(),
-  country: Joi.string().required(),
-  type: Joi.string().required(),
-  name: Joi.string().required(),
-  description: Joi.string(),
-  //   longitude: Joi.number(),
-  //   latitude: Joi.number(),
-  //   address: Joi.object(),
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  role: Joi.string().required(),
+  password: Joi.string().optional(),
+  email: Joi.string().required(),
+  phoneNumber: Joi.string().optional(),
+  dateOfBirth: Joi.string().optional(),
+  gender: Joi.string().optional(),
+  address: {
+    province: Joi.string().optional(),
+    district: Joi.string().optional(),
+    ward: Joi.string().optional(),
+    address: Joi.string().optional(),
+    address2: Joi.string().optional(),
+  },
 })
 
-interface UpdateAirportProps {}
+interface UpdateUsersProps {}
 
-const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
-  const { id } = useParams()
+const UpdateUsers: FunctionComponent<UpdateUsersProps> = () => {
+  const { id } = useParams() as { id: string }
+  const toast = useToast()
 
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
-  const [airport, setAirport] = useState<IAirport | null>(null)
+  const [provinces, setProvinces] = useState<IProvince[]>([])
+  const [districts, setDistricts] = useState<IDistrict[]>([])
+  const [wards, setWards] = useState<IWard[]>([])
 
-  const [countries, setCountries] = useState<ICountry[]>([])
+  const provinceInputRef = useRef<HTMLSelectElement>(null)
+  const districtInputRef = useRef<HTMLSelectElement>(null)
 
   const {
-    register,
     handleSubmit,
-    reset,
     control,
     formState: { errors, isValid },
     watch,
+    reset,
   } = useForm<IFormData>({
     mode: 'onChange',
     resolver: joiResolver(formSchema),
   })
 
-  // const watchAllFields = watch()
+  const formData = watch()
 
   // console.log(isValid)
-  // console.log(errors)
-  // console.log(formSchema.validate(watchAllFields))
+  console.log(errors)
+  console.log(formSchema.validate(formData))
+  // console.log(formSchema)
+  console.log('here')
 
   useEffect(() => {
-    addressService
-      .getCountries()
-      .then((data) => {
-        setCountries(data)
+    addressService.getProvinces().then((docs) => {
+      setProvinces(docs)
+    })
+  }, [])
+  useEffect(() => {
+    const provinceCode = provinces.find((province) => province._id === provinceInputRef.current?.value)?.code
+    addressService.getDistricts(provinceCode || '').then((docs) => {
+      setDistricts(docs)
+    })
+  }, [provinceInputRef.current?.value])
+  useEffect(() => {
+    const districtCode = districts.find((district) => district._id === districtInputRef.current?.value)?.code
+    addressService.getWards(districtCode || '').then((docs) => {
+      setWards(docs)
+    })
+  }, [districtInputRef.current?.value])
+
+  useEffect(() => {
+    usersService.getProfile(id).then((data) => {
+      reset({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        role: data.role,
+        password: data.password,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        dateOfBirth: data.dateOfBirth,
+        gender: data.gender,
+        address: {
+          province: data.address.province,
+          district: data.address.district,
+          ward: data.address.ward,
+          address: data.address.address,
+          address2: data.address.address2,
+        },
       })
-      .then(() => {
-        airportsService.getAirport(id!).then((data) => {
-          setAirport(data)
-          reset({
-            IATA: data.IATA,
-            city: data.city,
-            country: data.country?._id || data.country,
-            type: data.type,
-            name: data.name,
-            description: data.description,
-            // longitude: data.longitude,
-            // latitude: data.latitude,
-            // address: data.address,
-          })
-          setIsLoading(false)
-        })
-      })
+      setIsLoading(false)
+    })
   }, [])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await airportsService.updateAirport({
-      _id: id!,
-      ...data,
-    } as IAirport)
+    await usersService
+      .updateProfile({
+        _id: id!,
+        ...data,
+      } as IUser)
+      .then((data) => {
+        toast.success('Cập nhật thành công')
+      })
     // reset()
   }
 
@@ -111,31 +142,31 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   return (
     <div className='flex justify-center p-8'>
       <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
-        <div className='pt-8 sm:mx-auto sm:w-full sm:max-w-sm'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Sân Bay</h2>
+        <div className='mx-auto w-full max-w-sm pt-6'>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Cập nhật Người Dùng</h2>
         </div>
-        <div className='mx-auto max-w-2xl'>
+        <div className='mx-auto'>
           <div className='space-y-12'>
             <div className='border-b border-gray-900/10 pb-12'>
-              <div className='mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6'>
-                <div className='sm:col-span-3'>
-                  <label htmlFor='IATA' className='block text-sm font-medium leading-6 text-gray-900'>
-                    IATA
+              <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
+                <div className='col-span-3'>
+                  <label htmlFor='lastName' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Họ
                   </label>
                   <Controller
-                    name={'IATA'}
+                    name={'lastName'}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='IATA'
+                            id='lastName'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -144,50 +175,24 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
-                  <label htmlFor='city' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Thành phố
-                  </label>
-                  <Controller
-                    name={'city'}
-                    control={control}
-                    render={({ field, fieldState: { error }, formState }) => (
-                      <>
-                        <div className='mt-2'>
-                          <input
-                            id='city'
-                            value={field.value || ''}
-                            onChange={(e) => {
-                              field.onChange(e.target.value)
-                            }}
-                            type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
-                          />
-                        </div>
-
-                        <small className='text-red-600'>{error?.message}</small>
-                      </>
-                    )}
-                  />
-                </div>
-                <div className='sm:col-span-6'>
-                  <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
+                <div className='col-span-3'>
+                  <label htmlFor='firstName' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tên
                   </label>
                   <Controller
-                    name={'name'}
+                    name={'firstName'}
                     control={control}
-                    render={({ field, fieldState: { error } }) => (
+                    render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='name'
+                            id='firstName'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
                             type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -197,18 +202,70 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                   />
                 </div>
 
-                <div className='sm:col-span-3'>
-                  <label htmlFor='country' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Quốc gia
+                <div className='col-span-3'>
+                  <label htmlFor='email' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Email
                   </label>
                   <Controller
-                    name={'country'}
+                    name={'email'}
                     control={control}
-                    render={({ field, fieldState: { error } }) => (
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='email'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='text'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='phoneNumber' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Số điện thoại
+                  </label>
+                  <Controller
+                    name={'phoneNumber'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='phoneNumber'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='text'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='role' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Vai trò
+                  </label>
+                  <Controller
+                    name={'role'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <select
-                            id='country'
+                            id='role'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -217,10 +274,9 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
-                            {/* <option value='test value'>test</option> */}
-                            {countries.map((country, index) => (
-                              <option key={index} value={country._id}>
-                                {country.name}
+                            {Object.values(UserRole).map((role) => (
+                              <option key={role} value={role}>
+                                {role}
                               </option>
                             ))}
                           </select>
@@ -231,7 +287,261 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                     )}
                   />
                 </div>
-                <div className='sm:col-span-3'>
+                <div className='col-span-3'>
+                  <label htmlFor='password' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Mật khẩu
+                  </label>
+                  <Controller
+                    name={'password'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='password'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='text'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+
+                <div className='col-span-3'>
+                  <label htmlFor='gender' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Giới tính
+                  </label>
+                  <Controller
+                    name={'gender'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div>
+                          <div className='mt-3 inline-block gap-x-3'>
+                            <label className='ml-2 block inline-block text-sm font-medium leading-6 text-gray-900'>
+                              <input
+                                id='male'
+                                value={UserGender.MALE}
+                                checked={field.value === UserGender.MALE}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value)
+                                }}
+                                type='radio'
+                                className='inline-block h-4 w-4 border-gray-300 text-primary focus:ring-primary'
+                              />
+                              <span className='ml-2'>Nam</span>
+                            </label>
+                          </div>
+                          <div className='ml-3 inline-block gap-x-3'>
+                            <label className='ml-2 block inline-block text-sm font-medium leading-6 text-gray-900'>
+                              <input
+                                id='female'
+                                value={UserGender.FEMALE}
+                                checked={field.value === UserGender.FEMALE}
+                                onChange={(e) => {
+                                  field.onChange(e.target.value)
+                                }}
+                                type='radio'
+                                className='inline-block h-4 w-4 border-gray-300 text-primary focus:ring-primary'
+                              />
+                              <span className='ml-2'>Nữ</span>
+                            </label>
+                          </div>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-3'>
+                  <label htmlFor='dateOfBirth' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Ngày sinh
+                  </label>
+                  <Controller
+                    name={'dateOfBirth'}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='dateOfBirth'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='date'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='sm:col-span-2'>
+                  <label htmlFor='address.province' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Tỉnh/Thành phố
+                  </label>
+                  <Controller
+                    name={'address.province'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='address.province'
+                            ref={provinceInputRef}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            // onChange='provinceChangeHandler(this.value)'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {provinces.map((province) => (
+                              <option key={province._id} value={province._id}>
+                                {province.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+
+                <div className='sm:col-span-2'>
+                  <label htmlFor='address.district' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Quận/Huyện
+                  </label>
+                  <Controller
+                    name={'address.district'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='address.district'
+                            ref={districtInputRef}
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            // onChange='DistrictChangeHandler(this.value)'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {districts.map((district) => (
+                              <option key={district._id} value={district._id}>
+                                {district.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+
+                <div className='sm:col-span-2'>
+                  <label htmlFor='address.ward' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Xã/Phường
+                  </label>
+                  <Controller
+                    name={'address.ward'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <select
+                            id='address.ward'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                          >
+                            <option value=''>--Chọn--</option>
+                            {wards.map((ward) => (
+                              <option key={ward._id} value={ward._id}>
+                                {ward.name}
+                              </option>
+                            ))}
+                          </select>
+
+                          <small className='text-red-600'>{error?.message}</small>
+                        </div>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-full'>
+                  <label htmlFor='address.address' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Địa chỉ
+                  </label>
+                  <Controller
+                    name={'address.address'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='address.address'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='text'
+                            className='block w-full rounded-md border-0 p-3 py-1.5 text-gray-900 shadow-sm outline-primary ring-1 ring-inset ring-gray-300   placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                <div className='col-span-full'>
+                  <label htmlFor='address.address2' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Tòa nhà, tầng, số phòng
+                  </label>
+                  <Controller
+                    name={'address.address2'}
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <>
+                        <div className='mt-2'>
+                          <input
+                            id='address.address2'
+                            value={field.value || ''}
+                            onChange={(e) => {
+                              field.onChange(e.target.value)
+                            }}
+                            type='text'
+                            className='block w-full rounded-md border-0 p-3 py-1.5 text-gray-900 shadow-sm outline-primary ring-1 ring-inset ring-gray-300   placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                          />
+                        </div>
+
+                        <small className='text-red-600'>{error?.message}</small>
+                      </>
+                    )}
+                  />
+                </div>
+                {/* <div className='col-span-3'>
                   <label htmlFor='type' className='block text-sm font-medium leading-6 text-gray-900'>
                     Loại Sân bay
                   </label>
@@ -247,11 +557,11 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                             onChange={(e) => {
                               field.onChange(e.target.value)
                             }}
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                             // onChange='provinceChangeHandler(this.value)'
                           >
                             <option value=''>--Chọn--</option>
-                            {Object.values(AirportType).map((type) => (
+                            {Object.values(UsersType).map((type) => (
                               <option key={type} value={type}>
                                 {type}
                               </option>
@@ -263,8 +573,8 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
-                <div className='sm:col-span-6'>
+                </div> */}
+                {/* <div className='col-span-6'>
                   <label htmlFor='description' className='block text-sm font-medium leading-6 text-gray-900'>
                     Thông tin
                   </label>
@@ -281,7 +591,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                               field.onChange(e.target.value)
                             }}
                             //   type='text'
-                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
+                            className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
                           />
                         </div>
 
@@ -289,7 +599,7 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
                       </>
                     )}
                   />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
@@ -302,4 +612,4 @@ const UpdateAirport: FunctionComponent<UpdateAirportProps> = () => {
   )
 }
 
-export default UpdateAirport
+export default UpdateUsers

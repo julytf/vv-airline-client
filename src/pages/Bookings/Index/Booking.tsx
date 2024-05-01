@@ -15,18 +15,24 @@ const Booking: FunctionComponent<BookingProps> = ({ booking }) => {
   return (
     <div className='mx-auto grid grid-cols-12 rounded border-2 shadow-md hover:shadow-lg'>
       <div className='col-span-9 flex flex-col justify-between gap-y-4 border-r p-8'>
-        <div className=' flex justify-between'>
-          <div className='flex flex-col items-center justify-center'>
-            <span className='bold text-2xl'>{outboundFlight.flightRoute.departureAirport.IATA}</span>
-            <span className=''>{format(outboundFlight.departureTime, 'hh:mm dd/MM/yyyy')}</span>
+        <div className=''>
+          <div className=' flex justify-between'>
+            <div className='flex flex-col items-center justify-center'>
+              <span className='bold text-2xl'>{outboundFlight.flightRoute.departureAirport.IATA}</span>
+              <span className=''>{format(outboundFlight.departureTime, 'hh:mm dd/MM/yyyy')}</span>
+            </div>
+            <div className='flex flex-col items-center justify-center'>
+              <i className='fa-duotone fa-plane'></i>
+            </div>
+            <div className='flex flex-col items-center justify-center'>
+              <span className='bold text-2xl'>{outboundFlight.flightRoute.arrivalAirport.IATA}</span>
+              <span className=''>{format(outboundFlight.arrivalTime, 'hh:mm dd/MM/yyyy')}</span>
+            </div>
           </div>
-          <div className='flex flex-col items-center justify-center'>
-            <i className='fa-duotone fa-plane'></i>
-          </div>
-          <div className='flex flex-col items-center justify-center'>
-            <span className='bold text-2xl'>{outboundFlight.flightRoute.arrivalAirport.IATA}</span>
-            <span className=''>{format(outboundFlight.arrivalTime, 'hh:mm dd/MM/yyyy')}</span>
-          </div>
+          {/* <div>
+            <span className='bold'>Số hiệu chuyến bay: </span>
+            <span>{flightLeg.flightNumber}</span>
+          </div> */}
         </div>
         {inboundFlight && (
           <div className=' flex justify-between'>
@@ -45,6 +51,10 @@ const Booking: FunctionComponent<BookingProps> = ({ booking }) => {
         )}
       </div>
       <div className='col-span-3 p-8'>
+        <div className='mb-1'>
+          <span>PNR:</span>
+          <span className='font-bold'>{booking.pnr}</span>
+        </div>
         <div>{booking.passengersQuantity[PassengerType.ADULT]} Người lớn</div>
         <div>{booking.passengersQuantity[PassengerType.CHILD]} Trẻ em</div>
       </div>

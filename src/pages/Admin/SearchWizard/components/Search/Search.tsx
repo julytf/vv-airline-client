@@ -97,7 +97,7 @@ const Search: FunctionComponent<SearchProps> = () => {
       prev.searchData.departureDate = formData.departureDate!
       prev.searchData.returnDate = formData.returnDate!
 
-      prev.searchData.isRoundTrip = formData.isRoundTrip!
+      prev.searchData.isRoundTrip = Boolean(formData.returnDate)
 
       prev.searchData.passengersQuantity[PassengerType.ADULT] = 1
       prev.searchData.passengersQuantity[PassengerType.CHILD] = 0

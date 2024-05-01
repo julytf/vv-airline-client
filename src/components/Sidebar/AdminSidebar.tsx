@@ -8,7 +8,7 @@ interface AdminSidebarProps {}
 
 const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
   return (
-    <nav className='no-scrollbar fixed z-10 flex w-56 flex-wrap items-center justify-between bg-white px-6 py-4 shadow-xl md:bottom-0 md:left-0 md:top-0 md:block md:flex-row md:flex-nowrap md:overflow-hidden md:overflow-y-auto'>
+    <nav className='no-scrollbar fixed flex w-56 flex-wrap items-center justify-between bg-white px-6 py-4 shadow-xl md:bottom-0 md:left-0 md:top-0 md:block md:flex-row md:flex-nowrap md:overflow-hidden md:overflow-y-auto'>
       <div className='mx-auto flex w-full flex-wrap items-center justify-between px-0 md:min-h-full md:flex-col md:flex-nowrap md:items-stretch'>
         <NavLink to={route('/admin')}>
           <div className='flex'>
@@ -27,71 +27,52 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
           id='example-collapse-sidebar'
         >
           <Group name='Quản Lý Chung'>
-            <Button icon={<i className='fa-solid fa-house'></i>} title='Trang chủ' path={route('/admin/dashboard')} />
+            <Button icon={<i className='fa-solid fa-house' />} title='Trang chủ' path={route('/admin/dashboard')} />
             <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
+              icon={<i className='fa-solid fa-chart-simple' />}
               title='Thống kê tháng'
               path={route('/admin/monthly-statistics')}
             />
             <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
+              icon={<i className='fa-solid fa-chart-simple' />}
               title='Thống kê năm'
               path={route('/admin/yearly-statistics')}
             />
           </Group>
           <Group name='Quản Lý Máy Bay'>
+            <Button icon={<i className='fa-solid fa-plane' />} title='Máy Bay' path={route('/admin/aircrafts')} />
             <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Máy Bay'
-              path={route('/admin/aircrafts')}
-            />
-            <Button
-              icon={<i className='fa-solid fa-house'></i>}
+              icon={<i className='fa-solid fa-plane' />}
               title='Mẫu Máy Bay'
               path={route('/admin/aircraft-models')}
             />
+            <Button
+              icon={<i className='fa-solid fa-money-bill-trend-up' />}
+              title='Điều chỉnh phụ phí'
+              path={route('/admin/surcharge')}
+            />
           </Group>
           <Group name='Quản Lý Chuyến Bay'>
-            <Button icon={<i className='fa-solid fa-house'></i>} title='Sân Bay' path={route('/admin/airports')} />
-            <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Tuyến Bay'
-              path={route('/admin/flight-routes')}
-            />
-            <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Chặng Bay'
-              path={route('/admin/flight-legs')}
-            />
-            <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Chuyến Bay'
-              path={route('/admin/flights')}
-            />
+            <Button icon={<i className='fa-solid fa-house' />} title='Sân Bay' path={route('/admin/airports')} />
+            <Button icon={<i className='fa-solid fa-route' />} title='Tuyến Bay' path={route('/admin/flight-routes')} />
+            <Button icon={<i className='fa-solid fa-plane' />} title='Chặng Bay' path={route('/admin/flight-legs')} />
+            <Button icon={<i className='fa-solid fa-plane' />} title='Chuyến Bay' path={route('/admin/flights')} />
           </Group>
           <Group name='Quản Lý Người Dùng'>
+            <Button icon={<i className='fa-solid fa-user' />} title='Người dùng' path={route('/admin/users')} />
             <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Người dùng'
-              path={route('/admin/users')}
-            />
-            <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Đặt Vé'
+              icon={<i className='fa-solid fa-plane' />}
+              title='Chuyến bay đã đặt'
               path={route('/admin/bookings')}
             />
           </Group>
           <Group name='Quản Lý Bài Viết'>
-            <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
-              title='Bài Viết'
-              path={route('/admin/articles')}
-            />
+            <Button icon={<i className='fa-solid fa-newspaper' />} title='Bài Viết' path={route('/admin/articles')} />
           </Group>
           <Group name='Đặt vé'>
-            <Button icon={<i className='fa-solid fa-chart-simple'></i>} title='Đặt vé' path={route('/admin/booking')} />
+            <Button title='Đặt vé' icon={<i className='fa-solid fa-ticket' />} path={route('/admin/booking')} />
             <Button
-              icon={<i className='fa-solid fa-chart-simple'></i>}
+              icon={<i className='fa-solid fa-plane' />}
               title='Đặt bởi tôi'
               path={route('/admin/booking/booking-by-me')}
             />

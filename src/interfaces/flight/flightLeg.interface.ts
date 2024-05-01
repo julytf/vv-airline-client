@@ -5,6 +5,7 @@ import { TicketClass } from '@/enums/ticket.enums'
 
 export interface IFlightLeg {
   _id?: string
+  flightNumber: string
   departureTime: Date
   arrivalTime: Date
   remainingSeats: {
