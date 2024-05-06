@@ -1,6 +1,7 @@
 import { FlightType } from '@/enums/flight.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import { PaymentStatus } from '@/enums/payment.enums'
+import { SeatType } from '@/enums/seat.enums'
 import { TicketClass } from '@/enums/ticket.enums'
 import IPassenger from '@/interfaces/booking/passenger.interface'
 import IReservation from '@/interfaces/booking/reservation.interface'
@@ -18,13 +19,37 @@ interface SeatsTableProps {
         paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
       }[]
     }
@@ -36,13 +61,37 @@ interface SeatsTableProps {
         paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
       }[]
     }
@@ -136,7 +185,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                 </td>
                 <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
                   {outboundSeats[index][FlightLegType.DEPARTURE]?.reservation.seat.code} (
-                  {outboundSeats[index][FlightLegType.DEPARTURE]?.surcharge.toLocaleString()}vnđ)
+                  {outboundSeats[index][FlightLegType.DEPARTURE]?.services.seat.charge.toLocaleString()}vnđ)
                   <span className='text-red-500'>
                     {outboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
                   </span>
@@ -145,7 +194,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   outboundSeats && (
                     <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
                       {outboundSeats[index][FlightLegType.TRANSIT]?.reservation.seat.code} (
-                      {outboundSeats[index][FlightLegType.TRANSIT]?.surcharge.toLocaleString()}vnđ)
+                      {outboundSeats[index][FlightLegType.TRANSIT]?.services.seat.charge.toLocaleString()}vnđ)
                       <span className='text-red-500'>
                         {outboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
                       </span>
@@ -155,7 +204,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   inboundSeats && (
                     <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
                       {inboundSeats[index][FlightLegType.DEPARTURE]?.reservation.seat.code} (
-                      {inboundSeats[index][FlightLegType.DEPARTURE]?.surcharge.toLocaleString()}vnđ)
+                      {inboundSeats[index][FlightLegType.DEPARTURE]?.services.seat.charge.toLocaleString()}vnđ)
                       <span className='text-red-500'>
                         {inboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
                       </span>
@@ -165,7 +214,7 @@ const SeatsTable: FunctionComponent<SeatsTableProps> = ({ passengers, flightsInf
                   inboundSeats && (
                     <td className='whitespace-nowrap px-4 py-2 text-center text-gray-700'>
                       {inboundSeats[index][FlightLegType.TRANSIT]?.reservation.seat.code} (
-                      {inboundSeats[index][FlightLegType.TRANSIT]?.surcharge.toLocaleString()}vnđ)
+                      {inboundSeats[index][FlightLegType.TRANSIT]?.services.seat.charge.toLocaleString()}vnđ)
                       <span className='text-red-500'>
                         {inboundSeats[index].paymentStatus === PaymentStatus.REFUNDED && '(Đã hoàn)'}
                       </span>

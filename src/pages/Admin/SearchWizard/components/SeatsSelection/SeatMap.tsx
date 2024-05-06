@@ -15,10 +15,10 @@ interface SeatMapProps {
 
 const SeatMap: FunctionComponent<SeatMapProps> = ({
   aircraftModel,
-  onSelectSeat,
   selectingSeats,
-  ticketClass,
   occupiedSeats,
+  ticketClass,
+  onSelectSeat,
 }) => {
   const seatMap = aircraftModel.seatMap as IAircraftSeatMap
   return (
@@ -26,32 +26,15 @@ const SeatMap: FunctionComponent<SeatMapProps> = ({
       <div>
         <Shell side='left' />
         <Shell side='left' />
-        {seatMap.map((cabin, index) => {
-          if (cabin.class !== ticketClass) return null
-          return (
-            <Fragment key={index}>
-              <Shell side='left' />
-              {cabin.map.map((row, rowIndex) => (
-                <Shell key={rowIndex} side='left' exit={row.hasExit} />
-              ))}
-            </Fragment>
-          )
-        })}
-        {/* {new Array(5).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))}
-          <Shell side='left' exit />
-          {new Array(5).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))}
-          <Shell side='left' wing='top' />
-          {new Array(6).fill(0).map((_, index) => (
-            <Shell key={index} side='left' wing='middle' />
-          ))}
-          <Shell side='left' wing='bottom' />
-          {new Array(14).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))} */}
+        {seatMap.map((cabin, index) => (
+          <Fragment key={index}>
+            <Shell side='left' />
+            {cabin.map.map((row, rowIndex) => {
+              if (cabin.class !== ticketClass) return null
+              return <Shell key={rowIndex} side='left' exit={row.hasExit} />
+            })}
+          </Fragment>
+        ))}
       </div>
       <div>
         <div className='flex  flex-col px-2 text-center'>
@@ -74,17 +57,15 @@ const SeatMap: FunctionComponent<SeatMapProps> = ({
       <div>
         <Shell side='right' />
         <Shell side='right' />
-        {seatMap.map((cabin, index) => {
-          if (cabin.class !== ticketClass) return null
-          return (
-            <Fragment key={index}>
-              <Shell side='right' />
-              {cabin.map.map((row, rowIndex) => (
-                <Shell key={rowIndex} side='right' exit={row.hasExit} />
-              ))}
-            </Fragment>
-          )
-        })}
+        {seatMap.map((cabin, index) => (
+          <Fragment key={index}>
+            <Shell side='right' />
+            {cabin.map.map((row, rowIndex) => {
+              if (cabin.class !== ticketClass) return null
+              return <Shell key={rowIndex} side='right' exit={row.hasExit} />
+            })}
+          </Fragment>
+        ))}
       </div>
     </div>
   )

@@ -23,10 +23,10 @@ const WizardBottomNavBar: FunctionComponent<WizardBottomNavBarProps> = ({
   return (
     <div className='flex justify-end gap-x-8'>
       <Button onClick={() => onClickBackward?.()} text disabled={!isBackwardEnabled}>
-        Back
+        Lùi lại
       </Button>
       <Button onClick={() => onClickForward?.()} disabled={!isForwardEnabled}>
-        Next
+        Tiếp tục
       </Button>
     </div>
   )

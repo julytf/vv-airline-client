@@ -18,11 +18,11 @@ class UsersService {
   //   this.accessToken = accessToken
   // }
 
-  async getProfile(accessToken: string = '') {
+  async getProfile(id: string = '') {
     // accessToken = accessToken || this.accessToken
     const response = await axiosClient.get('/users/get-profile', {
       headers: {
-        Authorization: `Bearer ${accessToken}`,
+        // Authorization: `Bearer ${accessToken}`,
       },
     })
     // console.log(response)
@@ -66,6 +66,14 @@ class UsersService {
   }
   async createUser(data: IUser) {
     const response = await axiosClient.post('/users', data)
+    return response.data
+  }
+  async getUser(id: string) {
+    const response = await axiosClient.get(`/users/${id}`)
+    return response.data.data.doc
+  }
+  async updateUser(id: string, data: IUser) {
+    const response = await axiosClient.patch(`/users/${id}`, data)
     return response.data
   }
 }

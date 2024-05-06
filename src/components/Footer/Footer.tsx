@@ -1,10 +1,20 @@
+import IArticle from '@/interfaces/article/article.interface'
+import articlesService from '@/services/articles.service'
 import { route } from '@/utils/helpers'
-import { FunctionComponent } from 'react'
+import { FunctionComponent, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 interface FooterProps {}
 
 const Footer: FunctionComponent<FooterProps> = () => {
+  const [featuredArticles, setFeaturedArticles] = useState<IArticle[]>([])
+
+  useEffect(() => {
+    articlesService.getFeaturedArticles().then((data) => {
+      setFeaturedArticles(data)
+    })
+  }, [])
+
   return (
     <footer className='mt-auto grid min-h-40 w-full grid-cols-12 gap-4 bg-sky-100 p-8'>
       <div className='col-span-3'>
@@ -20,7 +30,19 @@ const Footer: FunctionComponent<FooterProps> = () => {
       <div className='col-span-3'>
         {/* TODO: */}
         <div className='pb-4 text-gray-400'>Điểm đến nổi bật</div>
-        <Link
+        {featuredArticles.map((article, index) => (
+          <Link
+            key={index}
+            to={route('/articles/:id', {
+              params: {
+                id: article._id || '',
+              },
+            })}
+          >
+            <div>{article.title}</div>
+          </Link>
+        ))}
+        {/* <Link
           to={route('/articles/:id', {
             params: {
               id: 'Tokyo',
@@ -46,7 +68,7 @@ const Footer: FunctionComponent<FooterProps> = () => {
           })}
         >
           <div>Phú Quốc</div>
-        </Link>
+        </Link> */}
       </div>
       <div className='col-span-3'>
         <div className='pb-4 text-gray-400'>Liên hệ</div>

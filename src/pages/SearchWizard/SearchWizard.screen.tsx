@@ -18,6 +18,8 @@ import { FlightType } from '@/enums/flight.enums'
 import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import surchargesService from '@/services/surcharges.service'
+import ServicesSelection from './components/ServicesSelection/ServicesSelection'
+import mealPlansService from '@/services/mealPlans.service'
 
 export type SearchWizardStep = {
   index: number
@@ -51,6 +53,13 @@ export const searchWizardSteps: SearchWizardStep[] = [
   },
   {
     index: 3,
+    title: 'Chọn dịch vụ',
+    icon: 'fa-suitcase-rolling',
+    // path: '/wizard/services-selection',
+    element: ServicesSelection,
+  },
+  {
+    index: 4,
     title: 'Thanh toán',
     icon: 'fa-credit-card',
     // path: '/wizard/payment',
@@ -122,10 +131,11 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       },
     },
     additionalData: {
-      surcharges: null,
+      surcharges: [],
+      mealPlans: [],
     },
   })
-  // console.log('data', data)
+  console.log('data', data)
 
   const CurrentForm = searchWizardSteps[data.currentStep].element
 
@@ -147,11 +157,17 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
     toStep,
   }
 
-  // Load Surcharges
+  // Load Surcharges and Meal Plans
   useEffect(() => {
     surchargesService.getSurcharges().then((surcharges) => {
       setData((prev) => {
         prev.additionalData.surcharges = surcharges
+        return { ...prev }
+      })
+    })
+    mealPlansService.getMealPlans().then((mealPlans) => {
+      setData((prev) => {
+        prev.additionalData.mealPlans = mealPlans
         return { ...prev }
       })
     })

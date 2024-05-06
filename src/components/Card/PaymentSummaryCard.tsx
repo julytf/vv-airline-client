@@ -6,9 +6,12 @@ import { TicketClass } from '@/enums/ticket.enums'
 import ISeat from '@/interfaces/aircraft/seat.interface'
 import IFlight from '@/interfaces/flight/flight.interface'
 import IFlightLeg from '@/interfaces/flight/flightLeg.interface'
+import IMealPlan from '@/interfaces/flight/mealPlan.interface'
+import mealPlansService from '@/services/mealPlans.service'
 import classNames from 'classnames'
 import { differenceInHours, differenceInMinutes, format } from 'date-fns'
-import { FunctionComponent, PropsWithChildren, ReactNode, useState } from 'react'
+import { FunctionComponent, PropsWithChildren, ReactNode, useEffect, useState } from 'react'
+import Loading from '../ui/Loading'
 
 interface PaymentSummaryCardProps {
   className?: string
@@ -17,6 +20,16 @@ interface PaymentSummaryCardProps {
 
 const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ className, seatsData }) => {
   const { data } = useSearchWizard()
+  const [mealPlans, setMealPlans] = useState<IMealPlan[]>([])
+
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    mealPlansService.getMealPlans().then((data) => {
+      setMealPlans(data)
+      setIsLoading(false)
+    })
+  }, [])
 
   const totalPassengers =
     data.searchData.passengersQuantity[PassengerType.ADULT] + data.searchData.passengersQuantity[PassengerType.CHILD]
@@ -40,20 +53,35 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
   ]
   console.log('reload payment summary card')
 
-  let totalSeatCharge = 0
+  let totalSeatsCharge = 0
 
   allSelectedSeats.forEach((seat) => {
-    console.log(seat)
+    // console.log(seat)
     if (!seat) return
     const seatCharge =
-      data.additionalData.surcharges?.find((surcharge) => surcharge.name === `SeatType.${seat.seatType}`)?.value || 0
+      data.additionalData.surcharges?.find((surcharge) => surcharge.name === `SeatType.${seat.seat.seatType}`)?.value ||
+      0
 
-    totalSeatCharge += seatCharge
+    totalSeatsCharge += seatCharge
   })
 
-  const totalPrice = (outboundPrice + (inboundPrice || 0)) * totalPassengers + totalSeatCharge
+  let totalServicesCharge = 0
 
+  allSelectedSeats.forEach((seat) => {
+    if (!seat) return
+    totalServicesCharge += (seat?.services?.baggage?.charge || 0) + (seat?.services?.meal?.charge || 0)
+  })
+
+  const totalPrice = (outboundPrice + (inboundPrice || 0)) * totalPassengers + totalSeatsCharge + totalServicesCharge
+
+  console.log('outboundPrice', outboundPrice)
+  console.log('inboundPrice', inboundPrice)
+  console.log('totalPassengers', totalPassengers)
+  console.log('totalSeatsCharge', totalSeatsCharge)
+  console.log('totalServicesCharge', totalServicesCharge)
   // du lieu seat chi nam trong step seats Selection, card ko xem dc @ _ @
+
+  if (isLoading) return <Loading />
 
   return (
     <div className={classNames('w-96 bg-white', className)}>
@@ -92,7 +120,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                       <span>Chỗ ngồi</span>
                     </div>
                     <div className='flex items-start'>
-                      <span>{totalSeatCharge.toLocaleString()}</span>
+                      <span>{totalSeatsCharge.toLocaleString()}</span>
                       <span className='text-xs'>VNĐ</span>
                     </div>
                   </div>
@@ -161,25 +189,61 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
               <div className='mx-4 border-t'></div>
             </>
           )}
-          {/* <Row
-            title={
-              <div className='flex w-full justify-between'>
-                <div>
-                  <span className='pr-4'>
-                    <i className='fa-duotone fa-briefcase'></i>
-                  </span>
-                  <span>Dịch vụ bổ trợ</span>
+          {seatsData && (
+            <Row
+              title={
+                <div className='flex w-full justify-between'>
+                  <div>
+                    <span className='pr-4'>
+                      <i className='fa-duotone fa-briefcase'></i>
+                    </span>
+                    <span>Dịch vụ bổ trợ</span>
+                  </div>
+                  <div className='flex items-start'>
+                    <span>{totalServicesCharge.toLocaleString()}</span>
+                    <span className='text-xs'>VNĐ</span>
+                  </div>
                 </div>
-                <div className='flex items-start'>
-                  <span>180.000</span>
-                  <span className='text-xs'>VNĐ</span>
-                </div>
+              }
+            >
+              <div className='flex flex-col gap-y-4 px-4 pt-4 text-sm'>
+                <ServiceDetail
+                  flight={outboundFlight}
+                  seatsData={seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE]}
+                  passengers={data.searchData.passengersQuantity}
+                  mealPlans={mealPlans}
+                />
+
+                {outboundFlight.hasTransit && (
+                  <ServiceDetail
+                    flight={outboundFlight}
+                    seatsData={seatsData[FlightType.INBOUND][FlightLegType.TRANSIT]}
+                    passengers={data.searchData.passengersQuantity}
+                    mealPlans={mealPlans}
+                  />
+                )}
+
+                {inboundFlight && (
+                  <ServiceDetail
+                    flight={inboundFlight}
+                    seatsData={seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE]}
+                    passengers={data.searchData.passengersQuantity}
+                    mealPlans={mealPlans}
+                  />
+                )}
+
+                {inboundFlight?.hasTransit && (
+                  <ServiceDetail
+                    flight={inboundFlight}
+                    seatsData={seatsData[FlightType.INBOUND][FlightLegType.TRANSIT]}
+                    passengers={data.searchData.passengersQuantity}
+                    mealPlans={mealPlans}
+                  />
+                )}
               </div>
-            }
-          >
-            <div className='flex flex-col gap-y-4 px-4 pt-4 text-sm'>Not Implemented!</div>
-          </Row>
-          <div className='mx-4 border-t'></div> */}
+            </Row>
+          )}
+          <div className='mx-4 border-t'></div>
         </div>
         <div className='flex justify-between p-8'>
           <span className='text-lg'>Tổng tiền:</span>
@@ -282,7 +346,6 @@ const FlightLeg: FunctionComponent<FlightLegProps> = ({ flightLeg }) => {
           <span>{flightLeg.flightRoute.arrivalAirport.IATA}</span>
         </div>
         <div className='flex items-start'>
-          {/* FIXME: Hardcoded price */}
           {/* <span>1.000.000</span>
           <span className='text-xs'>VNĐ</span> */}
         </div>
@@ -319,8 +382,32 @@ const FlightLeg: FunctionComponent<FlightLegProps> = ({ flightLeg }) => {
 interface FlightSeatDetailProps {
   flight: IFlight
   seatsData: {
-    [PassengerType.ADULT]: ISeat[]
-    [PassengerType.CHILD]: ISeat[]
+    [PassengerType.ADULT]: {
+      seat: ISeat
+      services: {
+        baggage: {
+          quantity: number
+          charge: number
+        }
+        meal: {
+          name: string
+          charge: number
+        }
+      }
+    }[]
+    [PassengerType.CHILD]: {
+      seat: ISeat
+      services: {
+        baggage: {
+          quantity: number
+          charge: number
+        }
+        meal: {
+          name: string
+          charge: number
+        }
+      }
+    }[]
   }
   passengers: {
     [PassengerType.ADULT]: number
@@ -352,15 +439,16 @@ const FlightSeatDetail: FunctionComponent<FlightSeatDetailProps> = ({ flight, se
           <div className='flex justify-between'>
             <div>
               <span className='bold mr-4'>A{index + 1}</span>
-              <span>{seatsData?.[PassengerType.ADULT]?.[index]?.code || '---'}</span>
+              <span>{seatsData?.[PassengerType.ADULT]?.[index]?.seat.code || '---'}</span>
             </div>
             <div className='flex items-start'>
               <span>
                 {surcharges
                   ?.find(
-                    (surcharge) => surcharge.name === `SeatType.${seatsData?.[PassengerType.ADULT]?.[index]?.seatType}`,
+                    (surcharge) =>
+                      surcharge.name === `SeatType.${seatsData?.[PassengerType.ADULT]?.[index]?.seat.seatType}`,
                   )
-                  ?.value.toLocaleString() || 0}
+                  ?.value?.toLocaleString() || 0}
               </span>
               <span className='text-xs'>VNĐ</span>
             </div>
@@ -370,17 +458,144 @@ const FlightSeatDetail: FunctionComponent<FlightSeatDetailProps> = ({ flight, se
           <div className='flex justify-between'>
             <div>
               <span className='bold mr-4'>C{index + 1}</span>
-              <span>{seatsData?.[PassengerType.CHILD]?.[index]?.code || '---'}</span>
+              <span>{seatsData?.[PassengerType.CHILD]?.[index]?.seat.code || '---'}</span>
             </div>
             <div className='flex items-start'>
               <span>
                 {surcharges
                   ?.find(
-                    (surcharge) => surcharge.name === `SeatType.${seatsData?.[PassengerType.CHILD]?.[index]?.seatType}`,
+                    (surcharge) =>
+                      surcharge.name === `SeatType.${seatsData?.[PassengerType.CHILD]?.[index]?.seat.seatType}`,
                   )
-                  ?.value.toLocaleString() || 0}
+                  ?.value?.toLocaleString() || 0}
               </span>
               <span className='text-xs'>VNĐ</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+interface ServiceDetailProps {
+  flight: IFlight
+  seatsData: {
+    [PassengerType.ADULT]: {
+      seat: ISeat
+      services: {
+        baggage: {
+          quantity: number
+          charge: number
+        }
+        meal: {
+          name: string
+          charge: number
+        }
+      }
+    }[]
+    [PassengerType.CHILD]: {
+      seat: ISeat
+      services: {
+        baggage: {
+          quantity: number
+          charge: number
+        }
+        meal: {
+          name: string
+          charge: number
+        }
+      }
+    }[]
+  }
+  passengers: {
+    [PassengerType.ADULT]: number
+    [PassengerType.CHILD]: number
+  }
+  mealPlans: IMealPlan[]
+}
+
+const ServiceDetail: FunctionComponent<ServiceDetailProps> = ({ flight, seatsData, passengers, mealPlans }) => {
+  const { data } = useSearchWizard()
+  const surcharges = data.additionalData.surcharges
+
+  return (
+    <div>
+      <div className='bold'>
+        <span>{flight.flightLegs[FlightLegType.DEPARTURE].flightRoute.departureAirport.IATA}</span>
+        <span className='px-4'>
+          <i className='fa-solid fa-arrow-right'></i>
+        </span>
+        <span>{flight.flightLegs[FlightLegType.DEPARTURE].flightRoute.arrivalAirport.IATA}</span>
+      </div>
+      <div className='pl-4 pt-2 text-sm'>
+        {/* <div className='flex justify-between'>
+        <div>
+          <span className='bold mr-4'>A1</span>
+          <span>---</span>
+        </div>
+      </div> */}
+        {new Array(passengers[PassengerType.ADULT]).fill(null).map((_, index) => (
+          <div key={index} className='flex justify-between'>
+            <div className='flex gap-2'>
+              <span className='bold mr-4'>A{index + 1}</span>
+              <span>
+                <div>
+                  <span>Thêm hành lý: </span>
+                  <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.baggage.quantity}</span>
+                </div>
+                <div>
+                  <span>Suất ăn: </span>
+                  <span>
+                    {
+                      mealPlans.find((m) => m.name === seatsData?.[PassengerType.ADULT]?.[index]?.services?.meal?.name)
+                        ?.title
+                    }
+                  </span>
+                </div>
+              </span>
+            </div>
+            <div className=''>
+              <div className='flex justify-end'>
+                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.baggage.charge.toLocaleString()}</span>
+                <span className='text-xs'>VNĐ</span>
+              </div>
+              <div className='flex justify-end'>
+                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.meal.charge.toLocaleString()}</span>
+                <span className='text-xs'>VNĐ</span>
+              </div>
+            </div>
+          </div>
+        ))}
+        {new Array(passengers[PassengerType.CHILD]).fill(null).map((_, index) => (
+          <div key={index} className='flex justify-between'>
+            <div className='flex gap-2'>
+              <span className='bold mr-4'>A{index + 1}</span>
+              <span>
+                <div>
+                  <span>Thêm hành lý: </span>
+                  <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.baggage.quantity}</span>
+                </div>
+                <div>
+                  <span>Suất ăn: </span>
+                  <span>
+                    {
+                      mealPlans.find((m) => m.name === seatsData?.[PassengerType.CHILD]?.[index]?.services?.meal?.name)
+                        ?.title
+                    }
+                  </span>
+                </div>
+              </span>
+            </div>
+            <div className=''>
+              <div className='flex justify-end'>
+                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.baggage.charge.toLocaleString()}</span>
+                <span className='text-xs'>VNĐ</span>
+              </div>
+              <div className='flex justify-end'>
+                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.meal.charge.toLocaleString()}</span>
+                <span className='text-xs'>VNĐ</span>
+              </div>
             </div>
           </div>
         ))}

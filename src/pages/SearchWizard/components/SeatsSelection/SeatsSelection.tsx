@@ -54,8 +54,8 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
   })
 
   const selectingSeats = [
-    ...seatsData[flightType][flightLegType][PassengerType.ADULT],
-    ...seatsData[flightType][flightLegType][PassengerType.CHILD],
+    ...seatsData[flightType][flightLegType][PassengerType.ADULT].map((seat) => seat.seat),
+    ...seatsData[flightType][flightLegType][PassengerType.CHILD].map((seat) => seat.seat),
   ]
 
   // const [isValid, setIsValid] = useState(true)
@@ -94,7 +94,10 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
     console.log('seat', seat)
 
     setSeatsData((prev) => {
-      prev[flightType][flightLegType][passengerType][passengerIndex] = seat
+      prev[flightType][flightLegType][passengerType][passengerIndex] = {
+        ...prev[flightType][flightLegType][passengerType][passengerIndex],
+        seat,
+      }
       return { ...prev }
     })
   }
@@ -297,7 +300,8 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                       </span>
                     </span>
                     <span className='text-primary'>
-                      ({seatsData[flightType][flightLegType][PassengerType.ADULT][index]?.code || 'chưa chọn ghế'})
+                      ({seatsData[flightType][flightLegType][PassengerType.ADULT][index]?.seat?.code || 'chưa chọn ghế'}
+                      )
                     </span>
                   </button>
                 ))}
@@ -319,7 +323,8 @@ const SeatsSelection: FunctionComponent<SeatsSelectionProps> = () => {
                       </span>
                     </span>
                     <span className='text-primary'>
-                      ({seatsData[flightType][flightLegType][PassengerType.CHILD][index]?.code || 'chưa chọn ghế'})
+                      ({seatsData[flightType][flightLegType][PassengerType.CHILD][index]?.seat?.code || 'chưa chọn ghế'}
+                      )
                     </span>
                   </button>
                 ))}

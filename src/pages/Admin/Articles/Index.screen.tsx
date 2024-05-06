@@ -1,5 +1,6 @@
 import SmartTable, { TableData } from '@/components/Table/SmartTable'
 import Button from '@/components/ui/Button'
+import Image from '@/components/ui/Image'
 import articlesService from '@/services/articles.service'
 import { route, truncate } from '@/utils/helpers'
 import { FunctionComponent, useState } from 'react'
@@ -41,7 +42,7 @@ const ArticlesIndex: FunctionComponent<ArticlesIndexProps> = () => {
               renderFnc: (value: unknown) => {
                 return (
                   <>
-                    <img className='max-h-32 max-w-32' src={`http://local.test:3000/${value}`} alt='Ảnh bìa' />
+                    <Image className='max-h-32 max-w-32' src={`http://local.test:3000/${value}`} alt='Ảnh bìa' />
                   </>
                 )
               },

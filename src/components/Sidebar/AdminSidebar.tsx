@@ -3,10 +3,15 @@ import { FunctionComponent, PropsWithChildren } from 'react'
 import Logo from '@/assets/images/logos/logo.png'
 import { NavLink } from 'react-router-dom'
 import { route } from '@/utils/helpers'
+import { UserRole } from '@/enums/user.enums'
+import { AppState } from '@/services/state/store'
+import { useSelector } from 'react-redux'
 
 interface AdminSidebarProps {}
 
 const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
+  const { user } = useSelector((state: AppState) => state.auth)
+
   return (
     <nav className='no-scrollbar fixed flex w-56 flex-wrap items-center justify-between bg-white px-6 py-4 shadow-xl md:bottom-0 md:left-0 md:top-0 md:block md:flex-row md:flex-nowrap md:overflow-hidden md:overflow-y-auto'>
       <div className='mx-auto flex w-full flex-wrap items-center justify-between px-0 md:min-h-full md:flex-col md:flex-nowrap md:items-stretch'>
@@ -26,7 +31,7 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
           className='absolute left-0 right-0 top-0 z-40 hidden h-auto flex-1 items-center overflow-y-auto overflow-x-hidden rounded shadow md:relative md:mt-4 md:flex md:flex-col md:items-stretch md:opacity-100 md:shadow-none'
           id='example-collapse-sidebar'
         >
-          <Group name='Quản Lý Chung'>
+          <Group name='Quản Lý Chung' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
             <Button icon={<i className='fa-solid fa-house' />} title='Trang chủ' path={route('/admin/dashboard')} />
             <Button
               icon={<i className='fa-solid fa-chart-simple' />}
@@ -39,7 +44,7 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/yearly-statistics')}
             />
           </Group>
-          <Group name='Quản Lý Máy Bay'>
+          <Group name='Quản Lý Máy Bay' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
             <Button icon={<i className='fa-solid fa-plane' />} title='Máy Bay' path={route('/admin/aircrafts')} />
             <Button
               icon={<i className='fa-solid fa-plane' />}
@@ -52,13 +57,17 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/surcharge')}
             />
           </Group>
-          <Group name='Quản Lý Chuyến Bay'>
+          <Group
+            name='Quản Lý Chuyến Bay'
+            userRole={user?.role}
+            roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}
+          >
             <Button icon={<i className='fa-solid fa-house' />} title='Sân Bay' path={route('/admin/airports')} />
             <Button icon={<i className='fa-solid fa-route' />} title='Tuyến Bay' path={route('/admin/flight-routes')} />
             <Button icon={<i className='fa-solid fa-plane' />} title='Chặng Bay' path={route('/admin/flight-legs')} />
             <Button icon={<i className='fa-solid fa-plane' />} title='Chuyến Bay' path={route('/admin/flights')} />
           </Group>
-          <Group name='Quản Lý Người Dùng'>
+          <Group name='Quản Lý Người Dùng' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF_CHECK_IN]}>
             <Button icon={<i className='fa-solid fa-user' />} title='Người dùng' path={route('/admin/users')} />
             <Button
               icon={<i className='fa-solid fa-plane' />}
@@ -66,10 +75,18 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/bookings')}
             />
           </Group>
-          <Group name='Quản Lý Bài Viết'>
+          <Group
+            name='Quản Lý Bài Viết'
+            userRole={user?.role}
+            roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF_CONTENT_WRITER]}
+          >
             <Button icon={<i className='fa-solid fa-newspaper' />} title='Bài Viết' path={route('/admin/articles')} />
           </Group>
-          <Group name='Đặt vé'>
+          <Group
+            name='Đặt vé'
+            userRole={user?.role}
+            roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF_SELL_AGENT]}
+          >
             <Button title='Đặt vé' icon={<i className='fa-solid fa-ticket' />} path={route('/admin/booking')} />
             <Button
               icon={<i className='fa-solid fa-plane' />}
@@ -84,9 +101,14 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
 }
 interface GroupProps extends PropsWithChildren {
   name?: string
+  userRole?: UserRole
+  roles?: UserRole[]
 }
 
-const Group: FunctionComponent<GroupProps> = ({ name, children }) => {
+const Group: FunctionComponent<GroupProps> = ({ name, userRole, roles, children }) => {
+  if (roles && userRole && !roles.includes(userRole)) {
+    return null
+  }
   return (
     <>
       {/* <!-- Divider --> */}

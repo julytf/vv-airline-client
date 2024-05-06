@@ -27,6 +27,7 @@ const AdminHeader: FunctionComponent<AdminHeaderProps> = () => {
     [UserRole.STAFF]: 'Nhân viên',
     [UserRole.STAFF_CHECK_IN]: 'Nhân viên check-in',
     [UserRole.STAFF_SELL_AGENT]: 'Nhân viên bán vé',
+    [UserRole.STAFF_CONTENT_WRITER]: 'Nhân viên viết nội dung',
   }
 
   return (

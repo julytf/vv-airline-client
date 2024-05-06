@@ -67,7 +67,7 @@ const CreateUsers: FunctionComponent<CreateUsersProps> = () => {
 
   // console.log(isValid)
   console.log(errors)
-  console.log(formSchema.validate(formData))
+  // console.log(formSchema.validate(formData))
   // console.log(formSchema)
   console.log('here')
 

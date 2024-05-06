@@ -24,6 +24,8 @@ const stripePromise = loadStripe(config.stripe.publicKey)
 interface PaymentProps {}
 
 const Payment: FunctionComponent<PaymentProps> = () => {
+  const baggagePrice = 500_000
+
   const { data } = useSearchWizard()
 
   const [isLoading, setIsLoading] = useState(true)
@@ -72,35 +74,147 @@ const Payment: FunctionComponent<PaymentProps> = () => {
             [FlightLegType.DEPARTURE]: {
               [PassengerType.ADULT]: data.seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][
                 PassengerType.ADULT
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
               [PassengerType.CHILD]: data.seatsData[FlightType.OUTBOUND][FlightLegType.DEPARTURE][
                 PassengerType.CHILD
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
             },
             [FlightLegType.TRANSIT]: {
               [PassengerType.ADULT]: data.seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][
                 PassengerType.ADULT
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
               [PassengerType.CHILD]: data.seatsData[FlightType.OUTBOUND][FlightLegType.TRANSIT][
                 PassengerType.CHILD
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
             },
           },
           [FlightType.INBOUND]: {
             [FlightLegType.DEPARTURE]: {
               [PassengerType.ADULT]: data.seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][
                 PassengerType.ADULT
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
               [PassengerType.CHILD]: data.seatsData[FlightType.INBOUND][FlightLegType.DEPARTURE][
                 PassengerType.CHILD
-              ].map((seat) => seat._id),
+              ].map((seat) => ({
+                seat: seat.seat._id || '',
+                services: {
+                  baggage: {
+                    quantity: seat?.services?.baggage?.quantity || 0,
+                    // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                  },
+                  meal: {
+                    name: seat?.services?.meal?.name,
+                    // charge:
+                      // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                      //   ?.value || 0,
+                  },
+                },
+              })),
             },
             [FlightLegType.TRANSIT]: {
               [PassengerType.ADULT]: data.seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.ADULT].map(
-                (seat) => seat._id,
+                (seat) => ({
+                  seat: seat.seat._id || '',
+                  services: {
+                    baggage: {
+                      quantity: seat?.services?.baggage?.quantity || 0,
+                      // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                    },
+                    meal: {
+                      name: seat?.services?.meal?.name,
+                      // charge:
+                        // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                        //   ?.value || 0,
+                    },
+                  },
+                }),
               ),
               [PassengerType.CHILD]: data.seatsData[FlightType.INBOUND][FlightLegType.TRANSIT][PassengerType.CHILD].map(
-                (seat) => seat._id,
+                (seat) => ({
+                  seat: seat.seat._id || '',
+                  services: {
+                    baggage: {
+                      quantity: seat?.services?.baggage?.quantity || 0,
+                      // charge: (seat?.services?.baggage?.quantity || 0) * baggagePrice,
+                    },
+                    meal: {
+                      name: seat?.services?.meal?.name,
+                      // charge:
+                        // data.additionalData.mealPlans.find((mealPlan) => mealPlan.name === seat?.services?.meal?.name)
+                        //   ?.value || 0,
+                    },
+                  },
+                }),
               ),
             },
           },

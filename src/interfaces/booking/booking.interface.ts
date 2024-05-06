@@ -7,6 +7,7 @@ import { FlightLegType } from '@/enums/flightLeg.enums'
 import IReservation from './reservation.interface'
 import { PaymentMethod, PaymentStatus } from '@/enums/payment.enums'
 import { PassengerType } from '@/enums/passenger.enums'
+import { SeatType } from '@/enums/seat.enums'
 
 export interface IBooking {
   _id?: string
@@ -34,13 +35,37 @@ export interface IBooking {
         paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
       }[]
     }
@@ -53,13 +78,37 @@ export interface IBooking {
         paymentStatus: PaymentStatus
         [FlightLegType.DEPARTURE]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
         [FlightLegType.TRANSIT]: {
           reservation: IReservation
-          services: string[]
-          surcharge: number
+          services: {
+            seat: {
+              seatType: SeatType
+              charge: number
+            }
+            baggage: {
+              quantity: number
+              charge: number
+            }
+            meal: {
+              name: string | null
+              charge: number
+            }
+          }
         }
       }[]
     }

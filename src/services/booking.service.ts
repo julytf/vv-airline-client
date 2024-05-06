@@ -54,22 +54,118 @@ interface PassengersData {
 interface SeatsData {
   [FlightType.OUTBOUND]: {
     [FlightLegType.DEPARTURE]: {
-      [PassengerType.ADULT]: string[]
-      [PassengerType.CHILD]: string[]
+      [PassengerType.ADULT]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
     }
     [FlightLegType.TRANSIT]: {
-      [PassengerType.ADULT]: string[]
-      [PassengerType.CHILD]: string[]
+      [PassengerType.ADULT]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
     }
   }
   [FlightType.INBOUND]: {
     [FlightLegType.DEPARTURE]: {
-      [PassengerType.ADULT]: string[]
-      [PassengerType.CHILD]: string[]
+      [PassengerType.ADULT]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
     }
     [FlightLegType.TRANSIT]: {
-      [PassengerType.ADULT]: string[]
-      [PassengerType.CHILD]: string[]
+      [PassengerType.ADULT]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: string
+        services: {
+          baggage: {
+            quantity: number
+            // charge: number
+          }
+          meal: {
+            name: string | null
+            // charge: number
+          }
+        }
+      }[]
     }
   }
 }

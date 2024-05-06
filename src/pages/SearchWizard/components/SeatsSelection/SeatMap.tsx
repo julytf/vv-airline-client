@@ -35,21 +35,6 @@ const SeatMap: FunctionComponent<SeatMapProps> = ({
             })}
           </Fragment>
         ))}
-        {/* {new Array(5).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))}
-          <Shell side='left' exit />
-          {new Array(5).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))}
-          <Shell side='left' wing='top' />
-          {new Array(6).fill(0).map((_, index) => (
-            <Shell key={index} side='left' wing='middle' />
-          ))}
-          <Shell side='left' wing='bottom' />
-          {new Array(14).fill(0).map((_, index) => (
-            <Shell key={index} side='left' />
-          ))} */}
       </div>
       <div>
         <div className='flex  flex-col px-2 text-center'>

@@ -18,6 +18,8 @@ import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import surchargesService from '@/services/surcharges.service'
 import WizardNavBar from './components/Navbar/WizardNavBar'
+import ServicesSelection from './components/ServicesSelection/ServicesSelection'
+import mealPlansService from '@/services/mealPlans.service'
 
 export type SearchWizardStep = {
   index: number
@@ -58,6 +60,13 @@ export const searchWizardSteps: SearchWizardStep[] = [
   },
   {
     index: 4,
+    title: 'Chọn dịch vụ',
+    icon: 'fa-suitcase-rolling',
+    // path: '/wizard/services-selection',
+    element: ServicesSelection,
+  },
+  {
+    index: 5,
     title: 'Thanh toán',
     icon: 'fa-credit-card',
     // path: 'admin/booking/wizard/payment',
@@ -78,24 +87,17 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       departureAirport: null,
       arrivalAirport: null,
 
-      departureAirportIATA: '',
-      // departureAirportIATA: searchParams.get('departureAirportIATA') || '',
-      arrivalAirportIATA: '',
-      // arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || '',
+      departureAirportIATA: searchParams.get('departureAirportIATA') || '',
+      arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || '',
 
-      departureDate: '',
-      // departureDate: searchParams.get('departureDate') || '',
-      returnDate: '',
-      // returnDate: searchParams.get('returnDate') || '',
+      departureDate: searchParams.get('departureDate') || '',
+      returnDate: searchParams.get('returnDate') || '',
 
-      isRoundTrip: false,
-      // isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
+      isRoundTrip: Boolean(searchParams.get('returnDate') || '') || false,
 
       passengersQuantity: {
-        [PassengerType.ADULT]: 0,
-        // [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 0,
-        [PassengerType.CHILD]: 0,
-        // [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
+        [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 1,
+        [PassengerType.CHILD]: Number(searchParams.get('passengersQuantity.CHILD')) || 0,
       },
     },
     flightsData: {
@@ -136,7 +138,8 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
       },
     },
     additionalData: {
-      surcharges: null,
+      surcharges: [],
+      mealPlans: [],
     },
   })
   // console.log('data', data)
@@ -161,11 +164,17 @@ const SearchWizard: FunctionComponent<SearchWizardProps> = () => {
     toStep,
   }
 
-  // Load Surcharges
+  // Load Surcharges and Meal Plans
   useEffect(() => {
     surchargesService.getSurcharges().then((surcharges) => {
       setData((prev) => {
         prev.additionalData.surcharges = surcharges
+        return { ...prev }
+      })
+    })
+    mealPlansService.getMealPlans().then((mealPlans) => {
+      setData((prev) => {
+        prev.additionalData.mealPlans = mealPlans
         return { ...prev }
       })
     })

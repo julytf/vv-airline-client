@@ -34,18 +34,41 @@ const Detail: FunctionComponent<DetailProps> = () => {
 
   const totalSurcharge = [
     ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
-      (obj) => obj[FlightLegType.DEPARTURE]?.surcharge || 0,
+      (obj) => obj[FlightLegType.DEPARTURE]?.services?.seat?.charge || 0,
     ) || []),
     ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
-      (obj) => obj[FlightLegType.TRANSIT]?.surcharge || 0,
+      (obj) => obj[FlightLegType.TRANSIT]?.services?.seat?.charge || 0,
     ) || []),
     ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
-      (obj) => obj[FlightLegType.DEPARTURE]?.surcharge || 0,
+      (obj) => obj[FlightLegType.DEPARTURE]?.services?.seat?.charge || 0,
     ) || []),
     ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
-      (obj) => obj[FlightLegType.TRANSIT]?.surcharge || 0,
+      (obj) => obj[FlightLegType.TRANSIT]?.services?.seat?.charge || 0,
     ) || []),
-  ].reduce((acc, cur) => acc + cur, 0)
+  ].reduce((acc, cur) => acc + (cur || 0), 0)
+
+  const totalServicesCharge = [
+    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
+      (obj) =>
+        (obj[FlightLegType.DEPARTURE]?.services?.baggage?.charge || 0) +
+        (obj[FlightLegType.DEPARTURE]?.services?.meal?.charge || 0),
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.OUTBOUND].reservations.map(
+      (obj) =>
+        (obj[FlightLegType.TRANSIT]?.services?.baggage?.charge || 0) +
+        (obj[FlightLegType.TRANSIT]?.services?.meal?.charge || 0),
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
+      (obj) =>
+        (obj[FlightLegType.DEPARTURE]?.services?.baggage?.charge || 0) +
+        (obj[FlightLegType.DEPARTURE]?.services?.meal?.charge || 0),
+    ) || []),
+    ...(booking?.flightsInfo[FlightType.INBOUND]?.reservations.map(
+      (obj) =>
+        (obj[FlightLegType.TRANSIT]?.services?.baggage?.charge || 0) +
+        (obj[FlightLegType.TRANSIT]?.services?.meal?.charge || 0),
+    ) || []),
+  ].reduce((acc, cur) => acc + (cur || 0), 0)
 
   useEffect(() => {
     setIsLoading(true)
@@ -136,6 +159,7 @@ const Detail: FunctionComponent<DetailProps> = () => {
             {(totalSeatsPrice * totalPassengers).toLocaleString()} vnđ
           </div>
           <div>Phí Ghế: {totalSurcharge.toLocaleString()} vnđ</div>
+          <div>Phí Dịch vụ: {totalServicesCharge.toLocaleString()} vnđ</div>
           <div>
             {' '}
             Tổng: <span className='bold text-2xl'>{booking.totalPrice.toLocaleString()}</span> vnđ

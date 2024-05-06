@@ -8,6 +8,7 @@ import { PassengerType } from '@/enums/passenger.enums'
 import { FlightLegType } from '@/enums/flightLeg.enums'
 import ISurcharge from '@/interfaces/flight/surcharge.interface'
 import { TicketClass, TicketType } from '@/enums/ticket.enums'
+import IMealPlan from '@/interfaces/flight/mealPlan.interface'
 
 export interface SearchData {
   departureAirportIATA: string
@@ -67,22 +68,118 @@ export interface PassengersData {
 export interface SeatsData {
   [FlightType.OUTBOUND]: {
     [FlightLegType.DEPARTURE]: {
-      [PassengerType.ADULT]: ISeat[]
-      [PassengerType.CHILD]: ISeat[]
+      [PassengerType.ADULT]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
     }
     [FlightLegType.TRANSIT]: {
-      [PassengerType.ADULT]: ISeat[]
-      [PassengerType.CHILD]: ISeat[]
+      [PassengerType.ADULT]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
     }
   }
   [FlightType.INBOUND]: {
     [FlightLegType.DEPARTURE]: {
-      [PassengerType.ADULT]: ISeat[]
-      [PassengerType.CHILD]: ISeat[]
+      [PassengerType.ADULT]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
     }
     [FlightLegType.TRANSIT]: {
-      [PassengerType.ADULT]: ISeat[]
-      [PassengerType.CHILD]: ISeat[]
+      [PassengerType.ADULT]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
+      [PassengerType.CHILD]: {
+        seat: ISeat
+        services: {
+          baggage: {
+            quantity: number
+            charge: number
+          }
+          meal: {
+            name: string
+            charge: number
+          }
+        }
+      }[]
     }
   }
 }
@@ -93,7 +190,8 @@ export interface WizardData {
   passengersData: PassengersData
   seatsData: SeatsData
   additionalData: {
-    surcharges: ISurcharge[] | null
+    surcharges: ISurcharge[]
+    mealPlans: IMealPlan[]
   }
 }
 export interface ContextData {

@@ -8,6 +8,9 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import Joi from 'joi'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
+import SeatMapBuilder from './SeatMapBuilder'
+import { SeatStatus, SeatType } from '@/enums/seat.enums'
+import { useToast } from '@/contexts/ToastNotify.context'
 
 interface IFormData {
   _id?: string
@@ -20,13 +23,42 @@ interface IFormData {
 }
 
 const formSchema = Joi.object({
-  registrationNumber: Joi.string().required(),
   name: Joi.string().required(),
+  // seatQuantity: Joi.object({
+  //   [TicketClass.ECONOMY]: Joi.number().required(),
+  //   [TicketClass.BUSINESS]: Joi.number().required(),
+  // }).required(),
+  seatMap: Joi.array().items(
+    Joi.object({
+      class: Joi.string().valid(TicketClass.ECONOMY, TicketClass.BUSINESS).required(),
+      noRow: Joi.number().required(),
+      noCol: Joi.number().required(),
+      aisleCol: Joi.array().items(Joi.number()).required(),
+      map: Joi.array().items(
+        Joi.object({
+          index: Joi.number().required(),
+          hasExit: Joi.boolean().required(),
+          seats: Joi.array().items(
+            Joi.object({
+              code: Joi.string().required(),
+              col: Joi.string().required(),
+              row: Joi.number().required(),
+              seatType: Joi.string().valid(SeatType.WINDOW, SeatType.NORMAL, SeatType.AISLE).required(),
+              ticketClass: Joi.string().valid(TicketClass.ECONOMY, TicketClass.BUSINESS).required(),
+              status: Joi.string().valid(SeatStatus.AVAILABLE, SeatStatus.UNAVAILABLE).required(),
+            }),
+          ),
+        }),
+      ),
+    }),
+  ),
 })
 
 interface CreateAircraftModelProps {}
 
 const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
+  const toast = useToast()
+
   const {
     handleSubmit,
     control,
@@ -38,10 +70,35 @@ const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
   })
 
   const watchAllFields = watch()
+  console.log(watchAllFields)
 
   // console.log(isValid)
   // console.log(errors)
-  // console.log(formSchema.validate(watchAllFields))
+  console.log(formSchema.validate(watchAllFields))
+
+  const economySeatsQuantity = watchAllFields.seatMap
+    ?.map((cabin) => {
+      if (cabin.class !== TicketClass.ECONOMY) return 0
+      return cabin.map
+        .map((row) => row.seats.filter((seat) => seat.status === SeatStatus.AVAILABLE).length)
+        .reduce((a, b) => a + b, 0)
+    })
+    .reduce((a, b) => a + b, 0)
+  const businessSeatsQuantity = watchAllFields.seatMap
+    ?.map((cabin) => {
+      if (cabin.class !== TicketClass.BUSINESS) return 0
+      return cabin.map
+        .map((row) => row.seats.filter((seat) => seat.status === SeatStatus.AVAILABLE).length)
+        .reduce((a, b) => a + b, 0)
+    })
+    .reduce((a, b) => a + b, 0)
+
+  const displayData = {
+    seatQuantity: {
+      [TicketClass.ECONOMY]: economySeatsQuantity,
+      [TicketClass.BUSINESS]: businessSeatsQuantity,
+    },
+  }
 
   useEffect(() => {
     // aircraftModelModelsService.getAllAircraftModel().then((data) => {
@@ -52,7 +109,9 @@ const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await aircraftModelsService.createAircraftModel(data as IAircraftModel)
+    await aircraftModelsService
+      .createAircraftModel(data as IAircraftModel)
+      .then(() => toast.success('Tạo mới thành công'))
     // reset()
   }
 
@@ -66,18 +125,18 @@ const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
           <div className='space-y-12'>
             <div className='border-b border-gray-900/10 pb-12'>
               <div className='mt-10 grid grid-cols-6 gap-x-6 gap-y-8 '>
-                {/* <div className='col-span-3'>
-                  <label htmlFor='registrationNumber' className='block text-sm font-medium leading-6 text-gray-900'>
-                    Số đăng ký
+                <div className='col-span-3'>
+                  <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
+                    Tên
                   </label>
                   <Controller
-                    name={'registrationNumber'}
+                    name={'name'}
                     control={control}
                     render={({ field, fieldState: { error }, formState }) => (
                       <>
                         <div className='mt-2'>
                           <input
-                            id='registrationNumber'
+                            id='name'
                             value={field.value || ''}
                             onChange={(e) => {
                               field.onChange(e.target.value)
@@ -91,7 +150,65 @@ const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
                       </>
                     )}
                   />
-                </div> */}
+                </div>
+                <div className='col-span-3'></div>
+                <div className='col-span-3'>
+                  <label
+                    htmlFor={`seatQuantity.${TicketClass.BUSINESS}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Số lượng ghế Hạng Thương Gia
+                  </label>
+                  <div className='mt-2'>
+                    <input
+                      id={`seatQuantity.${TicketClass.BUSINESS}`}
+                      value={displayData.seatQuantity[TicketClass.BUSINESS]?.toString() || '---'}
+                      disabled
+                      placeholder='---'
+                      type='text'
+                      className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                    />
+                  </div>
+                </div>
+                <div className='col-span-3'>
+                  <label
+                    htmlFor={`seatQuantity.${TicketClass.ECONOMY}`}
+                    className='block text-sm font-medium leading-6 text-gray-900'
+                  >
+                    Số lượng ghế Hạng Phổ Thông
+                  </label>
+                  <div className='mt-2'>
+                    <input
+                      id={`seatQuantity.${TicketClass.ECONOMY}`}
+                      value={displayData.seatQuantity[TicketClass.ECONOMY]?.toString() || '---'}
+                      disabled
+                      placeholder='---'
+                      type='text'
+                      className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-sm leading-6 text-gray-900 outline-primary ring-1  ring-inset ring-gray-300 placeholder:text-gray-400'
+                    />
+                  </div>
+                </div>
+                <div className='col-span-6'>
+                  <label className='block text-sm font-medium leading-6 text-gray-900'>Bản đồ ghế</label>
+                  <Controller
+                    name={`seatMap`}
+                    control={control}
+                    render={({ field, fieldState: { error }, formState }) => (
+                      <>
+                        <div className='mt-2'>
+                          <SeatMapBuilder
+                            value={field.value || []}
+                            onChange={(value) => {
+                              field.onChange(value)
+                            }}
+                          />
+                        </div>
+
+                        {/* <small className='text-red-600'>{error?.message}</small> */}
+                      </>
+                    )}
+                  />
+                </div>
                 {/* <div className='col-span-6'>
                   <label htmlFor='name' className='block text-sm font-medium leading-6 text-gray-900'>
                     Tên

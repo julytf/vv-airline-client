@@ -15,7 +15,7 @@ class PaymentService {
   }
   async paymentSuccess(bookingId: string) {
     const response = await axiosClient.get('/payment/payment-success', { params: { bookingId } })
-    return response.data
+    return response.data.data.booking
   }
   async refund(bookingId: string, refundData: RefundData) {
     const response = await axiosClient.post(`/payment/${bookingId}/refund`, refundData)

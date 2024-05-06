@@ -1,4 +1,4 @@
-import { ChangeEventHandler, FunctionComponent, useState } from 'react'
+import { ChangeEventHandler, FunctionComponent, useEffect, useRef, useState } from 'react'
 import { Controller, FieldValues, SubmitHandler, useForm } from 'react-hook-form'
 import Button from '../../components/ui/Button'
 import Joi from 'joi'
@@ -15,6 +15,10 @@ import UserProfileSidebar from '@/components/Sidebar/UserProfileSidebar'
 import usersService from '@/services/users.service'
 import IUser from '@/interfaces/user.interface'
 import * as auth from '@/services/state/auth/authSlice'
+import IProvince from '@/interfaces/address/province.interface'
+import IDistrict from '@/interfaces/address/district.interface'
+import IWard from '@/interfaces/address/ward.interface'
+import addressService from '@/services/address.service'
 
 interface IFormData {
   role: UserRole
@@ -43,6 +47,13 @@ interface IndexProps {}
 const Index: FunctionComponent<IndexProps> = () => {
   const dispatch = useDispatch<AppDispatch>()
 
+  const [provinces, setProvinces] = useState<IProvince[]>([])
+  const [districts, setDistricts] = useState<IDistrict[]>([])
+  const [wards, setWards] = useState<IWard[]>([])
+
+  const provinceInputRef = useRef<HTMLSelectElement>(null)
+  const districtInputRef = useRef<HTMLSelectElement>(null)
+
   const { user, accessToken } = useSelector((state: AppState) => state.auth)
   const sanitizedData = updateUserSchema.validate(user, { stripUnknown: true }).value
   // console.log('user', user)
@@ -54,11 +65,14 @@ const Index: FunctionComponent<IndexProps> = () => {
     reset,
     control,
     formState: { errors, isValid },
+    watch,
   } = useForm<IFormData>({
     mode: 'onChange',
     resolver: joiResolver(updateUserSchema),
     defaultValues: sanitizedData ?? {},
   })
+
+  const formData = watch()
   // console.log('isValid', isValid)
   // console.log('errors', errors)
 
@@ -67,6 +81,24 @@ const Index: FunctionComponent<IndexProps> = () => {
   //   queryFn: () => authService.getProfile(accessToken!),
   // })
   // console.log('data', data)
+
+  useEffect(() => {
+    addressService.getProvinces().then((docs) => {
+      setProvinces(docs)
+    })
+  }, [])
+  useEffect(() => {
+    const provinceCode = provinces.find((province) => province._id === provinceInputRef.current?.value)?.code
+    addressService.getDistricts(provinceCode || '').then((docs) => {
+      setDistricts(docs)
+    })
+  }, [provinceInputRef.current?.value])
+  useEffect(() => {
+    const districtCode = districts.find((district) => district._id === districtInputRef.current?.value)?.code
+    addressService.getWards(districtCode || '').then((docs) => {
+      setWards(docs)
+    })
+  }, [districtInputRef.current?.value])
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('accessToken', accessToken)
@@ -80,7 +112,7 @@ const Index: FunctionComponent<IndexProps> = () => {
     // reset()
   }
   return (
-    <div className='mt-16 grid grid-cols-12 gap-6 w-full'>
+    <div className='mt-16 grid w-full grid-cols-12 gap-6'>
       <UserProfileSidebar className='col-span-3' />
       <div className='col-span-9 w-full'>
         <div className='mx-auto mb-24 max-w-2xl'>
@@ -259,6 +291,7 @@ const Index: FunctionComponent<IndexProps> = () => {
                             <div className='mt-2'>
                               <select
                                 id='address.province'
+                                ref={provinceInputRef}
                                 value={field.value || ''}
                                 onChange={(e) => {
                                   field.onChange(e.target.value)
@@ -267,7 +300,11 @@ const Index: FunctionComponent<IndexProps> = () => {
                                 // onChange='provinceChangeHandler(this.value)'
                               >
                                 <option value=''>--Chọn--</option>
-                                <option value='test value'>test</option>
+                                {provinces.map((province) => (
+                                  <option key={province._id} value={province._id}>
+                                    {province.name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
 
@@ -289,6 +326,7 @@ const Index: FunctionComponent<IndexProps> = () => {
                             <div className='mt-2'>
                               <select
                                 id='address.district'
+                                ref={districtInputRef}
                                 value={field.value || ''}
                                 onChange={(e) => {
                                   field.onChange(e.target.value)
@@ -297,6 +335,11 @@ const Index: FunctionComponent<IndexProps> = () => {
                                 // onChange='DistrictChangeHandler(this.value)'
                               >
                                 <option value=''>--Chọn--</option>
+                                {districts.map((district) => (
+                                  <option key={district._id} value={district._id}>
+                                    {district.name}
+                                  </option>
+                                ))}
                               </select>
                             </div>
 
@@ -325,6 +368,11 @@ const Index: FunctionComponent<IndexProps> = () => {
                                 className='block w-full rounded-md border-0 bg-transparent p-3 py-1.5 text-gray-900 outline-primary ring-1 ring-inset ring-gray-300  placeholder:text-gray-400 sm:text-sm sm:leading-6'
                               >
                                 <option value=''>--Chọn--</option>
+                                {wards.map((ward) => (
+                                  <option key={ward._id} value={ward._id}>
+                                    {ward.name}
+                                  </option>
+                                ))}
                               </select>
 
                               <small className='text-red-600'>{error?.message}</small>

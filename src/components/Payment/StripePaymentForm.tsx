@@ -10,6 +10,7 @@ import paymentService from '@/services/payment.service'
 import { useNavigate } from 'react-router'
 import { route } from '@/utils/helpers'
 import { SpinningCircle } from '../Icons'
+import IBooking from '@/interfaces/booking/booking.interface'
 
 interface StripePaymentFormProps {
   bookingId: string
@@ -48,8 +49,10 @@ const StripePaymentForm: FunctionComponent<StripePaymentFormProps> = ({ bookingI
       // Show error to your customer (for example, payment details incomplete)
       console.log(result.error.message)
     } else {
-      await paymentService.paymentSuccess(bookingId)
-      navigate(route(`/bookings/${bookingId}`))
+      const booking: IBooking = await paymentService.paymentSuccess(bookingId)
+      navigate(route(`/bookings/${bookingId}`), {
+        state: { pnr: booking.pnr, email: booking.contactInfo.email },
+      })
     }
     setIsPaymentInProgress(false)
   }

@@ -2,7 +2,6 @@ import { TicketClass } from '@/enums/ticket.enums'
 import IFlightLeg from '../flight/flightLeg.interface'
 import IPassenger from './passenger.interface'
 import ISeat from '../aircraft/seat.interface'
-import IService from './service.interface'
 import { PaymentStatus } from '@/enums/payment.enums'
 
 export interface IReservation {
@@ -13,7 +12,7 @@ export interface IReservation {
   flightLeg: IFlightLeg
   passenger: IPassenger
   seat: ISeat
-  services: IService[]
+  // services: IService[]
   paymentStatus?: PaymentStatus
 }
 

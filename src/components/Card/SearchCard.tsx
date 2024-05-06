@@ -32,7 +32,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   const [formData, setFormData] = useState<Partial<SearchData>>({
     departureAirportIATA: searchParams.get('departureAirportIATA') || undefined,
     arrivalAirportIATA: searchParams.get('arrivalAirportIATA') || undefined,
-    departureDate: searchParams.get('departureDate') || undefined,
+    departureDate: searchParams.get('departureDate') || format(new Date(), 'yyyy-MM-dd'),
     returnDate: searchParams.get('returnDate') || undefined,
     passengersQuantity: {
       [PassengerType.ADULT]: Number(searchParams.get('passengersQuantity.ADULT')) || 1,
@@ -77,7 +77,7 @@ const SearchCard: FunctionComponent<SearchCardProps> = (props) => {
   const defaultValues = {
     departureAirport: flattenedOptions.find((option) => option.value === formData.departureAirportIATA),
     arrivalAirport: flattenedOptions.find((option) => option.value === formData.arrivalAirportIATA),
-    departureDate: formData.departureDate || startOfDay(new Date()).toString(),
+    departureDate: formData.departureDate || undefined,
     returnDate: formData.returnDate || undefined,
     passengersQuantity: formData.passengersQuantity,
   }

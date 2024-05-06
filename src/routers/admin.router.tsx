@@ -62,23 +62,23 @@ const AdminUpdateAirportScreen = lazy(() => import('@/pages/Admin/Airports/Updat
 
 const AdminFlightRoutesIndexScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Index.screen'))
 const AdminCreateFlightRouteScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Create.screen'))
-const AdminUpdateFlightRouteScreen = lazy(() => import( '@/pages/Admin/FlightRoutes/Update.screen'))
+const AdminUpdateFlightRouteScreen = lazy(() => import('@/pages/Admin/FlightRoutes/Update.screen'))
 
 const AdminFlightLegsIndexScreen = lazy(() => import('@/pages/Admin/FlightLegs/Index.screen'))
 const AdminCreateFlightLegScreen = lazy(() => import('@/pages/Admin/FlightLegs/Create.screen'))
-const AdminUpdateFlightLegScreen = lazy(() => import( '@/pages/Admin/FlightLegs/Update.screen'))
+const AdminUpdateFlightLegScreen = lazy(() => import('@/pages/Admin/FlightLegs/Update.screen'))
 
 const AdminFlightsIndexScreen = lazy(() => import('@/pages/Admin/Flights/Index.screen'))
 const AdminCreateFlightScreen = lazy(() => import('@/pages/Admin/Flights/Create.screen'))
-const AdminUpdateFlightScreen = lazy(() => import( '@/pages/Admin/Flights/Update.screen'))
+const AdminUpdateFlightScreen = lazy(() => import('@/pages/Admin/Flights/Update.screen'))
 
 const AdminAircraftsIndexScreen = lazy(() => import('@/pages/Admin/Aircrafts/Index.screen'))
 const AdminCreateAircraftscreen = lazy(() => import('@/pages/Admin/Aircrafts/Create.screen'))
-const AdminUpdateAircraftscreen = lazy(() => import( '@/pages/Admin/Aircrafts/Update.screen'))
+const AdminUpdateAircraftscreen = lazy(() => import('@/pages/Admin/Aircrafts/Update.screen'))
 
 const AdminAircraftModelsIndexScreen = lazy(() => import('@/pages/Admin/AircraftModels/Index.screen'))
-// const AdminCreateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Create.screen'))
-// const AdminUpdateAircraftModelscreen = lazy(() => import( '@/pages/Admin/AircraftModels/Update.screen'))
+const AdminCreateAircraftModelscreen = lazy(() => import('@/pages/Admin/AircraftModels/Create/Create.screen'))
+const AdminUpdateAircraftModelscreen = lazy(() => import('@/pages/Admin/AircraftModels/Update/Update.screen'))
 
 const AdminBookingsIndexScreen = lazy(() => import('@/pages/Admin/Bookings/Index.screen'))
 // const AdminCreateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Create.screen'))
@@ -112,7 +112,17 @@ export const adminRoutes = [
           </div>
         }
       >
-        <RoleGuard unrestrictedTo={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF]} redirect='/admin/login'>
+        <RoleGuard
+          unrestrictedTo={[
+            UserRole.SUPER_ADMIN,
+            UserRole.ADMIN,
+            UserRole.STAFF,
+            UserRole.STAFF_CHECK_IN,
+            UserRole.STAFF_CONTENT_WRITER,
+            UserRole.STAFF_SELL_AGENT,
+          ]}
+          redirect='/admin/login'
+        >
           <AdminLayout />
         </RoleGuard>
       </Suspense>
@@ -236,14 +246,14 @@ export const adminRoutes = [
           {
             path: ':id',
             breadcrumbName: 'Cập nhật Mẫu Máy bay',
-            // element: <AdminUpdateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminUpdateAircraftModelscreen />,
+            // element: <NotImplemented />,
           },
           {
             path: 'create',
             breadcrumbName: 'Thêm Mẫu Máy bay',
-            // element: <AdminCreateAirportScreen />,
-            element: <NotImplemented />,
+            element: <AdminCreateAircraftModelscreen />,
+            // element: <NotImplemented />,
           },
         ],
       },

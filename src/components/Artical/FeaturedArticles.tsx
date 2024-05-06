@@ -4,6 +4,7 @@ import { route } from '@/utils/helpers'
 import classNames from 'classnames'
 import { FunctionComponent, useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import Image from '../ui/Image'
 
 interface FeaturedArticlesProps {
   className?: string
@@ -32,7 +33,7 @@ const FeaturedArticles: FunctionComponent<FeaturedArticlesProps> = (props) => {
           <NavLink key={index} to={route('/articles/:id', { params: { id: article._id! } })}>
             <div className='group rounded-3xl border border-gray-100 bg-white bg-opacity-50 p-6 shadow-2xl shadow-gray-600/10 sm:p-8 dark:border-gray-700 dark:bg-gray-800 dark:shadow-none'>
               <div className='relative overflow-hidden rounded-xl'>
-                <img
+                <Image
                   src={`http://local.test:3000/${article.coverImage}`}
                   loading='lazy'
                   width='1000'

@@ -29,7 +29,7 @@ const Search: FunctionComponent<SearchProps> = () => {
   const [formData, setFormData] = useState<Partial<SearchData>>({
     departureAirportIATA: undefined,
     arrivalAirportIATA: undefined,
-    departureDate: undefined,
+    departureDate: format(new Date(), 'yyyy-MM-dd'),
     returnDate: undefined,
     passengersQuantity: {
       [PassengerType.ADULT]: 1,

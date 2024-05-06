@@ -99,7 +99,7 @@ const UpdateUsers: FunctionComponent<UpdateUsersProps> = () => {
   }, [districtInputRef.current?.value])
 
   useEffect(() => {
-    usersService.getProfile(id).then((data) => {
+    usersService.getUser(id).then((data) => {
       reset({
         firstName: data.firstName,
         lastName: data.lastName,
@@ -124,14 +124,9 @@ const UpdateUsers: FunctionComponent<UpdateUsersProps> = () => {
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     console.log('data', data)
 
-    await usersService
-      .updateProfile({
-        _id: id!,
-        ...data,
-      } as IUser)
-      .then((data) => {
-        toast.success('Cập nhật thành công')
-      })
+    await usersService.updateUser(id, data as IUser).then((data) => {
+      toast.success('Cập nhật thành công')
+    })
     // reset()
   }
 
