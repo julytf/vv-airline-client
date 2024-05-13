@@ -119,7 +119,7 @@ const CreateAircraftModel: FunctionComponent<CreateAircraftModelProps> = () => {
     <div className='flex justify-center p-8'>
       <form method='post' className='max-w-2xl flex-1 rounded-md bg-white p-6' onSubmit={handleSubmit(onSubmit)}>
         <div className='mx-auto w-full max-w-sm pt-6'>
-          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Sân Bay</h2>
+          <h2 className='text-center text-2xl font-bold leading-9 tracking-tight text-gray-900'>Thêm Mẫu Máy Bay</h2>
         </div>
         <div className='mx-auto'>
           <div className='space-y-12'>

@@ -117,6 +117,7 @@ export interface IBooking {
     intentId?: string
     method?: PaymentMethod
     status?: PaymentStatus
+    paidAt?: Date
   }
 }
 

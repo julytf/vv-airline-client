@@ -30,6 +30,20 @@ class BookingsService {
     const data = response.data.data
     return data
   }
+  async getBookingsByMePaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
+    // const accessToken = this.accessToken
+
+    const response = await axiosClient.get('/bookings/by-me', {
+      params: {
+        page,
+        perPage,
+        q,
+      },
+      headers: {},
+    })
+    const data = response.data.data
+    return data
+  }
   async getMyBookingsPaginate({ page = 1, perPage = 20, q = '' }: QueryOption) {
     // const accessToken = this.accessToken
 
@@ -56,6 +70,17 @@ class BookingsService {
       },
     })
     return response.data.data.doc
+  }
+
+  async getByTimeRange({ from, to }: { from: string; to: string }) {
+    const response = await axiosClient.get('/bookings/get-by-time-range', {
+      params: {
+        from,
+        to,
+      },
+    })
+
+    return response.data.data.docs
   }
 }
 

@@ -10,10 +10,13 @@ import { joiResolver } from '@hookform/resolvers/joi'
 import loginSchema from '@/utils/validations/login.schema'
 import authService from '@/services/auth.service'
 import * as auth from '@/services/state/auth/authSlice'
+import { useToast } from '@/contexts/ToastNotify.context'
+import { AxiosError } from 'axios'
 
 interface LoginProps {}
 
 const Login: FunctionComponent<LoginProps> = () => {
+  const toast = useToast()
   const dispatch = useDispatch<AppDispatch>()
 
   const {
@@ -32,10 +35,21 @@ const Login: FunctionComponent<LoginProps> = () => {
     console.log('here')
 
     const { email, password } = data
-    const { accessToken, user } = await authService.login({ email, password })
-    console.log({ user, accessToken })
-    dispatch(auth.login({ user, accessToken }))
-    reset()
+    try {
+      const { accessToken, user } = await authService.login({ email, password })
+      console.log({ user, accessToken })
+      dispatch(auth.login({ user, accessToken }))
+    } catch (error) {
+      console.log(error)
+      if (typeof error === 'string') {
+        toast.error({ message: error })
+      } else if (error instanceof AxiosError) {
+        toast.error({ message: error.response?.data.message })
+      } else if (error instanceof Error) {
+        toast.error({ message: error.message })
+      }
+    }
+    // reset()
   }
   return (
     <div
@@ -138,7 +152,10 @@ const Login: FunctionComponent<LoginProps> = () => {
               </label>
             </div> */}
             <div className='mt-6 text-center'>
-              <button type='submit' className='mb-1 mr-1 w-full rounded bg-gray-800 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-gray-600'>
+              <button
+                type='submit'
+                className='mb-1 mr-1 w-full rounded bg-gray-800 px-6 py-3 text-sm font-bold uppercase text-white shadow outline-none transition-all duration-150 ease-linear hover:shadow-lg focus:outline-none active:bg-gray-600'
+              >
                 Đăng Nhập
               </button>
             </div>

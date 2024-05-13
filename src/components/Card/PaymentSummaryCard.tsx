@@ -120,7 +120,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                       <span>Chỗ ngồi</span>
                     </div>
                     <div className='flex items-start'>
-                      <span>{totalSeatsCharge.toLocaleString()}</span>
+                      <span>{totalSeatsCharge.toLocaleString() || 0}</span>
                       <span className='text-xs'>VNĐ</span>
                     </div>
                   </div>
@@ -200,7 +200,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
                     <span>Dịch vụ bổ trợ</span>
                   </div>
                   <div className='flex items-start'>
-                    <span>{totalServicesCharge.toLocaleString()}</span>
+                    <span>{totalServicesCharge.toLocaleString() || 0}</span>
                     <span className='text-xs'>VNĐ</span>
                   </div>
                 </div>
@@ -248,7 +248,7 @@ const PaymentSummaryCard: FunctionComponent<PaymentSummaryCardProps> = ({ classN
         <div className='flex justify-between p-8'>
           <span className='text-lg'>Tổng tiền:</span>
           <div className='flex items-start'>
-            <span className='text-2xl'>{totalPrice.toLocaleString()}</span>
+            <span className='text-2xl'>{totalPrice.toLocaleString() || 0}</span>
             <span className='text-xs'>VNĐ</span>
           </div>
         </div>
@@ -312,7 +312,7 @@ const Flight: FunctionComponent<FlightProps> = ({ flight, ticketClass, price, to
           </div>
           <div className='flex items-start'>
             <span>
-              {totalPassengers} x {price.toLocaleString()}
+              {totalPassengers} x {price.toLocaleString() || 0}
             </span>
             <span className='text-xs'>VNĐ</span>
           </div>
@@ -557,11 +557,11 @@ const ServiceDetail: FunctionComponent<ServiceDetailProps> = ({ flight, seatsDat
             </div>
             <div className=''>
               <div className='flex justify-end'>
-                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.baggage.charge.toLocaleString()}</span>
+                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.baggage?.charge.toLocaleString() || 0}</span>
                 <span className='text-xs'>VNĐ</span>
               </div>
               <div className='flex justify-end'>
-                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.meal.charge.toLocaleString()}</span>
+                <span>{seatsData?.[PassengerType.ADULT]?.[index]?.services?.meal?.charge.toLocaleString() || 0}</span>
                 <span className='text-xs'>VNĐ</span>
               </div>
             </div>
@@ -589,11 +589,11 @@ const ServiceDetail: FunctionComponent<ServiceDetailProps> = ({ flight, seatsDat
             </div>
             <div className=''>
               <div className='flex justify-end'>
-                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.baggage.charge.toLocaleString()}</span>
+                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.baggage?.charge.toLocaleString() || 0}</span>
                 <span className='text-xs'>VNĐ</span>
               </div>
               <div className='flex justify-end'>
-                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.meal.charge.toLocaleString()}</span>
+                <span>{seatsData?.[PassengerType.CHILD]?.[index]?.services?.meal?.charge.toLocaleString() || 0}</span>
                 <span className='text-xs'>VNĐ</span>
               </div>
             </div>

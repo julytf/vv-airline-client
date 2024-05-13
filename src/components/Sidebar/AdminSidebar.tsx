@@ -32,8 +32,8 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
           id='example-collapse-sidebar'
         >
           <Group name='Quản Lý Chung' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
-            <Button icon={<i className='fa-solid fa-house' />} title='Trang chủ' path={route('/admin/dashboard')} />
-            <Button
+            {/* <Button icon={<i className='fa-solid fa-house' />} title='Trang chủ' path={route('/admin/dashboard')} /> */}
+            {/* <Button
               icon={<i className='fa-solid fa-chart-simple' />}
               title='Thống kê tháng'
               path={route('/admin/monthly-statistics')}
@@ -42,6 +42,11 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               icon={<i className='fa-solid fa-chart-simple' />}
               title='Thống kê năm'
               path={route('/admin/yearly-statistics')}
+            /> */}
+            <Button
+              icon={<i className='fa-solid fa-chart-simple' />}
+              title='Thống kê'
+              path={route('/admin/statistics')}
             />
           </Group>
           <Group name='Quản Lý Máy Bay' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
@@ -57,17 +62,17 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
               path={route('/admin/surcharge')}
             />
           </Group>
-          <Group
-            name='Quản Lý Chuyến Bay'
-            userRole={user?.role}
-            roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}
-          >
+          <Group name='Quản Lý Chuyến Bay' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN]}>
             <Button icon={<i className='fa-solid fa-house' />} title='Sân Bay' path={route('/admin/airports')} />
             <Button icon={<i className='fa-solid fa-route' />} title='Tuyến Bay' path={route('/admin/flight-routes')} />
             <Button icon={<i className='fa-solid fa-plane' />} title='Chặng Bay' path={route('/admin/flight-legs')} />
             <Button icon={<i className='fa-solid fa-plane' />} title='Chuyến Bay' path={route('/admin/flights')} />
           </Group>
-          <Group name='Quản Lý Người Dùng' userRole={user?.role} roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF_CHECK_IN]}>
+          <Group
+            name='Quản Lý Người Dùng'
+            userRole={user?.role}
+            roles={[UserRole.SUPER_ADMIN, UserRole.ADMIN, UserRole.STAFF_CHECK_IN]}
+          >
             <Button icon={<i className='fa-solid fa-user' />} title='Người dùng' path={route('/admin/users')} />
             <Button
               icon={<i className='fa-solid fa-plane' />}
@@ -91,7 +96,7 @@ const AdminSidebar: FunctionComponent<AdminSidebarProps> = () => {
             <Button
               icon={<i className='fa-solid fa-plane' />}
               title='Đặt bởi tôi'
-              path={route('/admin/booking/booking-by-me')}
+              path={route('/admin/bookings/bookings-by-me')}
             />
           </Group>
         </div>

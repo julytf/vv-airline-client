@@ -52,6 +52,8 @@ const AdminLayout = lazy(() => import('@/layouts/Admin.layout'))
 const AdminDashboardScreen = lazy(() => import('@/pages/Admin/Dashboard.screen'))
 const AdminLoginScreen = lazy(() => import('@/pages/Admin/Auth/Login.screen'))
 
+const AdminStatisticsScreen = lazy(() => import('@/pages/Admin/Statistics/Statistics.screen'))
+
 const AdminUsersIndexScreen = lazy(() => import('@/pages/Admin/Users/Index.screen'))
 const AdminUpdateUsersScreen = lazy(() => import('@/pages/Admin/Users/Update.screen'))
 const AdminCreateUsersScreen = lazy(() => import('@/pages/Admin/Users/Create.screen'))
@@ -85,6 +87,7 @@ const AdminBookingsIndexScreen = lazy(() => import('@/pages/Admin/Bookings/Index
 // const AdminUpdateBookingscreen = lazy(() => import( '@/pages/Admin/Bookings/Update.screen'))
 const AdminDetailBookingscreen = lazy(() => import('@/pages/Admin/Bookings/Detail/Detail.screen'))
 const AdminRefundBookingscreen = lazy(() => import('@/pages/Admin/Bookings/Refund/Refund.screen'))
+const AdminBookingsByMeScreen = lazy(() => import('@/pages/Admin/Bookings/ByMe.screen'))
 
 const AdminArticlesIndexScreen = lazy(() => import('@/pages/Admin/Articles/Index.screen'))
 const AdminCreateArticleScreen = lazy(() => import('@/pages/Admin/Articles/Create.screen'))
@@ -131,14 +134,14 @@ export const adminRoutes = [
       {
         index: true,
         loader() {
-          return redirect('dashboard')
+          return redirect('statistics')
         },
       },
-      {
-        path: 'dashboard',
-        breadcrumbName: 'Trang chủ',
-        element: <AdminDashboardScreen />,
-      },
+      // {
+      //   path: 'dashboard',
+      //   breadcrumbName: 'Trang chủ',
+      //   element: <AdminDashboardScreen />,
+      // },
       {
         path: 'account',
         breadcrumbName: 'Tài Khoản',
@@ -161,14 +164,18 @@ export const adminRoutes = [
         ],
       },
       {
-        path: 'monthly-statistics',
-        breadcrumbName: 'Thống kê tháng',
-        element: <NotImplemented />,
-      },
-      {
-        path: 'yearly-statistics',
-        breadcrumbName: 'Thống kê năm',
-        element: <NotImplemented />,
+        //   path: 'monthly-statistics',
+        //   breadcrumbName: 'Thống kê tháng',
+        //   element: <NotImplemented />,
+        // },
+        // {
+        //   path: 'yearly-statistics',
+        //   breadcrumbName: 'Thống kê năm',
+        //   element: <NotImplemented />,
+        // },
+        path: 'statistics',
+        breadcrumbName: 'Thống kê',
+        element: <AdminStatisticsScreen />,
       },
       {
         path: 'articles',
@@ -230,6 +237,12 @@ export const adminRoutes = [
             path: ':id/refund',
             breadcrumbName: 'Hoàn vé',
             element: <AdminRefundBookingscreen />,
+          },
+          {
+            path: 'bookings-by-me',
+            breadcrumbName: 'Đặt bởi tôi',
+            element: <AdminBookingsByMeScreen />,
+            // element: <NotImplemented />,
           },
         ],
       },
@@ -380,12 +393,6 @@ export const adminRoutes = [
             path: '',
             breadcrumbName: 'Đặt vé',
             element: <AdminSearchWizardScreen />,
-          },
-          {
-            path: 'booking-by-me',
-            breadcrumbName: 'Đặt bởi tôi',
-            // element: <AdminCreateFlightScreen />,
-            element: <NotImplemented />,
           },
         ],
       },

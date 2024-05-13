@@ -1,3 +1,4 @@
+import IUser from '@/interfaces/user.interface'
 import axiosClient from './api/axios.service'
 class AuthService {
   // accessToken: string = ''
@@ -6,6 +7,15 @@ class AuthService {
   //   this.accessToken = accessToken
   // }
 
+  async register(data: IUser) {
+    const response = await axiosClient.post('/auth/register', data, {
+      headers: {
+        // 'Content-Type': 'application/json',
+      },
+    })
+
+    return response.data.data
+  }
   async login(credentials: { email: string; password: string }) {
     const response = await axiosClient.post('/auth/login', credentials, {
       headers: {

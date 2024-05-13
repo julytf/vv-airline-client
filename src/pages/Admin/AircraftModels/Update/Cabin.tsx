@@ -33,7 +33,8 @@ const Cabin: FunctionComponent<CabinProps> = ({ value, onChange }) => {
             code: `${col}${row}`,
             col,
             row,
-            seatType: index === 0 || index === noCol - 1 ? SeatType.WINDOW : SeatType.NORMAL,
+            seatType: SeatType.NORMAL,
+            // seatType: index === 0 || index === noCol - 1 ? SeatType.WINDOW : SeatType.NORMAL,
             ticketClass: value.class,
             status: SeatStatus.AVAILABLE,
           }

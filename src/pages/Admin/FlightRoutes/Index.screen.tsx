@@ -1,7 +1,7 @@
 import SmartTable from '@/components/Table/SmartTable'
 import Table, { TableData } from '@/components/Table/Table'
 import Button from '@/components/ui/Button'
-import { TicketClass } from '@/enums/ticket.enums'
+import { TicketClass, TicketType } from '@/enums/ticket.enums'
 import IAirport from '@/interfaces/flight/airport.interface'
 import flightRoutesService from '@/services/flightRoutes.service'
 import { route } from '@/utils/helpers'
@@ -52,16 +52,44 @@ const FlightRoutesIndex: FunctionComponent<FlightRoutesIndexProps> = () => {
               displayName: 'Giá vé',
               renderFnc: (value: unknown) => {
                 const prices = value as {
-                  [TicketClass.ECONOMY]: number
-                  [TicketClass.BUSINESS]: number
+                  [TicketClass.ECONOMY]: {
+                    [TicketType.BUDGET]: number
+                    [TicketType.STANDARD]: number
+                    [TicketType.FLEXIBLE]: number
+                  }
+                  [TicketClass.BUSINESS]: {
+                    [TicketType.STANDARD]: number
+                    [TicketType.FLEXIBLE]: number
+                  }
                 }
                 return (
                   <>
                     <div>
-                      {TicketClass.ECONOMY}: {prices[TicketClass.ECONOMY].toLocaleString()} vnđ
+                      {TicketClass.ECONOMY}:
+                      <div className='ml-4'>
+                        <div>
+                          {TicketType.FLEXIBLE}: {prices[TicketClass.ECONOMY][TicketType.FLEXIBLE].toLocaleString()} vnđ
+                        </div>
+                        <div>
+                          {TicketType.STANDARD}: {prices[TicketClass.ECONOMY][TicketType.STANDARD].toLocaleString()} vnđ
+                        </div>
+                        <div>
+                          {TicketType.BUDGET}: {prices[TicketClass.ECONOMY][TicketType.BUDGET].toLocaleString()} vnđ
+                        </div>
+                      </div>
                     </div>
                     <div>
-                      {TicketClass.BUSINESS}: {prices[TicketClass.BUSINESS].toLocaleString()} vnđ
+                      {TicketClass.BUSINESS}:
+                      <div className='ml-2'>
+                        <div>
+                          {TicketType.FLEXIBLE}: {prices[TicketClass.BUSINESS][TicketType.FLEXIBLE].toLocaleString()}{' '}
+                          vnđ
+                        </div>
+                        <div>
+                          {TicketType.STANDARD}: {prices[TicketClass.BUSINESS][TicketType.STANDARD].toLocaleString()}{' '}
+                          vnđ
+                        </div>
+                      </div>
                     </div>
                   </>
                 )

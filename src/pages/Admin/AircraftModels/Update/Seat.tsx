@@ -18,7 +18,7 @@ const Seat: FunctionComponent<SeatProps> = ({ value, onChange }) => {
   const seatColors = {
     [SeatType.NORMAL]: 'blue',
     [SeatType.WINDOW]: 'orange',
-    [SeatType.AISLE]: 'blue',
+    [SeatType.AISLE]: 'green',
   }
   return (
     <div className='has-tooltip relative'>

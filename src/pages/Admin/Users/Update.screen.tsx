@@ -110,11 +110,11 @@ const UpdateUsers: FunctionComponent<UpdateUsersProps> = () => {
         dateOfBirth: data.dateOfBirth,
         gender: data.gender,
         address: {
-          province: data.address.province,
-          district: data.address.district,
-          ward: data.address.ward,
-          address: data.address.address,
-          address2: data.address.address2,
+          province: data?.address?.province,
+          district: data?.address?.district,
+          ward: data?.address?.ward,
+          address: data?.address?.address,
+          address2: data?.address?.address2,
         },
       })
       setIsLoading(false)

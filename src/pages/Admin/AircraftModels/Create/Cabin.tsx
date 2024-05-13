@@ -15,28 +15,34 @@ interface CabinProps {
 
 const Cabin: FunctionComponent<CabinProps> = ({ value, onChange }) => {
   const onUpdateSize = ({ noRow, noCol }: { noRow: number; noCol: number }) => {
+    let rowIndex = 0
+
     const map: IRowModel[] = new Array(Number(noRow)).fill('').map((_, index) => {
       // keep old data when resize
       // if (value.map[index]) return value.map[index]
 
-      const row = index + 1
+      // const row = index + 1
+      rowIndex++
       return {
         // TODO: fix index
-        index,
+        index: rowIndex,
         hasExit: value.map[index]?.hasExit || false,
         seats: new Array(noCol).fill('').map((_, index) => {
           // keep old data when resize
           if (value.map[index]?.seats[index]) return value.map[index].seats[index]
 
           const col = numberToAlphabet(index + 1)
-          return {
-            code: `${col}${row}`,
+          const seat = {
+            code: `${col}${rowIndex}`,
             col,
-            row,
-            seatType: index === 0 || index === noCol - 1 ? SeatType.WINDOW : SeatType.NORMAL,
+            row: rowIndex,
+            seatType: SeatType.NORMAL,
+            // seatType: index === 0 || index === noCol - 1 ? SeatType.WINDOW : SeatType.NORMAL,
             ticketClass: value.class,
             status: SeatStatus.AVAILABLE,
           }
+          console.log('seat', seat)
+          return seat
         }),
       }
     })

@@ -172,20 +172,13 @@ const DetailBooking: FunctionComponent<DetailBookingProps> = () => {
         </div>
       </div>
       {isPrintModalOpen && (
-        <ReactModal
+        <PrintModal
+          booking={booking}
           isOpen={isPrintModalOpen}
-          onRequestClose={() => setIsPrintModalOpen(false)}
-          // ariaHideApp={false}
-          style={{
-            overlay: {
-              background: 'rgba(0, 0, 0, 0.5)',
-              zIndex: 1000,
-              padding: '32px',
-            },
+          onRequestClose={() => {
+            setIsPrintModalOpen(false)
           }}
-        >
-          <PrintModal booking={booking} />
-        </ReactModal>
+        />
       )}
     </>
   )
